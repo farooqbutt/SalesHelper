@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Models;
 using System.Diagnostics;
 
@@ -29,6 +30,12 @@ namespace SalesHelper.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        //[Authorize]
+        public IActionResult AccountSettings()
         {
             return View();
         }

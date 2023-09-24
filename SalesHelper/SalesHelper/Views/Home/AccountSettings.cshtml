@@ -1,0 +1,943 @@
+﻿<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">Account setting</h3>
+        </div>
+    </div>
+    <div class="content-body">
+        <!-- account setting page start -->
+        <section id="page-account-settings">
+            <div class="row">
+                <!-- left menu section -->
+                <div class="col-md-2 mb-2 mb-md-0">
+                    <ul class="nav nav-pills flex-column mt-md-0 mt-1">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex active" id="businessInfo" data-toggle="pill" href="#business-Info" aria-expanded="true">
+                                <i class="feather icon-briefcase"></i>
+                                Business
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex" id="addressInfo" data-toggle="pill" href="#address-Info" aria-expanded="false">
+                                <i class="feather icon-home"></i>
+                                Address
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex" id="billingInfo" data-toggle="pill" href="#billing-Info" aria-expanded="false">
+                                <i class="fa fa-money"></i>
+                                Billing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex" id="shippingInfo" data-toggle="pill" href="#shipping-Info" aria-expanded="false">
+                                <i class="ti-truck"></i>
+                                Shipping
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex" id="myVendors" data-toggle="pill" href="#my-Vendors" aria-expanded="false">
+                                <i class="feather icon-users"></i>
+                                My Vendors
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- right content section -->
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="business-Info" aria-labelledby="businessInfo" aria-expanded="true">
+                                        <form id="accountDetailsForm" class="form">
+                                            <div class="form-body">
+                                                <h4 class="form-section"><i class="feather icon-user"></i> Account Details</h4>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="accountNumber">Account Number</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="accountNumber" placeholder="Account Number" readonly>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-hash primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="companyName">Company Name</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="companyName" placeholder="Company Name" required>
+                                                            <div class="form-control-position">
+                                                                <i class="fa fa-building-o primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="emailAddress">Email Address</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="email" class="form-control" id="emailAddress" placeholder="Email Address" required>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-mail primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label for="mainPhone">Main Phone</label>
+                                                                <div class="form-group position-relative has-icon-left">
+                                                                    <input type="text" class="form-control" id="mainPhone" placeholder="Main Phone" required>
+                                                                    <div class="form-control-position">
+                                                                        <i class="feather icon-phone primary"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="fax">Fax</label>
+                                                                <div class="form-group position-relative has-icon-left">
+                                                                    <input type="text" class="form-control" id="fax" placeholder="Fax" required>
+                                                                    <div class="form-control-position">
+                                                                        <i class="fa fa-fax primary"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="primaryContact">Primary Contact</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="primaryContact" placeholder="Primary Contact Name">
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-user primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="primaryContactPhone">Primary Contact Phone</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="primaryContactPhone" placeholder="Primary Contact Phone">
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-phone primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="websiteLink">Website</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="websiteLink" placeholder="Website">
+                                                            <div class="form-control-position">
+                                                                <i class="featehr icon-link primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="registrationDate">Registration Date</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="date" class="form-control" id="registrationDate" readonly>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-calendar primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @* <fieldset>
+                                                <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="customCheck" id="isActive">
+                                                <label class="custom-control-label" for="isActive"><b>Is Active</b></label>
+                                                </div>
+                                                </fieldset>*@
+                                            </div>
+
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade " id="address-Info" role="tabpanel" aria-labelledby="addressInfo" aria-expanded="false">
+                                        <form id="businessAddressDetailsForm" class="form">
+                                            <div class="form-body">
+                                                <h4 class="form-section"><i class="feather icon-home"></i> Business Address Details</h4>
+                                                <input id="addressId_business" hidden />
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="addressLine1_business">Address Line 1</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="addressLine1_business" placeholder="Address Line 1" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-home primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="addressLine2_business">Address Line 2</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="addressLine2_business" placeholder="Address Line 2" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-home primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="cityName_business">City</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="cityName_business" class="form-control" placeholder="City" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-location-pin primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="stateName_business">State</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="stateName_business" class="form-control" placeholder="State" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-location-pin primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="postalCode_business">Postal Code</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="postalCode_business" placeholder="Postal Code" required>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-hash primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="countryName_business">Country</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="countryName_business" class="form-control" placeholder="State" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-world primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary mb-2">
+                                                    <i class="fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <form id="billingAddressDetailsForm" class="form">
+                                            <div class="form-body">
+                                                <h4 class="form-section"><i class="feather icon-home"></i> Billing Address Details</h4>
+
+                                                <fieldset>
+                                                    <div class="custom-control custom-checkbox mb-2">
+                                                        <input type="checkbox" class="custom-control-input" id="sameAsBusinessForBilling">
+                                                        <label class="custom-control-label" for="sameAsBusinessForBilling">
+                                                            <b>same as business address</b>
+                                                        </label>
+                                                    </div>
+                                                </fieldset>
+                                                <input id="addressId_billing" hidden />
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="addressLine1_billing">Address Line 1</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="addressLine1_billing" placeholder="Address Line 1" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-home primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="addressLine2_billing">Address Line 2</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="addressLine2_billing" placeholder="Address Line 2" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-home primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="cityName_billing">City</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="cityName_billing" class="form-control" placeholder="City" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-location-pin primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="stateName_billing">State</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="stateName_billing" class="form-control" placeholder="State" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-location-pin primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="postalCode_billing">Postal Code</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="postalCode_billing" placeholder="Postal Code" required>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-hash primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="countryName_billing">Country</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="countryName_billing" class="form-control" placeholder="Country" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-world primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary mb-2">
+                                                    <i class="fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <form id="shippingAddressDetailsForm" class="form">
+                                            <div class="form-body">
+                                                <h4 class="form-section"><i class="feather icon-truck"></i> Shipping Address Details</h4>
+
+                                                <fieldset>
+                                                    <div class="custom-control custom-checkbox mb-2">
+                                                        <input type="checkbox" class="custom-control-input" id="sameAsBusinessForShipping">
+                                                        <label class="custom-control-label" for="sameAsBusinessForShipping">
+                                                            <b>same as business address</b>
+                                                        </label>
+                                                    </div>
+                                                </fieldset>
+                                                <input id="addressId_shipping" hidden />
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="addressLine1_shipping">Address Line 1</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="addressLine1_shipping" placeholder="Address Line 1" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-home primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="addressLine2_shipping">Address Line 2</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="addressLine2_shipping" placeholder="Address Line 2" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-home primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="cityName_shipping">City</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="cityName_shipping" class="form-control" placeholder="City" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-location-pin primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="stateName_shipping">State</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="stateName_shipping" class="form-control" placeholder="State" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-location-pin primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="postalCode_shipping">Postal Code</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="postalCode_shipping" placeholder="Postal Code" required>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-hash primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="countryName_shipping">Country</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" id="countryName_shipping" class="form-control" placeholder="Country" required>
+                                                            <div class="form-control-position">
+                                                                <i class="ti-world primary"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="billing-Info" role="tabpanel" aria-labelledby="billingInfo" aria-expanded="false">
+                                        <form class="form" id="billingDetailsForm">
+                                            <h4 class="form-section"><i class="fa fa-money"></i> Billing Details</h4>
+                                            <input id="billingDetailsId" hidden />
+                                            <input id="billingDetailsBillingId" hidden />
+                                            <input id="billingDetailsAccountId" hidden />
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="companyName_billing">Company Name</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="companyName_billing" placeholder="Company Name">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-building-o primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="contactName_billing">Contact Name</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="contactName_billing" placeholder="Contact Name">
+                                                        <div class="form-control-position">
+                                                            <i class="feather icon-user primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-md-6">
+                                                    <label>Payment Method</label>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="custom-control custom-radio">
+                                                                <input type="radio" class="custom-control-input" name="paymentMethod" id="paymentMethod" value="Credit Card" required>
+                                                                <label class="custom-control-label" for="paymentMethod"><b>Credit Card</b></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Card Type</label>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="custom-control custom-radio">
+                                                                <input type="radio" class="custom-control-input" name="cardType" id="visaCard" value="VISA Card">
+                                                                <label class="custom-control-label" for="visaCard">
+                                                                    <span class="fa fa-cc-visa font-medium-5" data-toggle="tooltip" data-placement="top" title="VISA Card"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="custom-control custom-radio">
+                                                                <input type="radio" class="custom-control-input" name="cardType" id="masterCard" value="MasterCard">
+                                                                <label class="custom-control-label" for="masterCard">
+                                                                    <span class="fa fa-cc-mastercard font-medium-5" data-toggle="tooltip" data-placement="top" title="MasterCard"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="nameOnCard">Name on Card</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="nameOnCard" placeholder="Name on Card">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-credit-card primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="cardNumber">Card Number</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="cardNumber" placeholder="Card Number" required>
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-credit-card primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="expirationMonth">Expiration Month</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" maxlength="2" id="expirationMonth" placeholder="MM">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-credit-card primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="expirationYear">Expiration Year</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" maxlength="2" id="expirationYear" placeholder="YY">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-credit-card primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="cvv">CVV</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="cvv" placeholder="CVV" required>
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-credit-card primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="shipping-Info" role="tabpanel" aria-labelledby="shippingInfo" aria-expanded="false">
+                                        <form id="shippingDetailsForm" class="form">
+                                            <h4 class="form-section"><i class="fa fa-truck"></i> Shipping Details</h4>
+                                            <input id="shippingDetailsId" hidden />
+                                            <input id="shippingDetailsShippingId" hidden />
+                                            <input id="shippingDetailsAccountId" hidden />
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="companyName_shipping">Company Name</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="companyName_shipping" placeholder="Company Name">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-building-o primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="contactName_shipping">Contact Name</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="contactName_shipping" placeholder="Contact Name">
+                                                        <div class="form-control-position">
+                                                            <i class="feather icon-user primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="shippingMethod">Shipping Method</label>
+                                                    <div class="form-group position-relative has-icon-left">
+                                                        <input type="text" class="form-control" id="shippingMethod" placeholder="Shipping Method">
+                                                        <div class="form-control-position">
+                                                            <i class="fa fa-truck primary"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade " id="my-Vendors" role="tabpanel" aria-labelledby="myVendors" aria-expanded="false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- account setting page end -->
+    </div>
+</div>
+
+
+
+@*Scripts section*@
+
+<script>
+    $(document).ready(function () {
+
+        // Fetch Account Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAccount",
+            success: function (data) {
+                if (data.message == "success") {
+                    $("#accountNumber").val(data.result.accountNumber);
+                    $("#companyName").val(data.result.companyName);
+                    $("#emailAddress").val(data.result.email);
+                    $("#mainPhone").val(data.result.mainPhone);
+                    $("#fax").val(data.result.fax);
+                    $("#primaryContact").val(data.result.primaryContact);
+                    $("#primaryContactPhone").val(data.result.primaryContactPhone);
+                    $("#websiteLink").val(data.result.website);
+                    $("#registrationDate").val(data.result.registrationDate.split("T")[0]);
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+        // Save Account Details
+        $("#accountDetailsForm").submit(function (e) {
+            e.preventDefault();
+
+            var accountNumber = $("#accountNumber").val();
+            var companyName = $("#companyName").val();
+            var emailAddress = $("#emailAddress").val();
+            var mainPhone = $("#mainPhone").val();
+            var fax = $("#fax").val();
+            var primaryContact = $("#primaryContact").val();
+            var primaryContactPhone = $("#primaryContactPhone").val();
+            var websiteLink = $("#websiteLink").val();
+
+            var formData = {
+                accountNumber: accountNumber,
+                companyName: companyName,
+                email: emailAddress,
+                mainPhone: mainPhone,
+                fax: fax,
+                primaryContact: primaryContact,
+                primaryContactPhone: primaryContactPhone,
+                website: websiteLink
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/AccountSettings/CreateAccount",
+                data: formData,
+                success: function (data) {
+                    if (data.message == "success") {
+                        toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                    } else {
+                        toastr.error(data.result, 'Error!', { "progressBar": true });
+                    }
+                },
+                error: function (error) {
+                    toastr.error(error, 'Error!', { "progressBar": true });
+                }
+            });
+        });
+
+
+        // Fetch All Address Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAddress",
+            success: function (data) {
+                if (data.message == "success") {
+                    if (data.result.businessAddress != null) {
+                        var address = data.result.businessAddress;
+                        var addressType = address.addressType;
+                        $("#addressId_" + addressType + "").val(address.addressId);
+                        $("#addressLine1_" + addressType + "").val(address.address1);
+                        $("#addressLine2_" + addressType + "").val(address.address2);
+                        $("#cityName_" + addressType + "").val(address.city);
+                        $("#stateName_" + addressType + "").val(address.state);
+                        $("#postalCode_" + addressType + "").val(address.postalCode);
+                        $("#countryName_" + addressType + "").val(address.country);
+                    }
+                    if (data.result.billingAddress != null) {
+                        var address = data.result.billingAddress;
+                        var addressType = address.addressType;
+                        $("#addressId_" + addressType + "").val(address.addressId);
+                        $("#addressLine1_" + addressType + "").val(address.address1);
+                        $("#addressLine2_" + addressType + "").val(address.address2);
+                        $("#cityName_" + addressType + "").val(address.city);
+                        $("#stateName_" + addressType + "").val(address.state);
+                        $("#postalCode_" + addressType + "").val(address.postalCode);
+                        $("#countryName_" + addressType + "").val(address.country);
+                    }
+                    if (data.result.shippingAddress != null) {
+                        var address = data.result.shippingAddress;
+                        var addressType = address.addressType;
+                        $("#addressId_" + addressType + "").val(address.addressId);
+                        $("#addressLine1_" + addressType + "").val(address.address1);
+                        $("#addressLine2_" + addressType + "").val(address.address2);
+                        $("#cityName_" + addressType + "").val(address.city);
+                        $("#stateName_" + addressType + "").val(address.state);
+                        $("#postalCode_" + addressType + "").val(address.postalCode);
+                        $("#countryName_" + addressType + "").val(address.country);
+                    }
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+        // Save Business Address Details
+        $("#businessAddressDetailsForm").submit(function (e) {
+            e.preventDefault();
+            AddressDetailsMaker("business");
+        });
+
+        // Save Billing Address Details
+        $("#billingAddressDetailsForm").submit(function (e) {
+            e.preventDefault();
+            AddressDetailsMaker("billing");
+        });
+
+        // Save Shipping Address Details
+        $("#shippingAddressDetailsForm").submit(function (e) {
+            e.preventDefault();
+            AddressDetailsMaker("shipping");
+        });
+
+        // Fetch Billing Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAccountBilling",
+            success: function (data) {
+                if (data.message == "success") {
+                    if (data.result != null) {
+                        var billingDetails = data.result[0];
+                        $("#billingDetailsBillingId").val(billingDetails.billingAddressId);
+                        $("#billingDetailsAccountId").val(billingDetails.accountNumber);
+                        $("#billingDetailsId").val(billingDetails.billingId);
+                        $("#companyName_billing").val(billingDetails.companyName);
+                        $("#contactName_billing").val(billingDetails.contactName);
+                        $("input[type=radio][name=paymentMethod][value='" + billingDetails.paymentMethod + "']").prop("checked", true);
+                        $("input[type=radio][name=cardType][value='" + billingDetails.creditCardType + "']").prop("checked", true);
+                        $("#nameOnCard").val(billingDetails.nameOnCard);
+                        $("#cardNumber").val(billingDetails.creditCardNumber);
+                        $("#expirationMonth").val(billingDetails.expirationDate.split("-")[1]);
+                        $("#expirationYear").val(billingDetails.expirationDate.split("-")[0] - 2000);
+                        $("#cvv").val(billingDetails.cvv);
+                    }
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+        // Save Billing Details
+        $("#billingDetailsForm").submit(function (e) {
+            e.preventDefault();
+
+            var billingDetailsBillingId = $("#billingDetailsBillingId").val();
+            var billingDetailsAccountId = $("#billingDetailsAccountId").val();
+            var billingDetailsId = $("#billingDetailsId").val();
+            var companyName_billing = $("#companyName_billing").val();
+            var contactName_billing = $("#contactName_billing").val();
+            var paymentMethod = $("input[name=paymentMethod]:checked").val();
+            var cardType = $("input[name=cardType]:checked").val();
+            var nameOnCard = $("#nameOnCard").val();
+            var cardNumber = $("#cardNumber").val();
+            var year = Number($("#expirationYear").val()) + 2000;
+            var month = $("#expirationMonth").val();
+            var expirationDate = year.toString() + "-" + month + "-01";
+            var cvv = $("#cvv").val();
+
+            var formData = {
+                billingAddressId: billingDetailsBillingId,
+                accountNumber: billingDetailsAccountId,
+                billingId: billingDetailsId,
+                companyName: companyName_billing,
+                contactName: contactName_billing,
+                paymentMethod: paymentMethod,
+                creditCardType: cardType,
+                creditCardNumber: cardNumber,
+                nameOnCard: nameOnCard,
+                expirationDate: expirationDate,
+                cVV: cvv
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/AccountSettings/CreateAccountBilling",
+                data: formData,
+                success: function (data) {
+                    if (data.message == "success") {
+                        toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                    } else {
+                        toastr.error(data.result, 'Error!', { "progressBar": true });
+                    }
+                },
+                error: function (error) {
+                    toastr.error(error, 'Error!', { "progressBar": true });
+                }
+            });
+        });
+
+        // Fetch Shipping Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAccountShipping",
+            success: function (data) {
+                if (data.message == "success") {
+                    if (data.result != null) {
+                        var shippingDetails = data.result;
+                        $("#shippingDetailsShippingId").val(shippingDetails.shippingAddressId);
+                        $("#shippingDetailsAccountId").val(shippingDetails.accountNumber);
+                        $("#shippingDetailsId").val(shippingDetails.shippingId);
+                        $("#companyName_shipping").val(shippingDetails.companyName);
+                        $("#contactName_shipping").val(shippingDetails.contactName);
+                        $("#shippingMethod").val(shippingDetails.shippingMethod);
+                    }
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+        // Save Shipping Details
+        $("#shippingDetailsForm").submit(function (e) {
+            e.preventDefault();
+
+            var shippingDetailsShippingId = $("#shippingDetailsShippingId").val();
+            var shippingDetailsAccountId = $("#shippingDetailsAccountId").val();
+            var shippingDetailsId = $("#shippingDetailsId").val();
+            var companyName_shipping = $("#companyName_shipping").val();
+            var contactName_shipping = $("#contactName_shipping").val();
+            var shippingMethod = $("#shippingMethod").val();
+
+            var formData = {
+                shippingAddressId: shippingDetailsShippingId,
+                accountNumber: shippingDetailsAccountId,
+                shippingId: shippingDetailsId,
+                companyName: companyName_shipping,
+                contactName: contactName_shipping,
+                shippingMethod: shippingMethod
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/AccountSettings/CreateAccountShipping",
+                data: formData,
+                success: function (data) {
+                    if (data.message == "success") {
+                        toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                    } else {
+                        toastr.error(data.result, 'Error!', { "progressBar": true });
+                    }
+                },
+                error: function (error) {
+                    toastr.error(error, 'Error!', { "progressBar": true });
+                }
+            });
+        });
+    });
+
+    function AddressDetailsMaker(addressType) {
+        var addressid = $("#addressId_" + addressType + "").val();
+        var address1 = $("#addressLine1_" + addressType + "").val();
+        var address2 = $("#addressLine2_" + addressType + "").val();
+        var city = $("#cityName_" + addressType + "").val();
+        var state = $("#stateName_" + addressType + "").val();
+        var postal = $("#postalCode_" + addressType + "").val();
+        var country = $("#countryName_" + addressType + "").val();
+
+        var formData = {
+            addressId: addressid,
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            postalCode: postal,
+            country: country,
+            addressType: addressType
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/AccountSettings/CreateAddress",
+            data: formData,
+            success: function (data) {
+                if (data.message == "success") {
+                    toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    }
+
+    // Add an event listener to the checkbox using jQuery
+    $('#sameAsBusinessForBilling').change(function () {
+        if ($(this).is(':checked')) {
+            $("#businessAddressDetailsForm")[0].querySelectorAll('input').forEach((item, index) => {
+                if (index != 0) {
+                    var id = "#" + item.id.split("_")[0] + "_billing";
+                    var value = item.value;
+                    $("#billingAddressDetailsForm").find(id).val(value);
+                }
+            })
+        } else {
+            // Clear values in form2
+            $('#billingAddressDetailsForm')[0].reset();
+        }
+    });
+
+    // Add an event listener to the checkbox using jQuery
+    $('#sameAsBusinessForShipping').change(function () {
+        if ($(this).is(':checked')) {
+            $("#businessAddressDetailsForm")[0].querySelectorAll('input').forEach((item, index) => {
+                if (index != 0) {
+                    var id = "#" + item.id.split("_")[0] + "_shipping";
+                    var value = item.value;
+                    $("#shippingAddressDetailsForm").find(id).val(value);
+                }
+            })
+        } else {
+            // Clear values in form2
+            $('#shippingAddressDetailsForm')[0].reset();
+        }
+    });
+
+</script>

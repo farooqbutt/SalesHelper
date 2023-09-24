@@ -91,7 +91,19 @@
                                 <form class="form-horizontal form-simple" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <fieldset class="form-group position-relative has-icon-left mb-1">
-                                        <input asp-for="Input.Email" autocomplete="username" type="email" class="form-control form-control-lg" id="user-name" placeholder="Your Email Address">
+                                        <input asp-for="Input.FirstName" autocomplete="username" type="text" class="form-control form-control-lg" id="user-name" placeholder="First Name">
+                                        <div class="form-control-position">
+                                            <i class="feather icon-user"></i>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="form-group position-relative has-icon-left mb-1">
+                                        <input style="border-top-left-radius:0;border-top-right-radius:0;" asp-for="Input.LastName" autocomplete="username" type="text" class="form-control form-control-lg" id="user-name" placeholder="Last Name">
+                                        <div class="form-control-position">
+                                            <i class="feather icon-user"></i>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="form-group position-relative has-icon-left mb-1">
+                                        <input style="border-top-left-radius:0;border-top-right-radius:0;" asp-for="Input.Email" autocomplete="username" type="email" class="form-control form-control-lg" id="user-name" placeholder="Your Email Address">
                                         <div class="form-control-position">
                                             <i class="feather icon-mail"></i>
                                         </div>
@@ -108,7 +120,7 @@
                                             <i class="fa fa-key"></i>
                                         </div>
                                     </fieldset>
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="feather icon-unlock"></i> Register</button>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="feather icon-user-plus"></i> Register</button>
                                 </form>
                             </div>
                             <p class="text-center">Already have an account ? <a asp-area="Identity" asp-page="/Account/Login" class="card-link">Login</a></p>

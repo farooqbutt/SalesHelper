@@ -27,6 +27,7 @@
     @*<link rel="stylesheet" type="text/css" href="/vendors/css/forms/icheck/icheck.css">*@
     <link rel="stylesheet" type="text/css" href="/vendors/css/forms/icheck/custom.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/tables/datatable/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="/vendors/css/extensions/toastr.css">
     <!-- END: Vendor CSS-->
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
@@ -42,12 +43,13 @@
     @*<link rel="stylesheet" type="text/css" href="/css/plugins/forms/checkboxes-radios.css">*@
     <link rel="stylesheet" type="text/css" href="/css/core/colors/palette-climacon.css">
     <link rel="stylesheet" type="text/css" href="/fonts/simple-line-icons/style.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/plugins/extensions/toastr.css">
     <!-- link(rel='stylesheet', type='text/css', href=app_assets_path+'/css'+rtl+'/pages/users.css')-->
     <!-- END: Page CSS-->
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
     <!-- END: Custom CSS-->
-
+    <script src="/js/core/libraries/jquery.min.js"></script>
 </head>
 <!-- END: Head-->
 <body class="vertical-layout vertical-menu 2-columns   fixed-navbar" data-open="click" data-menu="vertical-menu" data-col="2-columns">
@@ -515,7 +517,7 @@
                     </a>
                 </li>
                 <li class=" nav-item">
-                    <a href="#"><i class="feather icon-settings"></i><span class="menu-title">Account Setting</span></a>
+                    <a asp-controller="Home" asp-action="AccountSettings"><i class="feather icon-settings"></i><span class="menu-title">Account Setting</span></a>
                 </li>
             </ul>
         </div>
@@ -561,6 +563,8 @@
     <script src="/vendors/js/timeline/horizontal-timeline.js"></script>
     <script src="/vendors/js/tables/datatable/datatables.min.js"></script>
     <script src="/js/scripts/tables/datatables-extensions/datatables-sources.js"></script>
+    <script src="/js/scripts/extensions/toastr.js"></script>
+    <script src="/vendors/js/extensions/toastr.min.js"></script>
     @*<script src="/js/scripts/forms/checkbox-radio.js"></script>*@
     @*<script src="/vendors/js/forms/icheck/icheck.min.js"></script>*@
     <!-- END: Page Vendor JS-->
@@ -568,6 +572,8 @@
     <script src="/js/core/app-menu.js"></script>
     <script src="/js/core/app.js"></script>
     <!-- END: Theme JS-->
+    @*Server Side Scripts*@
+    @*<script src="/ServerSideScripts/AccountSettingsScripts.js"></script>*@
 
 
     <!-- Conditional loading of scripts -->
@@ -587,7 +593,6 @@
         }
     </script>
 
-
     <script>
         // Function to set the active item and store it in localStorage
         function setActiveItem(itemIndex) {
@@ -598,10 +603,15 @@
             localStorage.setItem('activeNavItem', itemIndex);
         }
 
+        function setActiveNavItemWithoutSubItem(itemIndex) {
+            localStorage.setItem('activeNavItemWithoutSubItem', itemIndex);
+        }
+
         // Function to initialize the active item based on localStorage
         function initializeActiveItem() {
             const activeItemIndex = localStorage.getItem('activeItem');
             const activeNavItem = localStorage.getItem('activeNavItem');
+            const activeNavItemWithoutSubItem = localStorage.getItem('activeNavItemWithoutSubItem');
 
             if (activeItemIndex !== null) {
                 // Remove "active" class from all <li> elements
@@ -613,6 +623,7 @@
                 const menuItems = document.querySelectorAll('.menu-item');
                 if (menuItems[activeItemIndex]) {
                     menuItems[activeItemIndex].closest('li').classList.add('active');
+                    localStorage.removeItem('activeNavItemWithoutSubItem');
                 }
             }
 
@@ -626,6 +637,21 @@
                 const navItems = document.querySelectorAll('li[class="nav-item has-sub"]');
                 if (navItems[activeNavItem]) {
                     navItems[activeNavItem].classList.add('open');
+                    localStorage.removeItem('activeNavItemWithoutSubItem');
+                }
+            }
+
+            if (activeNavItemWithoutSubItem !== null) {
+
+                document.querySelector('ul[class="navigation navigation-main"]')
+                    .querySelectorAll('li.nav-item').forEach(li => {
+                        li.classList.remove('active');
+                    });
+
+                const navItemsWithoutHasSub = document.querySelector('ul[class="navigation navigation-main"]')
+                    .querySelectorAll('li.nav-item');
+                if (navItemsWithoutHasSub[activeNavItemWithoutSubItem]) {
+                    navItemsWithoutHasSub[activeNavItemWithoutSubItem].classList.add('active');
                 }
             }
         }
@@ -646,10 +672,18 @@
             });
         });
 
+        // Add click event listeners to the nav items
+        const navItems_without_has_sub = document.querySelector('ul[class="navigation navigation-main"]')
+            .querySelectorAll('li.nav-item');
+        navItems_without_has_sub.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                setActiveNavItemWithoutSubItem(index);
+            });
+        });
+
         // Initialize the active item when the page loads
         window.addEventListener('load', initializeActiveItem);
     </script>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
