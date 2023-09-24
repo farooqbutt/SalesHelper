@@ -11133,11 +11133,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Online_Drives\\Box\\Box\\Fiverr Pending Tasks\\haowang103\\SalesHelper\\SalesHelper\\SalesHelper\\SalesHelper.csproj",
+      "projectUniqueName": "D:\\Online_Drives\\Box\\Box\\Fiverr Pending Tasks\\SalesHelper\\SalesHelper\\SalesHelper\\SalesHelper.csproj",
       "projectName": "SalesHelper",
-      "projectPath": "D:\\Online_Drives\\Box\\Box\\Fiverr Pending Tasks\\haowang103\\SalesHelper\\SalesHelper\\SalesHelper\\SalesHelper.csproj",
+      "projectPath": "D:\\Online_Drives\\Box\\Box\\Fiverr Pending Tasks\\SalesHelper\\SalesHelper\\SalesHelper\\SalesHelper.csproj",
       "packagesPath": "C:\\Users\\Farooq\\.nuget\\packages\\",
-      "outputPath": "D:\\Online_Drives\\Box\\Box\\Fiverr Pending Tasks\\haowang103\\SalesHelper\\SalesHelper\\SalesHelper\\obj\\",
+      "outputPath": "D:\\Online_Drives\\Box\\Box\\Fiverr Pending Tasks\\SalesHelper\\SalesHelper\\SalesHelper\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Farooq\\AppData\\Roaming\\NuGet\\NuGet.Config",
