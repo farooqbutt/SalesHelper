@@ -34,7 +34,7 @@ namespace SalesHelper.Controllers
             return View();
         }
 
-        //[Authorize]
+        [Authorize]
         public IActionResult AccountSettings()
         {
             return View();
