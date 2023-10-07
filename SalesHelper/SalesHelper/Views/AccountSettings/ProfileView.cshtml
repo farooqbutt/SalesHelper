@@ -1,0 +1,460 @@
+﻿<style>
+    tr td:first-child {
+        font-weight: bold;
+        width: 40%;
+    }
+
+    .card-body {
+        height: 368.4px;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">Account Profile Details</h3>
+        </div>
+        <div class="content-header-right col-md-6 col-12 mb-2">
+            <div class="row">
+                <div class="col-lg-12 text-right">
+                    <a class="btn btn-primary btn-addon text-white" asp-controller="Home" asp-action="AccountSettings">
+                        <i class="ti-pencil-alt"></i> Edit Account Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-body">
+        <div class="row">
+            <!-- /# column -->
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        <h4 class="card-title">
+                            <i class="feather icon-briefcase"></i> Business info
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Account Number:</td>
+                                                <td id="accountNumber"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Business Name:</td>
+                                                <td id="companyName"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Main phone:</td>
+                                                <td id="mainPhone"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fax:</td>
+                                                <td id="fax"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Primary Contact:</td>
+                                                <td id="primaryContact"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Primary Contact #:</td>
+                                                <td id="primaryContactPhone"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td><a id="emailAddress" href=""></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Website</td>
+                                                <td><a href="" target="_blank" id="websiteLink"></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--card end-->
+            </div>
+            <!-- /# end column -->
+            <!-- /# column -->
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        <h4 class="card-title">
+                            <i class="feather icon-home"></i> Business Address
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Address Line 1: </td>
+                                                <td id="addressLine1_business"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Address Line 2: </td>
+                                                <td id="addressLine2_business"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>City:</td>
+                                                <td id="cityName_business"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>State:</td>
+                                                <td id="stateName_business"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Zip/Post code:</td>
+                                                <td id="postalCode_business"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Country:</td>
+                                                <td id="countryName_business"></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /# end column -->
+        </div>
+
+        <div class="row">
+            <!-- /# column -->
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        <h4 class="card-title">
+                            <i class="feather icon-home"></i> bill-to address
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Address Line 1: </td>
+                                                <td id="addressLine1_billing"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Address Line 2: </td>
+                                                <td id="addressLine2_billing"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>City:</td>
+                                                <td id="cityName_billing"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>State:</td>
+                                                <td id="stateName_billing"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Zip/Post code:</td>
+                                                <td id="postalCode_billing"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Country:</td>
+                                                <td id="countryName_billing"></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /# end column -->
+            <!-- /# column -->
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        <h4 class="card-title">
+                            <i class="feather icon-truck"></i> ship-to address
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Address Line 1: </td>
+                                                <td id="addressLine1_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Address Line 2: </td>
+                                                <td id="addressLine2_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>City:</td>
+                                                <td id="cityName_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>State:</td>
+                                                <td id="stateName_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Zip/Post code:</td>
+                                                <td id="postalCode_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Country:</td>
+                                                <td id="countryName_shipping"></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /# end column -->
+        </div>
+
+        <div class="row">
+            <!-- /# column -->
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        <h4 class="card-title">
+                            <i class="fa fa-money"></i> credit card info
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Payment Method:</td>
+                                                <td id="paymentMethod"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Card Type:</td>
+                                                <td id="cardType"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Card Number:</td>
+                                                <td id="cardNumber"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Name on Card:</td>
+                                                <td id="nameOnCard"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Expiry Date:</td>
+                                                <td id="expirationDate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>CVV:</td>
+                                                <td id="cvv"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /# end column -->
+            <!-- /# column -->
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        <h4 class="card-title">
+                            <i class="fa fa-plane"></i> shipping method
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Company Name: </td>
+                                                <td id="companyName_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Contact Name: </td>
+                                                <td id="contactName_shipping"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Shipping Method: </td>
+                                                <td id="shippingMethod"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /# end column -->
+        </div>
+    </div>
+</div>
+
+@*Scripts section*@
+
+<script>
+    $(document).ready(function () {
+
+        // Fetch Account Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAccount",
+            success: function (data) {
+                if (data.message == "success") {
+                    $("#accountNumber").text(data.result.accountNumber);
+                    $("#companyName").text(data.result.companyName);
+                    $("#emailAddress").text(data.result.email);
+                    $("#emailAddress").attr('href', "mailto:" + data.result.email);
+                    $("#mainPhone").text(data.result.mainPhone);
+                    $("#fax").text(data.result.fax);
+                    $("#primaryContact").text(data.result.primaryContact);
+                    $("#primaryContactPhone").text(data.result.primaryContactPhone);
+                    $("#websiteLink").text(data.result.website);
+                    $("#websiteLink").attr('href', "https://" + data.result.website);
+                    $("#registrationDate").text(data.result.registrationDate.split("T")[0]);
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+
+        // Fetch All Address Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAddress",
+            success: function (data) {
+                if (data.message == "success") {
+                    if (data.result.businessAddress != null) {
+                        var address = data.result.businessAddress;
+                        var addressType = address.addressType;
+                        $("#addressId_" + addressType + "").text(address.addressId);
+                        $("#addressLine1_" + addressType + "").text(address.address1);
+                        $("#addressLine2_" + addressType + "").text(address.address2);
+                        $("#cityName_" + addressType + "").text(address.city);
+                        $("#stateName_" + addressType + "").text(address.state);
+                        $("#postalCode_" + addressType + "").text(address.postalCode);
+                        $("#countryName_" + addressType + "").text(address.country);
+                    }
+                    if (data.result.billingAddress != null) {
+                        var address = data.result.billingAddress;
+                        var addressType = address.addressType;
+                        $("#addressId_" + addressType + "").text(address.addressId);
+                        $("#addressLine1_" + addressType + "").text(address.address1);
+                        $("#addressLine2_" + addressType + "").text(address.address2);
+                        $("#cityName_" + addressType + "").text(address.city);
+                        $("#stateName_" + addressType + "").text(address.state);
+                        $("#postalCode_" + addressType + "").text(address.postalCode);
+                        $("#countryName_" + addressType + "").text(address.country);
+                    }
+                    if (data.result.shippingAddress != null) {
+                        var address = data.result.shippingAddress;
+                        var addressType = address.addressType;
+                        $("#addressId_" + addressType + "").text(address.addressId);
+                        $("#addressLine1_" + addressType + "").text(address.address1);
+                        $("#addressLine2_" + addressType + "").text(address.address2);
+                        $("#cityName_" + addressType + "").text(address.city);
+                        $("#stateName_" + addressType + "").text(address.state);
+                        $("#postalCode_" + addressType + "").text(address.postalCode);
+                        $("#countryName_" + addressType + "").text(address.country);
+                    }
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+
+        // Fetch Billing Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAccountBilling",
+            success: function (data) {
+                if (data.message == "success") {
+                    if (data.result != null) {
+                        var billingDetails = data.result[0];
+                        $("#paymentMethod").text(billingDetails.paymentMethod);
+                        $("#cardType").text(billingDetails.creditCardType);
+                        $("#nameOnCard").text(billingDetails.nameOnCard);
+                        $("#cardNumber").text(Masker(billingDetails.creditCardNumber));
+                        $("#expirationDate").text(billingDetails.expirationDate.split("T")[0]);
+                        $("#cvv").text(Masker(billingDetails.cvv));
+                    }
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+
+        // Fetch Shipping Details
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/GetAccountShipping",
+            success: function (data) {
+                if (data.message == "success") {
+                    if (data.result != null) {
+                        var shippingDetails = data.result;
+                        $("#companyName_shipping").text(shippingDetails.companyName);
+                        $("#contactName_shipping").text(shippingDetails.contactName);
+                        $("#shippingMethod").text(shippingDetails.shippingMethod);
+                    }
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    });
+
+    function Masker(inputString) {
+        const boldDot = '<b>&bull;</b>';
+        if (inputString.length >= 16) {
+            // Mask all characters except the last 4
+            const maskedPortion = 'x'.repeat(12);
+            const last4Digits = inputString.slice(-4);
+            const maskedCardNumber = maskedPortion + last4Digits;
+            return maskedCardNumber;
+        } else {
+            return 'x'.repeat(inputString.length);
+        }
+    }
+
+</script>

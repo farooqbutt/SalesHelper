@@ -1,0 +1,232 @@
+﻿@model SalesHelper.Models.Vendor
+@inject SalesHelper.Data.ApplicationDbContext _context
+@{
+    var businessTypesList = _context.BusinessTypes.ToArray();
+}
+
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">My Vendors List</h3>
+        </div>
+        <div class="content-header-right col-md-6 col-12 mb-md-0 mb-2">
+            <button class="btn btn-primary float-right" data-toggle="modal" data-backdrop="true" data-target="#AddVendorModal">
+                <i class="fa fa-plus"></i> Add Vendor
+            </button>
+        </div>
+    </div>
+    <div class="content-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-content collpase show">
+                        <div class="card-body card-dashboard">
+                            <table id="myVendorsTable" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Vendor Name</th>
+                                        <th>Business Type</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Website</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade text-left" id="AddVendorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8" aria-hidden="true">
+    <div class="modal-lg modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Add Vendor</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="form" id="AddVendorForm" asp-controller="Vendors" asp-action="AddVendor" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="vendorName">Vendor Name</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="VendorName" type="text" class="form-control" id="vendorName" placeholder="Vendor Name" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-user primary"></i>
+                                </div>
+                            </div>
+
+                            <label for="vendorPhone">Phone</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Phone" type="text" class="form-control" id="vendorPhone" placeholder="Phone" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+
+                            <label for="vendorDescription">Description</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <textarea asp-for="Description" type="text" class="form-control" id="vendorDescription" rows="6"
+                                          placeholder="Description" required></textarea>
+                                <div class="form-control-position">
+                                    <i class="fa fa-list-alt primary"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <label for="vendorEmail">Email</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Email" type="text" class="form-control" id="vendorEmail" placeholder="Email" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-mail primary"></i>
+                                </div>
+                            </div>
+
+                            <label for="vendorWebsite">Website</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Website" type="text" class="form-control" id="vendorWebsite" placeholder="Website Link" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-link primary"></i>
+                                </div>
+                            </div>
+
+                            <label for="businessTypesSelect">Business Type</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <select asp-for="BusinessTypeId" id="businessTypesSelect"></select>
+                                <div class="form-control-position">
+                                    <i class="feather icon-briefcase primary"></i>
+                                </div>
+                            </div>
+
+                            <fieldset>
+                                <div class="custom-control custom-checkbox mb-2">
+                                    <input asp-for="IsPrivate" type="checkbox" class="custom-control-input" id="sameAsBusinessForBilling">
+                                    <label class="custom-control-label" for="sameAsBusinessForBilling">
+                                        <b>Is Private?</b>
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-left: 35px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var businessTypesList = @Html.Raw(Json.Serialize(businessTypesList));
+
+        $("#businessTypesSelect").select2({
+            dropdownAutoWidth: true,
+            width: '100%',
+            data: businessTypesList.map(function (item) {
+                return {
+                    id: item.businessTypeId,
+                    text: item.typeName
+                };
+            })
+        });
+
+
+        // Get My Vendors List
+        $('#myVendorsTable').DataTable({
+            "ajax": {
+                "url": "/Vendors/MyVendorsList",
+                "type": "GET",
+                "dataType": "json",
+                "dataSrc": "data"
+            },
+            "columns": [
+                { "data": "vendorIdFK.vendorName" },
+                { "data": "vendorIdFK.businessTypeIdFK.typeName" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `<a href="mailto:${data.vendorIdFK.email}">${data.vendorIdFK.email}</a>`;
+                    }
+                },
+                { "data": "vendorIdFK.phone" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `<a href="https://${data.vendorIdFK.website}" target="_blank">${data.vendorIdFK.website}</a>`;
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                            <button type="button" class="btn btn-icon btn-pure primary"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="View Vendor">
+                            <i class="feather icon-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-icon btn-pure danger"
+                            data-toggle="tooltip" onclick="DeleteVendor(${data.vendorIdFK.vendorId})"
+                            data-placement="top"
+                            title="Remove Vendor">
+                            <i class="feather icon-trash"></i>
+                            </button>
+                        `;
+                    }
+                }
+            ],
+            "columnDefs": [
+                { "width": "25%", "targets": 0 },
+                { "width": "15%", "targets": 1 },
+                { "width": "15%", "targets": 2 },
+                { "width": "10%", "targets": 3 },
+                { "width": "20%", "targets": 4 },
+                { "width": "15%", "targets": 5 }
+            ]
+        });
+    });
+
+    // Delete Vendor from My Vendors List
+    function DeleteVendor(vendorId) {
+        console.log(vendorId);
+        if (confirm("Are you sure you want to delete this vendor?")) {
+            $.ajax({
+                type: "POST",
+                url: "/Vendors/DeleteMyVendor",
+                data: { vendorId: vendorId },
+                success: function (data) {
+                    if (data.message == 'success') {
+                        toastr.success(data.result, 'Success!', { "progressBar": true });
+                        $('#myVendorsTable').DataTable().ajax.reload();
+                    }
+                    else {
+                        toastr.error(data.result, 'Error!', { "progressBar": true });
+                    }
+                },
+                error: function (response) {
+                    toastr.error(response, 'Error!', { "progressBar": true });
+                }
+            });
+        }
+    }
+
+</script>

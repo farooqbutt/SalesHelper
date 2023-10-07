@@ -1,7 +1,7 @@
 ﻿<div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">Account setting</h3>
+            <h3 class="content-header-title mb-0">update account settings</h3>
         </div>
     </div>
     <div class="content-body">
@@ -35,12 +35,12 @@
                                 Shipping
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex" id="myVendors" data-toggle="pill" href="#my-Vendors" aria-expanded="false">
-                                <i class="feather icon-users"></i>
-                                My Vendors
-                            </a>
-                        </li>
+                        @*<li class="nav-item">
+                        <a class="nav-link d-flex" id="myVendors" data-toggle="pill" href="#my-Vendors" aria-expanded="false">
+                        <i class="feather icon-users"></i>
+                        My Vendors
+                        </a>
+                        </li>*@
                     </ul>
                 </div>
                 <!-- right content section -->
@@ -55,6 +55,9 @@
                                                 <h4 class="form-section"><i class="feather icon-user"></i> Account Details</h4>
 
                                                 <div class="row">
+                                                    <input hidden id="businessAddressId" />
+                                                    <input hidden id="billingAddressId" />
+                                                    <input hidden id="shippingAddressId" />
                                                     <div class="col-md-6">
                                                         <label for="accountNumber">Account Number</label>
                                                         <div class="form-group position-relative has-icon-left">
@@ -578,8 +581,8 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="tab-pane fade " id="my-Vendors" role="tabpanel" aria-labelledby="myVendors" aria-expanded="false">
-                                    </div>
+                                    @*<div class="tab-pane fade " id="my-Vendors" role="tabpanel" aria-labelledby="myVendors" aria-expanded="false">
+                                    </div>*@
                                 </div>
                             </div>
                         </div>
@@ -604,6 +607,9 @@
             url: "/AccountSettings/GetAccount",
             success: function (data) {
                 if (data.message == "success") {
+                    $("#businessAddressId").val(data.result.businessAddressId);
+                    $("#billingAddressId").val(data.result.billingAddressId);
+                    $("#shippingAddressId").val(data.result.shippingAddressId);
                     $("#accountNumber").val(data.result.accountNumber);
                     $("#companyName").val(data.result.companyName);
                     $("#emailAddress").val(data.result.email);
@@ -626,6 +632,9 @@
         $("#accountDetailsForm").submit(function (e) {
             e.preventDefault();
 
+            var bussiness = $("#businessAddressId").val();
+            var billing = $("#billingAddressId").val();
+            var shipping = $("#shippingAddressId").val();
             var accountNumber = $("#accountNumber").val();
             var companyName = $("#companyName").val();
             var emailAddress = $("#emailAddress").val();
@@ -636,6 +645,9 @@
             var websiteLink = $("#websiteLink").val();
 
             var formData = {
+                businessAddressId: bussiness,
+                billingAddressId: billing,
+                shippingAddressId: shipping,
                 accountNumber: accountNumber,
                 companyName: companyName,
                 email: emailAddress,
@@ -653,6 +665,9 @@
                 success: function (data) {
                     if (data.message == "success") {
                         toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                        setTimeout(function () {
+                            window.location.href = "/AccountSettings/ProfileView";
+                        }, 3000); // Delay the redirection by 3 seconds (3000 milliseconds)
                     } else {
                         toastr.error(data.result, 'Error!', { "progressBar": true });
                     }
@@ -799,6 +814,9 @@
                 success: function (data) {
                     if (data.message == "success") {
                         toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                        setTimeout(function () {
+                            window.location.href = "/AccountSettings/ProfileView";
+                        }, 3000); // Delay the redirection by 3 seconds (3000 milliseconds)
                     } else {
                         toastr.error(data.result, 'Error!', { "progressBar": true });
                     }
@@ -860,6 +878,9 @@
                 success: function (data) {
                     if (data.message == "success") {
                         toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                        setTimeout(function () {
+                            window.location.href = "/AccountSettings/ProfileView";
+                        }, 3000); // Delay the redirection by 3 seconds (3000 milliseconds)
                     } else {
                         toastr.error(data.result, 'Error!', { "progressBar": true });
                     }
@@ -898,6 +919,9 @@
             success: function (data) {
                 if (data.message == "success") {
                     toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                    setTimeout(function () {
+                        window.location.href = "/AccountSettings/ProfileView";
+                    }, 3000); // Delay the redirection by 3 seconds (3000 milliseconds)
                 } else {
                     toastr.error(data.result, 'Error!', { "progressBar": true });
                 }

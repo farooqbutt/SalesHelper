@@ -16,7 +16,7 @@ namespace SalesHelper.Controllers
             _context = context;
             _signInManager = signInManager;
         }
-        public IActionResult Index()
+        public IActionResult ProfileView()
         {
             return View();
         }

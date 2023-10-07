@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="/vendors/css/forms/icheck/custom.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/tables/datatable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/extensions/toastr.css">
+    <link rel="stylesheet" type="text/css" href="/vendors/css/forms/selects/select2.min.css">
     <!-- END: Vendor CSS-->
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
@@ -292,7 +293,7 @@
                                     <span class="user-name">@firstName @lastName</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" asp-controller="Home" asp-action="AccountSettings">
+                                    <a class="dropdown-item" asp-controller="AccountSettings" asp-action="ProfileView">
                                         <i class="fa fa-id-card-o"></i> Profile
                                     </a>
                                     <a class="dropdown-item" href="app-email.html">
@@ -523,10 +524,14 @@
                     </a>
                     <ul class="menu-content">
                         <li class="">
-                            <a class="menu-item" href="#"><i class="feather icon-eye"></i>View Venodrs</a>
+                            <a class="menu-item" asp-controller="Vendors" asp-action="ViewVendors">
+                                <i class="feather icon-eye"></i>View Venodrs
+                            </a>
                         </li>
                         <li class="">
-                            <a class="menu-item" href="#"><i class="feather icon-user-plus"></i>Add New Vendor</a>
+                            <a class="menu-item" asp-controller="Vendors" asp-action="ViewMyVendors">
+                                <i class="feather icon-user-plus"></i>My Vendors
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -576,6 +581,7 @@
     <script src="/js/scripts/tables/datatables-extensions/datatables-sources.js"></script>
     <script src="/js/scripts/extensions/toastr.js"></script>
     <script src="/vendors/js/extensions/toastr.min.js"></script>
+    <script src="/vendors/js/forms/select/select2.full.min.js"></script>
     @*<script src="/js/scripts/forms/checkbox-radio.js"></script>*@
     @*<script src="/vendors/js/forms/icheck/icheck.min.js"></script>*@
     <!-- END: Page Vendor JS-->
