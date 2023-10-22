@@ -12,9 +12,9 @@ namespace SalesHelper.Data
         public DbSet<AccountShipping> AccountShipping { get; set; } = default!;
         public DbSet<BusinessTypes> BusinessTypes { get; set; } = default!;
         public DbSet<Vendor> Vendor { get; set; } = default!;
+        public DbSet<VendorReference> VendorReference { get; set; } = default!;
         public DbSet<VendorContact> VendorContact { get; set; } = default!;
-        public DbSet<MyVendor> MyVendor { get; set; } = default!;
-        public DbSet<MyVendorContact> MyVendorContact { get; set; } = default!;
+        public DbSet<VendorDocuments> VendorDocuments { get; set; } = default!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -29,11 +29,12 @@ namespace SalesHelper.Data
                 .Property(a => a.AccountNumber)
                 .UseIdentityColumn(236200, 1);
 
-            modelBuilder.Entity<MyVendor>()
-                .HasIndex(a => a.VendorId).IsUnique();
-
             modelBuilder.Entity<BusinessTypes>()
                 .HasIndex(b => b.TypeName).IsUnique();
+
+            modelBuilder.Entity<Vendor>()
+                .Property(a=>a.VendorReferenceId).IsRequired(false);
+
             modelBuilder.Entity<BusinessTypes>().HasData(new BusinessTypes
             {
                 BusinessTypeId = 1,

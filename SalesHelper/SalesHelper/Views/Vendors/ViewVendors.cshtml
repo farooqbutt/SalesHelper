@@ -42,48 +42,59 @@
                 "dataSrc": "data"
             },
             "columns": [
-                { "data": "vendorName" },
-                { "data": "businessTypeIdFK.typeName" },
+                { "data": "companyName" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `<a href="mailto:${data.email}">${data.email}</a>`;
+                        var classes = ['primary', 'secondary', 'danger', 'success', 'info', 'warning'];
+                        var randomClass = classes[Math.floor(Math.random() * classes.length)];
+
+                        return `<span class="badge badge-${randomClass}">${data.businessTypeIdFK.typeName}</span>`;
                     }
                 },
-                { "data": "phone" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `<a href="https://${data.website}" target="_blank">${data.website}</a>`;
+                        if (data.email != null) {
+                            return `<a href="mailto:${data.email}">${data.email}</a>`;
+                        } else {
+                            return `N/A`;
+                        }
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        if (data.mainPhone != null) {
+                            return `${data.mainPhone}`;
+                        } else {
+                            return `N/A`;
+                        }
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        if (data.website != null) {
+                            return `<a href="https://${data.website}" target="_blank">${data.website}</a>`;
+                        } else {
+                            return `N/A`;
+                        }
                     }
                 },
                 {
                     "data": null, // Placeholder for action buttons
                     "render": function (data, type, row) {
                         return `
-                                <button type="button" class="btn btn-icon btn-pure success"
-                                data-toggle="tooltip" onclick="AddToMyVendorsList(${data.vendorId})"
-                                data-placement="top"
-                                title="Add to My Vendors List">
-                                <i class="feather icon-plus-circle"></i>
-                                </button>
-                                <button type="button" class="btn btn-icon btn-pure primary"
-                                data-toggle="tooltip"
-                                data-placement="top"
-                                title="View Vendor Details">
-                                <i class="feather icon-eye"></i>
-                                </button>
-                                `;
+                                    <button type="button" class="btn btn-icon btn-pure success"
+                                    data-toggle="tooltip" onclick="AddToMyVendorsList(${data.vendorReferenceId})"
+                                    data-placement="top"
+                                    title="Add to My Vendors List">
+                                    <i class="feather icon-plus-circle"></i>
+                                    </button>
+                                    `;
                     }
                 }
-            ],
-            "columnDefs": [
-                { "width": "20%", "targets": 0 },
-                { "width": "15%", "targets": 1 },
-                { "width": "15%", "targets": 2 },
-                { "width": "10%", "targets": 3 },
-                { "width": "20%", "targets": 4 },
-                { "width": "20%", "targets": 5 }
             ]
         });
     });
@@ -91,11 +102,11 @@
     // Add Vendor to My Vendors List
     function AddToMyVendorsList(vendorId) {
         $.ajax({
-            url: "/Vendors/AddToMyVendor",
+            url: "/Vendors/AddToVendor",
             type: "POST",
             data: { vendorId: vendorId },
             success: function (data) {
-                if (data.message=='success') {
+                if (data.message == 'success') {
                     toastr.success(data.result, 'Success!', { "progressBar": true });
                 }
                 else {

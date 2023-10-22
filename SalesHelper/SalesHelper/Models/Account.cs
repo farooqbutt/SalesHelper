@@ -26,6 +26,10 @@ namespace SalesHelper.Models
         public DateTime RegistrationDate { get; set; }
         public bool IsActive { get; set; } = true;
 
+        [ForeignKey("BusinessTypeFK")]
+        public int? BusinessTypeId { get; set; }
+        public BusinessTypes BusinessTypeFK { get; set; } = default!;
+
         [ForeignKey("BusinessAddressFK")]
         public int? BusinessAddressId { get; set; }
         public Address BusinessAddress { get; set; } = default!;

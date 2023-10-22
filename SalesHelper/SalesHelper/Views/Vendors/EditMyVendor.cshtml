@@ -1,0 +1,657 @@
+﻿@model SalesHelper.Models.EditMyVendorInterface
+@inject SalesHelper.Data.ApplicationDbContext _context
+@{
+    var businessTypesList = _context.BusinessTypes.ToArray();
+}
+
+<style>
+    tr td:first-child {
+        font-weight: bold;
+        width: 40%;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-left: 35px;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">Vendor Details</h3>
+        </div>
+        <div class="content-header-right col-md-6 col-12 mb-md-0 mb-2">
+            <button class="btn btn-warning float-right" data-toggle="modal" data-backdrop="true" data-target="#UploadVendorDocumentModal">
+                <i class="fa fa-upload"></i> Upload Vendor Documents
+            </button>
+        </div>
+    </div>
+
+    <div class="content-body">
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <div class="card box-shadow-0 border-primary">
+                    <div class="card-header card-head-inverse bg-primary">
+                        @if (Model.VendorReferenceId == null)
+                        {
+                            <button style="float:right" class="btn btn-sm white"
+                                    data-toggle="modal" data-backdrop="true" data-target="#EditVendorModal">
+                                <i class="fa fa-edit"></i> Edit
+                            </button>
+                        }
+                        <h4 class="card-title">
+                            <i class="feather icon-briefcase"></i> Vendor Business info
+                        </h4>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td>Company Name:</td>
+                                                <td>@Model.CompanyName</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Email:</td>
+                                                <td>@Model.Email</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Main Phone:</td>
+                                                <td>@Model.MainPhone</td>
+                                            </tr>
+                                            @if (Model.Fax != null && Model.Fax != "")
+                                            {
+                                                <tr>
+                                                    <td>Fax:</td>
+                                                    <td>@Model.Fax</td>
+                                                </tr>
+                                            }
+                                            @if (Model.PrimaryContact != null && Model.PrimaryContact != "")
+                                            {
+                                                <tr>
+                                                    <td>Primary Contact:</td>
+                                                    <td>@Model.PrimaryContact</td>
+                                                </tr>
+                                            }
+                                            @if (Model.PrimaryContactPhone != null && Model.PrimaryContactPhone != "")
+                                            {
+                                                <tr>
+                                                    <td>Primary Contact Phone:</td>
+                                                    <td>@Model.PrimaryContactPhone</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td>Website:</td>
+                                                <td>@Model.Website</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Description:</td>
+                                                <td>@Model.Description</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Business Type:</td>
+                                                <td>@_context.BusinessTypes.Find(Model.BusinessTypeId)?.TypeName</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.AddressDetails != null && Model.AddressDetails.Count > 0)
+            {
+                foreach (var item in Model.AddressDetails)
+                {
+                    if (item != null)
+                    {
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="card box-shadow-0 border-primary">
+                                <div class="card-header card-head-inverse bg-primary">
+                                    @if (Model?.VendorReferenceId == null)
+                                    {
+                                        <button style="float:right" class="btn btn-sm white"
+                                                data-toggle="modal" data-backdrop="true"
+                                                data-target="#EditVendorAddressModal">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </button>
+                                    }
+                                    <h4 class="card-title">
+                                        @if (item.AddressType == "business")
+                                        {
+                                            <i class="feather icon-home"></i>
+                                            <span>
+                                                Vendor Business Address
+                                            </span>
+                                        }
+                                        @if (item.AddressType == "billing")
+                                        {
+                                            <i class="fa fa-money"></i>
+                                            <span>
+                                                Vendor Billing Address
+                                            </span>
+                                        }
+                                        @if (item.AddressType == "shipping")
+                                        {
+                                            <i class="feather icon-truck"></i>
+                                            <span>Vendor Shipping Address</span>
+                                        }
+                                    </h4>
+                                </div>
+                                <div class="card-content collapse show">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <table class="table table-borderless">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Address 1:</td>
+                                                            <td>@item.Address1</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Address 2:</td>
+                                                            <td>@item.Address2</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>City:</td>
+                                                            <td>@item.City</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>State:</td>
+                                                            <td>@item.State</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Postal Code:</td>
+                                                            <td>@item.PostalCode</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Country:</td>
+                                                            <td>@item.Country</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--card end-->
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-min-width mr-1 mb-1"
+                                        data-toggle="modal" data-backdrop="true" data-target="#EditVendorAddressModal">
+                                    <i class="fa fa-plus"></i> Vendor Business Addresses
+                                </button>
+                            </div>
+                        </div>
+                        break;
+                    }
+                }
+            }
+
+            @if (Model!.VendorDocumentsList != null && Model!.VendorDocumentsList!.Count != 0)
+            {
+                <div class="col-lg-6 col-sm-12">
+                    <div class="card box-shadow-0 border-primary">
+                        <div class="card-header card-head-inverse bg-primary">
+                            <h4 class="card-title">
+                                <i class="feather icon-file"></i> Vendor Documents
+                            </h4>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                @foreach (var item in Model!.VendorDocumentsList!)
+                                {
+                                    <div class="btn-group">
+                                        <div class="badge badge-warning">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                @item.DocumentName.Substring(item.DocumentName.IndexOf("_")+1)
+                                            </a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(5px, 19px, 0px);">
+                                                <a class="dropdown-item" href="/Vendors/ShowVendorFile?filePath=@item.FilePath" target="_blank">View Document</a>
+                                                @* <a class="dropdown-item" href="#">Delete Document</a> *@
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Vendor Modal -->
+<div class="modal fade text-left" id="EditVendorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8" aria-hidden="true">
+    <div class="modal-lg modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Update Vendor</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="form" id="AddVendorForm" asp-controller="Vendors" asp-action="AddVendor" method="post">
+                <div class="modal-body">
+                    <input hidden asp-for="VendorId" />
+                    <input hidden asp-for="AccountNumberId" />
+                    @if (Model.AddressDetails![0] != null)
+                    {
+                        <input hidden asp-for="BusinessAddressId" value="@Model!.AddressDetails![0].AddressId" />
+                    }
+                    @if (Model.AddressDetails![1] != null)
+                    {
+                        <input hidden asp-for="BillingAddressId" value="@Model!.AddressDetails![1].AddressId" />
+                    }
+                    @if (Model.AddressDetails![2] != null)
+                    {
+                        <input hidden asp-for="ShippingAddressId" value="@Model!.AddressDetails![2].AddressId" />
+                    }
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Company Name</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="CompanyName" type="text" class="form-control" placeholder="Company Name" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-user primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Email</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Email" type="text" class="form-control" placeholder="Email Address" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-mail primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Main Phone</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="MainPhone" type="text" class="form-control" placeholder="Main Phone" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Fax</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Fax" type="text" class="form-control" placeholder="Fax" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Primary Contact</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="PrimaryContact" type="text" class="form-control" placeholder="Primary Contact Name" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-user primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Primary Contact Phone</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="PrimaryContactPhone" type="text" class="form-control" placeholder="Primary Contact Phone" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Website</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Website" type="text" class="form-control" placeholder="Websit Link" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-link primary"></i>
+                                </div>
+                            </div>
+
+                            <label for="businessTypesSelect">Business Type</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <select asp-for="BusinessTypeId" id="businessTypesSelect"></select>
+                                <div class="form-control-position">
+                                    <i class="feather icon-briefcase primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Description</label>
+                            <div class="form-group">
+                                <textarea asp-for="Description" class="form-control"
+                                          placeholder="Description of business..." rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <fieldset>
+                                <div class="custom-control custom-checkbox mb-2">
+                                    <input asp-for="IsPrivate" type="checkbox" class="custom-control-input" id="isPrivateCheck">
+                                    <label class="custom-control-label" for="isPrivateCheck">
+                                        <b>Is Private?</b>
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Vendor Address Modal -->
+<div class="modal fade text-left" id="EditVendorAddressModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8" aria-hidden="true">
+    <div class="modal-lg modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-home"></i> Update Vendor Addresses</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Vendors" asp-action="EditMyVendor" method="post">
+                <input hidden asp-for="VendorId" />
+                <input hidden asp-for="AddressDetails[0].AddressType" value="business" />
+                <input hidden asp-for="AddressDetails[1].AddressType" value="billing" />
+                <input hidden asp-for="AddressDetails[2].AddressType" value="shipping" />
+                <div class="modal-body">
+                    @* Vendor Business Address *@
+                    <h4 class="form-section"><i class="feather icon-home"></i> Business Address Details</h4>
+                    <input asp-for="AddressDetails[0].AddressId" hidden />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="addressLine1_business">Address Line 1</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[0].Address1" placeholder="Address Line 1" required>
+                                <div class="form-control-position">
+                                    <i class="ti-home primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="addressLine2_business">Address Line 2</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[0].Address2" placeholder="Address Line 2" required>
+                                <div class="form-control-position">
+                                    <i class="ti-home primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="cityName_business">City</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[0].City" class="form-control" placeholder="City" required>
+                                <div class="form-control-position">
+                                    <i class="ti-location-pin primary"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="stateName_business">State</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[0].State" class="form-control" placeholder="State" required>
+                                <div class="form-control-position">
+                                    <i class="ti-location-pin primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="postalCode_business">Postal Code</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[0].PostalCode" placeholder="Postal Code" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-hash primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="countryName_business">Country</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[0].Country" class="form-control" placeholder="State" required>
+                                <div class="form-control-position">
+                                    <i class="ti-world primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Vendor Billing Address *@
+                    <h4 class="form-section"><i class="fa fa-money"></i> Billing Address Details</h4>
+                    <input asp-for="AddressDetails[1].AddressId" hidden />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="addressLine1_business">Address Line 1</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[1].Address1" placeholder="Address Line 1" required>
+                                <div class="form-control-position">
+                                    <i class="ti-home primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="addressLine2_business">Address Line 2</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[1].Address2" placeholder="Address Line 2" required>
+                                <div class="form-control-position">
+                                    <i class="ti-home primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="cityName_business">City</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[1].City" class="form-control" placeholder="City" required>
+                                <div class="form-control-position">
+                                    <i class="ti-location-pin primary"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="stateName_business">State</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[1].State" class="form-control" placeholder="State" required>
+                                <div class="form-control-position">
+                                    <i class="ti-location-pin primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="postalCode_business">Postal Code</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[1].PostalCode" placeholder="Postal Code" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-hash primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="countryName_business">Country</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[1].Country" class="form-control" placeholder="State" required>
+                                <div class="form-control-position">
+                                    <i class="ti-world primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Vendor Shipping Address *@
+                    <h4 class="form-section"><i class="feather icon-truck"></i> Shipping Address Details</h4>
+                    <input asp-for="AddressDetails[2].AddressId" hidden />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="addressLine1_business">Address Line 1</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[2].Address1" placeholder="Address Line 1" required>
+                                <div class="form-control-position">
+                                    <i class="ti-home primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="addressLine2_business">Address Line 2</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[2].Address2" placeholder="Address Line 2" required>
+                                <div class="form-control-position">
+                                    <i class="ti-home primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="cityName_business">City</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[2].City" class="form-control" placeholder="City" required>
+                                <div class="form-control-position">
+                                    <i class="ti-location-pin primary"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="stateName_business">State</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[2].State" class="form-control" placeholder="State" required>
+                                <div class="form-control-position">
+                                    <i class="ti-location-pin primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="postalCode_business">Postal Code</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" asp-for="AddressDetails[2].PostalCode" placeholder="Postal Code" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-hash primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="countryName_business">Country</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" asp-for="AddressDetails[2].Country" class="form-control" placeholder="State" required>
+                                <div class="form-control-position">
+                                    <i class="ti-world primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Vendor Document Modal -->
+<div class="modal fade text-left" id="UploadVendorDocumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8" aria-hidden="true">
+    <div class="modal-lg modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Upload Vendor Documents</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Vendors" asp-action="UploadVendorDocument" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input hidden asp-for="VendorId" />
+                    <label>Document Name</label>
+                    <div class="form-group position-relative has-icon-left">
+                        <input asp-for="VendorDocuments.DocumentName" type="text" class="form-control" placeholder="Document Name" required>
+                        <div class="form-control-position">
+                            <i class="feather icon-file primary"></i>
+                        </div>
+                    </div>
+
+                    <label>Description</label>
+                    <div class="form-group">
+                        <textarea asp-for="VendorDocuments.Description" type="text" class="form-control"
+                                  placeholder="Describe here..." required></textarea>
+                    </div>
+
+                    <label>Upload File</label>
+                    <div class="form-group">
+                        <input asp-for="VendorFile" type="file" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        var businessTypesList = @Html.Raw(Json.Serialize(businessTypesList));
+
+        $("#businessTypesSelect").select2({
+            dropdownAutoWidth: true,
+            width: '100%',
+            data: businessTypesList.map(function (item) {
+                return {
+                    id: item.businessTypeId,
+                    text: item.typeName
+                };
+            })
+        });
+
+        // Select a specific option by setting its value
+        var defaultValue = @Model?.BusinessTypeId;
+        $("#businessTypesSelect").val(defaultValue).trigger("change");
+    });
+</script>

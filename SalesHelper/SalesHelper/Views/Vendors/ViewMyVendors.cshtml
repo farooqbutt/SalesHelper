@@ -55,45 +55,59 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="vendorName">Vendor Name</label>
+                            <label>Company Name</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="VendorName" type="text" class="form-control" id="vendorName" placeholder="Vendor Name" required>
+                                <input asp-for="CompanyName" type="text" class="form-control" placeholder="Company Name" required>
                                 <div class="form-control-position">
                                     <i class="feather icon-user primary"></i>
                                 </div>
                             </div>
 
-                            <label for="vendorPhone">Phone</label>
+                            <label>Email</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Phone" type="text" class="form-control" id="vendorPhone" placeholder="Phone" required>
-                                <div class="form-control-position">
-                                    <i class="feather icon-phone primary"></i>
-                                </div>
-                            </div>
-
-                            <label for="vendorDescription">Description</label>
-                            <div class="form-group position-relative has-icon-left">
-                                <textarea asp-for="Description" type="text" class="form-control" id="vendorDescription" rows="6"
-                                          placeholder="Description" required></textarea>
-                                <div class="form-control-position">
-                                    <i class="fa fa-list-alt primary"></i>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-6">
-
-                            <label for="vendorEmail">Email</label>
-                            <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Email" type="text" class="form-control" id="vendorEmail" placeholder="Email" required>
+                                <input asp-for="Email" type="text" class="form-control" placeholder="Email Address" required>
                                 <div class="form-control-position">
                                     <i class="feather icon-mail primary"></i>
                                 </div>
                             </div>
 
-                            <label for="vendorWebsite">Website</label>
+                            <label>Main Phone</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Website" type="text" class="form-control" id="vendorWebsite" placeholder="Website Link" required>
+                                <input asp-for="MainPhone" type="text" class="form-control" placeholder="Main Phone" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Fax</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Fax" type="text" class="form-control" placeholder="Fax" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Primary Contact</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="PrimaryContact" type="text" class="form-control" placeholder="Primary Contact Name" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-user primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Primary Contact Phone</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="PrimaryContactPhone" type="text" class="form-control" placeholder="Primary Contact Phone" required>
+                                <div class="form-control-position">
+                                    <i class="feather icon-phone primary"></i>
+                                </div>
+                            </div>
+
+                            <label>Website</label>
+                            <div class="form-group position-relative has-icon-left">
+                                <input asp-for="Website" type="text" class="form-control" placeholder="Websit Link" required>
                                 <div class="form-control-position">
                                     <i class="feather icon-link primary"></i>
                                 </div>
@@ -106,16 +120,26 @@
                                     <i class="feather icon-briefcase primary"></i>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Description</label>
+                            <div class="form-group">
+                                <textarea asp-for="Description" class="form-control"
+                                          placeholder="Description of business..." rows="4"></textarea>
+                            </div>
+                        </div>
 
+                        <div class="col-md-12">
                             <fieldset>
                                 <div class="custom-control custom-checkbox mb-2">
-                                    <input asp-for="IsPrivate" type="checkbox" class="custom-control-input" id="sameAsBusinessForBilling">
-                                    <label class="custom-control-label" for="sameAsBusinessForBilling">
+                                    <input asp-for="IsPrivate" type="checkbox" class="custom-control-input" id="isPrivateCheck">
+                                    <label class="custom-control-label" for="isPrivateCheck">
                                         <b>Is Private?</b>
                                     </label>
                                 </div>
                             </fieldset>
-
                         </div>
                     </div>
                 </div>
@@ -159,33 +183,41 @@
                 "dataSrc": "data"
             },
             "columns": [
-                { "data": "vendorIdFK.vendorName" },
-                { "data": "vendorIdFK.businessTypeIdFK.typeName" },
+                { "data": "companyName" },
+                { "data": "businessTypeIdFK.typeName" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `<a href="mailto:${data.vendorIdFK.email}">${data.vendorIdFK.email}</a>`;
+                        if (data.email != null) {
+                            return `<a href="mailto:${data.email}">${data.email}</a>`;
+                        } else {
+                            return `N/A`;
+                        }
                     }
                 },
-                { "data": "vendorIdFK.phone" },
+                { "data": "mainPhone" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `<a href="https://${data.vendorIdFK.website}" target="_blank">${data.vendorIdFK.website}</a>`;
+                        if (data.website != null) {
+                            return `<a href="https://${data.website}" target="_blank">${data.website}</a>`;
+                        } else {
+                            return `N/A`;
+                        }
                     }
                 },
                 {
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                            <button type="button" class="btn btn-icon btn-pure primary"
+                            <a type="button" class="btn btn-icon btn-pure primary"
                             data-toggle="tooltip"
                             data-placement="top"
-                            title="View Vendor">
+                            title="View Vendor" href="/Vendors/EditMyVendor?id=${data.vendorId}">
                             <i class="feather icon-eye"></i>
-                            </button>
+                            </a>
                             <button type="button" class="btn btn-icon btn-pure danger"
-                            data-toggle="tooltip" onclick="DeleteVendor(${data.vendorIdFK.vendorId})"
+                            data-toggle="tooltip" onclick="DeleteVendor(${data.vendorId})"
                             data-placement="top"
                             title="Remove Vendor">
                             <i class="feather icon-trash"></i>
