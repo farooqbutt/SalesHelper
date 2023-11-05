@@ -296,7 +296,7 @@
                                     <a class="dropdown-item" asp-controller="AccountSettings" asp-action="ProfileView">
                                         <i class="fa fa-id-card-o"></i> Profile
                                     </a>
-                                    <a class="dropdown-item" href="app-email.html">
+                                    <a class="dropdown-item" asp-controller="Vendors" asp-action="ViewMyVendors">
                                         <i class="feather icon-user-plus"></i> Vendors
                                     </a>
                                     <a class="dropdown-item" href="user-cards.html">
@@ -306,9 +306,7 @@
                                         <i class="feather icon-mail"></i> My Inbox
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    @*<a class="dropdown-item" href="login-with-bg-image.html">
-                                <i class="feather icon-power"></i> Logout
-                                </a>*@
+
                                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                         <button type="submit" class="dropdown-item"><i class="feather icon-power"></i> Logout</button>
                                     </form>
@@ -341,24 +339,28 @@
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
 
-                <li class="nav-item">
+                <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" ? "active open" : "")">
                     <a href="#">
                         <i class="feather icon-home"></i><span class="menu-title">Dashboard</span>
                         <span class="badge badge badge-primary badge-pill float-right mr-2">2</span>
                     </a>
                     <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Statistics</a>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" && 
+                        ViewContext.RouteData.Values["action"]!.ToString() == "Index" ? "active" : "")">
+                            <a class="menu-item"
+                               asp-controller="Home" asp-action="Index">Statistics</a>
                         </li>
-                        <li class="">
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" && 
+                        ViewContext.RouteData.Values["action"]!.ToString() == "AnalyticsView" ? "active" : "")">
                             <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Analytics</a>
                         </li>
                     </ul>
                 </li>
-                <li class=" nav-item">
+                <li class=" nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" ? "active open" : "")">
                     <a href="#"><i class="ti-user"></i><span class="menu-title">Customers</span></a>
                     <ul class="menu-content">
-                        <li class="">
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" && 
+                        ViewContext.RouteData.Values["action"]!.ToString() == "AddCustomers" ? "active" : "")">
                             <a class="menu-item" asp-controller="Home" asp-action="AddCustomers">Create New Customer</a>
                         </li>
                         <li class="">
@@ -518,19 +520,15 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" ? "active open" : "")">
                     <a href="#">
                         <i class="feather icon-user-plus"></i><span class="menu-title">Vendors</span>
                     </a>
                     <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Vendors" asp-action="ViewVendors">
-                                <i class="feather icon-eye"></i>View Venodrs
-                            </a>
-                        </li>
-                        <li class="">
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" &&
+                    ViewContext.RouteData.Values["action"]!.ToString() == "ViewMyVendors" ? "active" : "")">
                             <a class="menu-item" asp-controller="Vendors" asp-action="ViewMyVendors">
-                                <i class="feather icon-user-plus"></i>Add New Vendors
+                                <i class="feather icon-eye"></i>View Venodrs
                             </a>
                         </li>
                     </ul>
@@ -607,98 +605,6 @@
             script.src = '/js/scripts/pages/dashboard-analytics.js';
             document.head.appendChild(script);
         }
-    </script>
-
-    <script>
-        // Function to set the active item and store it in localStorage
-        function setActiveItem(itemIndex) {
-            localStorage.setItem('activeItem', itemIndex);
-        }
-
-        function setActiveNavItem(itemIndex) {
-            localStorage.setItem('activeNavItem', itemIndex);
-        }
-
-        function setActiveNavItemWithoutSubItem(itemIndex) {
-            localStorage.setItem('activeNavItemWithoutSubItem', itemIndex);
-        }
-
-        // Function to initialize the active item based on localStorage
-        function initializeActiveItem() {
-            const activeItemIndex = localStorage.getItem('activeItem');
-            const activeNavItem = localStorage.getItem('activeNavItem');
-            const activeNavItemWithoutSubItem = localStorage.getItem('activeNavItemWithoutSubItem');
-
-            if (activeItemIndex !== null) {
-                // Remove "active" class from all <li> elements
-                document.querySelectorAll('li').forEach(li => {
-                    li.classList.remove('active');
-                });
-
-                // Add "active" class to the <li> element based on the stored index
-                const menuItems = document.querySelectorAll('.menu-item');
-                if (menuItems[activeItemIndex]) {
-                    menuItems[activeItemIndex].closest('li').classList.add('active');
-                    localStorage.removeItem('activeNavItemWithoutSubItem');
-                }
-            }
-
-            if (activeNavItem !== null) {
-                // Remove "open" class from all <li> elements
-                document.querySelectorAll('li[class="nav-item has-sub"]').forEach(li => {
-                    li.classList.remove('open');
-                });
-
-                // Add "open" class to the <li> element based on the stored index
-                const navItems = document.querySelectorAll('li[class="nav-item has-sub"]');
-                if (navItems[activeNavItem]) {
-                    navItems[activeNavItem].classList.add('open');
-                    localStorage.removeItem('activeNavItemWithoutSubItem');
-                }
-            }
-
-            if (activeNavItemWithoutSubItem !== null) {
-
-                document.querySelector('ul[class="navigation navigation-main"]')
-                    .querySelectorAll('li.nav-item').forEach(li => {
-                        li.classList.remove('active');
-                    });
-
-                const navItemsWithoutHasSub = document.querySelector('ul[class="navigation navigation-main"]')
-                    .querySelectorAll('li.nav-item');
-                if (navItemsWithoutHasSub[activeNavItemWithoutSubItem]) {
-                    navItemsWithoutHasSub[activeNavItemWithoutSubItem].classList.add('active');
-                }
-            }
-        }
-
-        // Add click event listeners to the menu items
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                setActiveItem(index);
-            });
-        });
-
-        // Add click event listeners to the nav items
-        const navItems = document.querySelectorAll('li[class="nav-item has-sub"]');
-        navItems.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                setActiveNavItem(index);
-            });
-        });
-
-        // Add click event listeners to the nav items
-        const navItems_without_has_sub = document.querySelector('ul[class="navigation navigation-main"]')
-            .querySelectorAll('li.nav-item');
-        navItems_without_has_sub.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                setActiveNavItemWithoutSubItem(index);
-            });
-        });
-
-        // Initialize the active item when the page loads
-        window.addEventListener('load', initializeActiveItem);
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

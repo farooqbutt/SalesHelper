@@ -86,13 +86,13 @@
                     "data": null, // Placeholder for action buttons
                     "render": function (data, type, row) {
                         return `
-                                    <button type="button" class="btn btn-icon btn-pure success"
-                                    data-toggle="tooltip" onclick="AddToMyVendorsList(${data.vendorReferenceId})"
-                                    data-placement="top"
-                                    title="Add to My Vendors List">
-                                    <i class="feather icon-plus-circle"></i>
-                                    </button>
-                                    `;
+                            <button type="button" class="btn btn-icon btn-pure success"
+                            data-toggle="tooltip" onclick="AddToMyVendorsList(${data.vendorReferenceId})"
+                            data-placement="top"
+                            title="Add to My Vendors List">
+                            <i class="feather icon-plus-circle"></i>
+                            </button>
+                            `;
                     }
                 }
             ]
@@ -108,6 +108,11 @@
             success: function (data) {
                 if (data.message == 'success') {
                     toastr.success(data.result, 'Success!', { "progressBar": true });
+
+                    // wait for 3 seconds and then redirect to My Vendors List
+                    setTimeout(function () {
+                        window.location.href = "/Vendors/ViewMyVendors";
+                    }, 3000);
                 }
                 else {
                     toastr.error(data.result, 'Error!', { "progressBar": true });

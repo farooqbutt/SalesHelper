@@ -10,7 +10,10 @@
             <h3 class="content-header-title mb-0">My Vendors List</h3>
         </div>
         <div class="content-header-right col-md-6 col-12 mb-md-0 mb-2">
-            <button class="btn btn-primary float-right" data-toggle="modal" data-backdrop="true" data-target="#AddVendorModal">
+            <a class="btn btn-primary float-right" asp-controller="Vendors" asp-action="ViewVendors">
+                <i class="fa fa-plus"></i> Add Vendor From List
+            </a>
+            <button class="btn btn-primary float-right mr-1" data-toggle="modal" data-backdrop="true" data-target="#AddVendorModal">
                 <i class="fa fa-plus"></i> Add Vendor
             </button>
         </div>
@@ -183,7 +186,15 @@
                 "dataSrc": "data"
             },
             "columns": [
-                { "data": "companyName" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `<a data-toggle="tooltip"
+                                data-placement="top"
+                                title="View Vendor" 
+                                href="/Vendors/EditMyVendor?id=${data.vendorId}">${data.companyName}</a>`;
+                    }
+                },
                 { "data": "businessTypeIdFK.typeName" },
                 {
                     "data": null,
@@ -210,12 +221,6 @@
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                            <a type="button" class="btn btn-icon btn-pure primary"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title="View Vendor" href="/Vendors/EditMyVendor?id=${data.vendorId}">
-                            <i class="feather icon-eye"></i>
-                            </a>
                             <button type="button" class="btn btn-icon btn-pure danger"
                             data-toggle="tooltip" onclick="DeleteVendor(${data.vendorId})"
                             data-placement="top"
@@ -225,14 +230,6 @@
                         `;
                     }
                 }
-            ],
-            "columnDefs": [
-                { "width": "25%", "targets": 0 },
-                { "width": "15%", "targets": 1 },
-                { "width": "15%", "targets": 2 },
-                { "width": "10%", "targets": 3 },
-                { "width": "20%", "targets": 4 },
-                { "width": "15%", "targets": 5 }
             ]
         });
     });
