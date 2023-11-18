@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Data;
 using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 using System.Net.Mime;
 
 namespace SalesHelper.Controllers

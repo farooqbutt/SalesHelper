@@ -1,0 +1,119 @@
+﻿@model SalesHelper.Models.InterfaceModels.AddCustomerInterface
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            
+            <h3 class="content-header-title mb-0">New Customer</h3>
+
+        </div>
+    </div>
+    <div class="content-body">
+        <!-- New customer section start -->
+        <section id="basic-form-layouts">
+            <div class="row match-height">
+                <div class="col-md-12">
+                    <div class="card">
+                       @*  <div class="card-header">
+                            <h4 class="form-section"><i class="feather icon-user"></i> Customer Info</h4>
+                        </div> *@
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <form class="form" asp-controller="Customers" asp-action="AddCustomers" method="post">
+                                    <div class="form-body">
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+
+                                                <h4 class="form-section"><i class="feather icon-user"></i> Customer Info</h4>
+
+                                                <div class="form-group">
+                                                    <label>First Name</label>
+                                                    <input asp-for="Customer.FirstName" type="text" class="form-control square" placeholder="First Name" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Last Name</label>
+                                                    <input asp-for="Customer.LastName" type="text" class="form-control square" placeholder="Last Name" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input asp-for="Customer.Email" type="email" class="form-control square" placeholder="Email">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Cell Phone</label>
+                                                    <input asp-for="Customer.CellPhone" type="text" class="form-control square" placeholder="Cell Phone" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Home Phone</label>
+                                                    <input asp-for="Customer.HomePhone" type="text" class="form-control square" placeholder="Home Phone">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Work Phone</label>
+                                                    <input asp-for="Customer.WorkPhone" type="text" class="form-control square" placeholder="Work Phone">
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label>Company</label>
+                                                    <input asp-for="Customer.Company" type="text" class="form-control square" placeholder="Company">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+
+                                                <h4 class="form-section"><i class="feather icon-home"></i> Customer Address Info</h4>
+
+                                                <div class="form-group">
+                                                    <label>Address Line 1</label>
+                                                    <input asp-for="Address.Address1" class="form-control square" type="text" placeholder="address line 1">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Address Line 2</label>
+                                                    <input asp-for="Address.Address2" class="form-control square" type="text" placeholder="address line 2">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>City</label>
+                                                    <input asp-for="Address.City" class="form-control square" type="text" placeholder="city">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Country</label>
+                                                    <input asp-for="Address.Country" class="form-control square" type="text" placeholder="country">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>State</label>
+                                                            <input asp-for="Address.State" type="text" class="form-control square" placeholder="state">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Zip</label>
+                                                            <input asp-for="Address.PostalCode" type="text" class="form-control square" placeholder="zip code">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input asp-for="Address.AddressType" value="home" hidden />
+
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <button type="reset" class="btn btn-warning"><i class="feather icon-x"></i> Cancel</button>
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o"></i> Save</button>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <!-- // New customer section end -->
+    </div>
+</div>

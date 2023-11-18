@@ -65,7 +65,7 @@
                     <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu font-large-1"></i></a></li>
                     <li class="nav-item">
                         <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                            <img class="brand-logo" alt="stack admin logo" src="/images/logo/stack-logo-light.png">
+                            <img class="brand-logo" alt="stack admin logo" src="/images/logo/SH-28-OL.png" width="40" height="35">
                             <h2 class="brand-text">SalesHelper</h2>
                         </a>
                     </li>
@@ -361,10 +361,11 @@
                     <ul class="menu-content">
                         <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" && 
                         ViewContext.RouteData.Values["action"]!.ToString() == "AddCustomers" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Home" asp-action="AddCustomers">Create New Customer</a>
+                            <a class="menu-item" asp-controller="Customers" asp-action="AddCustomers">Create New Customer</a>
                         </li>
-                        <li class="">
-                            <a class="menu-item" href="#">View Customer</a>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
+                        ViewContext.RouteData.Values["action"]!.ToString() == "CustomerListView" ? "active" : "")">
+                            <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">View Customers</a>
                         </li>
                     </ul>
                 </li>

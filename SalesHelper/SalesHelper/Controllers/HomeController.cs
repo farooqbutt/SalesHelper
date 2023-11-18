@@ -24,11 +24,6 @@ namespace SalesHelper.Controllers
             return View();
         }
 
-        public IActionResult AddCustomers()
-        {
-            return View();
-        }
-
         public IActionResult Privacy()
         {
             return View();

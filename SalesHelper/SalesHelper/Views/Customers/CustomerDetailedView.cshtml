@@ -1,0 +1,618 @@
+﻿@{
+    int customerId = ViewBag.CustomerId;
+}
+
+
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mt-1">Customer Details</h3>
+        </div>
+        <div class="content-header-right col-md-6 col-12">
+            <div class="btn-group float-md-right" role="group" aria-label="Button group with nested dropdown">
+                @* <a class="sidebar-toggle d-block d-lg-none" href="#"><i class="feather icon-menu large mr-1 "></i></a> *@
+                <a class="btn btn-outline-primary" href="quote-create-new-quote.html"><i class="ti-pencil-alt mr-1 "></i>New Quote</a>
+                <a class="btn btn-outline-primary" href="schedule-appointments.html"><i class="fa fa-calendar mr-1 "></i>New Event</a>
+                <a class="btn btn-outline-primary" href="App-todo.html"><i class="feather icon-check-square mr-1 "></i>New Task</a>
+                @* <a class="btn btn-outline-primary" href="full-calender-basic.html"><i class="feather icon-mail"></i></a>
+                <a class="btn btn-outline-primary" href="timeline-center.html"><i class="feather icon-pie-chart"></i></a> *@
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-detached sidebar-left ps">
+        <div class="sidebar">
+            <div class="bug-list-sidebar-content">
+                <!-- Predefined Views -->
+                <div class="card">
+                    <div class="card-head">
+                        <div class="media p-1">
+                            <div class="media-left pr-1">
+                                <span class="avatar avatar-online avatar-sm rounded-circle">
+                                    <img src="/images/portrait/small/avatar-s-1.png" alt="avatar">
+                                </span>
+                            </div>
+                            <div class="media-body media-middle">
+                                <h5 class="media-heading" id="customerName"></h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard -->
+                    <div class="card-body border-top-blue-grey border-top-lighten-5">
+                        <ul class="nav nav-pills flex-column mt-md-0 mt-1 border-primary">
+                            <li class="nav-item list-group-item-primary">
+                                <a class="nav-link d-flex active" id="account-pill-dashboard" data-toggle="pill" href="#dashboard" aria-expanded="true">
+                                    <i class="icon-home"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-general" data-toggle="pill" href="#quote-customer-info" aria-expanded="true">
+                                    <i class="ti-user"></i>
+                                    Customer Info.
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-billing" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                    <i class="ti-files"></i>
+                                    Quotes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-countertop" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                    <i class="ti-files"></i>
+                                    Sales
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-hardware" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                    <i class="ti-files"></i>
+                                    Purchase order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-sink" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                    <i class="ti-files"></i>
+                                    Invoice
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="schedule-appointments.html">
+                                    <i class="ti-files"></i>
+                                    Events
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="app-todo.html">
+                                    <i class="ti-files"></i>
+                                    View task
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Acction -->
+                    <div class="card-body border-top-blue-grey border-top-lighten-5">
+                        <ul class="nav nav-pills flex-column mt-md-0 mt-1 border-primary">
+                            <li class="nav-item list-group-item-primary">
+                                <a class="nav-link d-flex active" id="account-pill-dashboard" data-toggle="pill" href="#dashboard" aria-expanded="true">
+                                    <i class="fa fa-play-circle"></i>
+                                    Create quotation
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="quote-create-new-quote.html">
+                                    <i class="ti-pencil-alt"></i>
+                                    Cabinet quote
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="quote-create-new-quote.html">
+                                    <i class="ti-pencil-alt"></i>
+                                    Countertop quote
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="quote-create-new-quote.html">
+                                    <i class="ti-pencil-alt"></i>
+                                    Hardwarew quote
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="quote-create-new-quote.html">
+                                    <i class="ti-pencil-alt"></i>
+                                    Installation quote
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-billing" data-toggle="pill" href="invoice-new-invoice.html" aria-expanded="false">
+                                    <i class="ti-files"></i>
+                                    Create a invoice
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" id="account-pill-countertop" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                    <i class="ti-shopping-cart"></i>
+                                    Make a purchase order
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+
+                    <!--More-->
+                    <div class="card-body ">
+                        <div class="col-md-12 mb-2 mb-md-0">
+                            <p class="lead"><br><br><br><br><br><br></p>
+                        </div>
+                    </div>
+                    <!--/More-->
+                </div>
+                <!--/ Predefined Views -->
+            </div>
+        </div>
+        <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+    </div>
+
+    <div class="content-detached content-right">
+        <div class="content-body">
+            <div class="content-overlay"></div>
+            <section class="row all-contacts">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-6 col-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body text-left w-100">
+                                                <h3 class="primary">5</h3>
+                                                <span>Quotation</span>
+                                            </div>
+                                            <div class="media-right media-middle">
+                                                <i class="icon-layers primary font-large-2 float-right"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body text-left w-100">
+                                                <h3 class="danger">2</h3>
+                                                <span>Sales</span>
+                                            </div>
+                                            <div class="media-right media-middle">
+                                                <i class="icon-social-dropbox danger font-large-2 float-right"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body text-left w-100">
+                                                <h3 class="success">1</h3>
+                                                <span>Invoiced</span>
+                                            </div>
+                                            <div class="media-right media-middle">
+                                                <i class="icon-layers success font-large-2 float-right"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body text-left w-100">
+                                                <h3 class="warning">12,000</h3>
+                                                <span>Total Profit</span>
+                                            </div>
+                                            <div class="media-right media-middle">
+                                                <i class="icon-globe warning font-large-2 float-right"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="quote-customer-info" aria-labelledby="account-pill-general" aria-expanded="true">
+                            <div class="row match-height">
+                                <!-- /# column -->
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <a href="/Customers/EditCustomer/@customerId" class="btn btn-sm btn-primary float-right">
+                                                <i class="fa fa-edit"></i> Edit Customer Info
+                                            </a>
+                                            <h4 class="card-title info" id="basic-layout-colored-form-control">Customer info</h4>
+                                        </div>
+                                        <div class="card-content collapse show">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12">
+                                                        <table class="table ">
+                                                            <tbody id="customerDetailsTable">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--card end-->
+                                </div>
+                                <!-- /# end column -->
+                                <!-- /# column -->
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <a href="/Customers/EditCustomer/@customerId" class="btn btn-sm btn-primary float-right">
+                                                <i class="fa fa-edit"></i> Edit Address Info
+                                            </a>
+                                            <h4 class="card-title info" id="basic-layout-colored-form-control">Address</h4>
+                                        </div>
+                                        <div class="card-content collapse show">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12">
+                                                        <table class="table ">
+                                                            <tbody id="customerAddressDetails">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /# end column -->
+                            </div>
+                        </div>
+
+
+                        <div class="tab-pane" id="quote-all-quotes" role="tabpanel" aria-labelledby="baseVerticalLeft2-tab1">
+                            <div class="row match-height">
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <div class="card text-left">
+                                        <div class="card-content">
+                                            <div class="card-body pt-2">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-sm-12">
+                                                        <img src="/images/saleshelper/cabinets/galaxy_imber.jpg" alt="element 01" width="150" class="float-left img-fluid mr-5">
+                                                        <h2 class="card-title mt-0"><span><b>QUOTE#: 342</b></span></h2>
+                                                        <p class="card-text"><b>Referance:</b> Lisa's cabinets</p>
+                                                        <p class="card-text"><b>Catagory:</b> Cabinets </p>
+                                                        <p class="card-text"><b>Quote Date:</b> 10/28/2023 </p>
+                                                        <p class="card-text"><b>Sales/Designer:</b> Hao Wang </p>
+                                                        <p class="card-text"><b>Total Price:</b> $5466.88</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12">
+                                                        <table class="table mt-1">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Cabinetry</td>
+                                                                    <td>Coline</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Door Style</td>
+                                                                    <td>Bridgeport</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Wood species</td>
+                                                                    <td>Maple</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Color</td>
+                                                                    <td>Moss green</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Glaze</td>
+                                                                    <td>No</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Design file</td>
+                                                                    <td>
+                                                                        <a href="#" class="">design-version-1.kit</a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Quote Detail</td>
+                                                                    <td>
+                                                                        <a href="52106-2.pdf" class="">Estimation-1</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 text-center mt-2">
+                                                        <a class="btn btn-primary btn-addon text-white" data-toggle="modal" data-target="#editvendorinfo">
+                                                            <i class="ti-pencil-alt">&nbsp;</i>Edit Quotation
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <div class="card text-left">
+                                        <div class="card-content">
+                                            <div class="card-body pt-2">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-sm-12">
+                                                        <img src="/images/saleshelper/cabinets/galaxy_nickel.jpg" alt="element 01" width="150" class="float-left img-fluid mr-5">
+                                                        <h2 class="card-title mt-0"><span><b>QUOTE#: 345</b></span></h2>
+                                                        <p class="card-text"><b>Referance:</b> John's cabinets</p>
+                                                        <p class="card-text"><b>Catagory:</b> Cabinets </p>
+                                                        <p class="card-text"><b>Quote Date:</b> 10/28/2023 </p>
+                                                        <p class="card-text"><b>Sales/Designer:</b> Hao Wang </p>
+                                                        <p class="card-text"><b>Total Price:</b> $8488.88</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12">
+                                                        <table class="table mt-1">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Cabinetry</td>
+                                                                    <td>Starmark</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Door Style</td>
+                                                                    <td>Bridgeport</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Wood species</td>
+                                                                    <td>Maple</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Color</td>
+                                                                    <td>Moss green</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Glaze</td>
+                                                                    <td>No</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Design file</td>
+                                                                    <td>
+                                                                        <a href="#" class="">design-version-1.kit</a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Quote Detail</td>
+                                                                    <td>
+                                                                        <a href="52106-2.pdf" class="">Estimation-1</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 text-center mt-2">
+                                                        <a class="btn btn-primary btn-addon text-white" data-toggle="modal" data-target="#editvendorinfo">
+                                                            <i class="ti-pencil-alt">&nbsp;</i>Edit Quotation
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row match-height">
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <div class="card text-left">
+                                        <div class="card-content">
+                                            <div class="card-body pt-2">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-sm-12">
+                                                        <img src="/images/saleshelper/cabinets/calacatta-1.jpg" alt="element 01" width="150" class="float-left img-fluid mr-5">
+                                                        <h2 class="card-title mt-0"><span><b>QUOTE#: 348</b></span></h2>
+                                                        <p class="card-text"><b>Referance:</b> John's countertop</p>
+                                                        <p class="card-text"><b>Catagory:</b> Countertop </p>
+                                                        <p class="card-text"><b>Quote Date:</b> 10/28/2023 </p>
+                                                        <p class="card-text"><b>Sales/Designer:</b> Hao Wang </p>
+                                                        <p class="card-text"><b>Total Price:</b> $3500.00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12">
+                                                        <table class="table mt-1">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Material</td>
+                                                                    <td>Marble</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Color</td>
+                                                                    <td>Calacatta</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Estimate square feet</td>
+                                                                    <td>65</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Unite price</td>
+                                                                    <td>$150/SF</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Edge</td>
+                                                                    <td>Simple</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Design file</td>
+                                                                    <td>
+                                                                        <a href="#" class="">design-version-1.kit</a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Quote Detail</td>
+                                                                    <td>
+                                                                        <a href="52106-2.pdf" class="">Estimation-1</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 text-center mt-2">
+                                                        <a class="btn btn-primary btn-addon text-white" data-toggle="modal" data-target="#editvendorinfo">
+                                                            <i class="ti-pencil-alt">&nbsp;</i>Edit Quotation
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <div class="card text-left">
+                                        <div class="card-content">
+                                            <div class="card-body pt-2">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-sm-12">
+                                                        <img src="/images/saleshelper/cabinets/hardware-small-1.png" alt="element 01" width="150" class="float-left img-fluid mr-5">
+                                                        <h2 class="card-title mt-0"><span><b>QUOTE#: 347</b></span></h2>
+                                                        <p class="card-text"><b>Referance:</b> Hassan's cabinet hardware</p>
+                                                        <p class="card-text"><b>Catagory:</b> Hardware </p>
+                                                        <p class="card-text"><b>Quote Date:</b> 10/30/2023 </p>
+                                                        <p class="card-text"><b>Sales/Designer:</b> Hao Wang </p>
+                                                        <p class="card-text"><b>Total Price:</b> $758.00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12">
+                                                        <table class="table mt-1">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Hardware</td>
+                                                                    <td>Emptek</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Collection</td>
+                                                                    <td>Knurled Cabinet Pull</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Color</td>
+                                                                    <td>Black</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Size</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Qty</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Unite Price</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-bold-600">Quote Detail</td>
+                                                                    <td>
+                                                                        <a href="52106-2.pdf" class=""></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 text-center">
+                                                        <a class="btn btn-primary btn-addon text-white mt-2" data-toggle="modal" data-target="#editvendorinfo">
+                                                            <i class="ti-pencil-alt">&nbsp;</i>Edit Quotation
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane" id="tabVerticalLeft22" role="tabpanel" aria-labelledby="baseVerticalLeft2-tab2">
+                            <p>Sugar plum tootsie roll biscuit caramels. Liquorice brownie pastry cotton candy oat cake fruitcake jelly chupa chups. Pudding caramels pastry powder cake soufflé wafer caramels. Jelly-o pie cupcake.</p>
+                        </div>
+                        <div class="tab-pane" id="tabVerticalLeft23" role="tabpanel" aria-labelledby="baseVerticalLeft2-tab3">
+                            <p>Biscuit ice cream halvah candy canes bear claw ice cream cake chocolate bar donut. Toffee cotton candy liquorice. Oat cake lemon drops gingerbread dessert caramels. Sweet dessert jujubes powder sweet sesame snaps.</p>
+                        </div>
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Customers/CustomerDetailedView_Details/" + @customerId,
+            success: function (data) {
+                console.log(data)
+                $("#customerName").text(data.data.firstName + " " + data.data.lastName);
+                MakeCustomerDetails(data.data);
+                MakeCustomerAddressDetails(data.data.addressIdFK);
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    });
+
+    function MakeCustomerDetails(data) {
+        $("#customerDetailsTable").append(
+            "<tr><td>Customer Name:</td><td>" + data.firstName + " " + data.lastName + "</td></tr>" +
+            "<tr> <td>Email: </td><td>" + data.email + "</td></tr>" +
+            "<tr><td>Cell phone:</td> <td>" + data.cellPhone + "</td></tr>" +
+            "<tr><td>Home phone:</td><td>" + data.homePhone + "</td></tr>" +
+            "<tr> <td>Work Phone:</td><td>" + data.workPhone + "</td></tr>" +
+            "<tr><td>Company</td><td>" + data.company + "</td></tr>"
+        );
+    }
+
+    function MakeCustomerAddressDetails(data) {
+        $("#customerAddressDetails").append(
+            "<tr><td>Address Line 1:</td><td>" + data.address1 + "</td></tr>" +
+            "<tr> <td>Address Line 2: </td><td>" + data.address2 + "</td></tr>" +
+            "<tr><td>City:</td> <td>" + data.city + "</td></tr>" +
+            "<tr><td>State:</td><td>" + data.state + "</td></tr>" +
+            "<tr> <td>Country:</td><td>" + data.country + "</td></tr>" +
+            "<tr><td>Zip/Post Code:</td><td>" + data.postalCode + "</td></tr>"
+        );
+    }
+</script>

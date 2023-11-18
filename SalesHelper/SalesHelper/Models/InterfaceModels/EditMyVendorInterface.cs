@@ -1,4 +1,4 @@
-﻿namespace SalesHelper.Models
+﻿namespace SalesHelper.Models.InterfaceModels
 {
     public class EditMyVendorInterface
     {
@@ -16,7 +16,7 @@
         public int? BusinessAddressId { get; set; }
         public int? BillingAddressId { get; set; }
         public int? ShippingAddressId { get; set; }
-        public int AccountNumberId { get; set; } 
+        public int AccountNumberId { get; set; }
 
         public List<Address> AddressDetails { get; set; } = default!;
 
