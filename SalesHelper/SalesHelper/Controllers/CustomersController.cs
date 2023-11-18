@@ -30,7 +30,7 @@ namespace SalesHelper.Controllers
             _addressService.Create(customerDetails.Address);
             customerDetails.Customer.AddressId = customerDetails.Address.AddressId;
             _customerService.Create(customerDetails.Customer);
-            return RedirectToAction("CustomerList");
+            return RedirectToAction("CustomerListView");
         }
 
         [HttpGet]
