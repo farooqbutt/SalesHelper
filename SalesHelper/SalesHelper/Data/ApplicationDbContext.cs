@@ -16,6 +16,7 @@ namespace SalesHelper.Data
         public DbSet<VendorContact> VendorContact { get; set; } = default!;
         public DbSet<VendorDocuments> VendorDocuments { get; set; } = default!;
         public DbSet<Customer> Customers { get; set; } = default!;
+        public DbSet<Event> Events { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

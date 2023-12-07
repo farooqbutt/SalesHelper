@@ -12,6 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<CustomerRepo>();
 builder.Services.AddScoped<AddressRepo>();
+builder.Services.AddScoped<EventRepo>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
