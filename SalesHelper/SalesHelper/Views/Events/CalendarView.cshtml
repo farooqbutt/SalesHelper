@@ -1,4 +1,13 @@
 ﻿@model SalesHelper.Models.Event
+@inject SalesHelper.Repository.CustomerRepo _customerService
+@{
+    var customersList = _customerService.ReadAll();
+}
+<style>
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-left: 35px;
+    }
+</style>
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -44,15 +53,17 @@
     <div class="modal-lg modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary white">
-                <h4 class="modal-title form-section"><i class="fa fa-calendar-plus-o"></i> Add Event Details</h4>
+                <h4 class="modal-title form-section">
+                    <i class="fa fa-calendar-plus-o"></i>
+                    Add Event Details
+                </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="form" asp-controller="Events" asp-action="AddEvent" method="post">
+            <form id="EventForm" class="form" asp-controller="Events" asp-action="AddEvent" method="post">
                 <div class="modal-body">
-                    <input hidden asp-for="CustomerId" value="@TempData["CustomerId"]!.ToString()" />
-
+                    <input hidden asp-for="Id" />
                     <div class="row">
                         <div class="col-md-12">
                             <label>Title</label>
@@ -73,15 +84,15 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Url</label>
+                                    <label>Select Customer</label>
                                     <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="Url" type="text" class="form-control" placeholder="Url">
+                                        <select asp-for="CustomerId"></select>
                                         <div class="form-control-position">
-                                            <i class="feather icon-link primary"></i>
+                                            <i class="feather icon-briefcase primary"></i>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <label>Event Color</label>
                                     <div class="form-group position-relative has-icon-left">
                                         <input asp-for="Color" type="color" value="#00b5b8" class="form-control" placeholder="Event Color">
@@ -90,51 +101,24 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label>Text Color</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="TextColor" type="color" value="#FFFFFF" class="form-control" placeholder="Text Color">
-                                        <div class="form-control-position">
-                                            <i class="fa fa-paint-brush primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label>Start Date</label>
+                                <div class="col-md-6">
+                                    <label>Start Date & Time</label>
                                     <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="Start" type="date" class="form-control" placeholder="Start Date" required>
+                                        <input asp-for="Start" type="datetime-local" class="form-control" placeholder="Start Date" required>
                                         <div class="form-control-position">
                                             <i class="feather icon-calendar primary"></i>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label>End Date</label>
+                                <div class="col-md-6">
+                                    <label>End Date & Time</label>
                                     <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="End" type="date" class="form-control" placeholder="End Date">
+                                        <input asp-for="End" type="datetime-local" class="form-control" placeholder="End Date">
                                         <div class="form-control-position">
                                             <i class="feather icon-calendar primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Start Time</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="StartTime" type="time" class="form-control" placeholder="Start Time">
-                                        <div class="form-control-position">
-                                            <i class="feather icon-clock primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>End Time</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="EndTime" type="time" class="form-control" placeholder="End Time">
-                                        <div class="form-control-position">
-                                            <i class="feather icon-clock primary"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -150,128 +134,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="reset" class="btn grey btn-outline-secondary">Reset</button>
                     <button type="submit" class="btn btn-primary">Add</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Event Modal -->
-<div class="modal fade text-left" id="EditEventModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-lg modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary white">
-                <h4 class="modal-title form-section"><i class="fa fa-calendar-plus-o"></i> Update Event Details</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="form" asp-controller="Events" asp-action="UpdateEvent" method="post">
-                <div class="modal-body">
-                    <input hidden asp-for="CustomerId" value="@TempData["CustomerId"]!.ToString()" />
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>Title</label>
-                            <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Title" type="text" class="form-control" placeholder="Title" required>
-                                <div class="form-control-position">
-                                    <i class="feather icon-calendar primary"></i>
-                                </div>
-                            </div>
-
-                            <label>Description</label>
-                            <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Description" type="text" class="form-control" placeholder="Description">
-                                <div class="form-control-position">
-                                    <i class="feather icon-calendar primary"></i>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Url</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="Url" type="text" class="form-control" placeholder="Url">
-                                        <div class="form-control-position">
-                                            <i class="feather icon-link primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Event Color</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="Color" type="color" value="#00b5b8" class="form-control" placeholder="Event Color">
-                                        <div class="form-control-position">
-                                            <i class="fa fa-paint-brush primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Text Color</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="TextColor" type="color" value="#FFFFFF" class="form-control" placeholder="Text Color">
-                                        <div class="form-control-position">
-                                            <i class="fa fa-paint-brush primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label>Start Date</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="Start" type="date" class="form-control" placeholder="Start Date" required>
-                                        <div class="form-control-position">
-                                            <i class="feather icon-calendar primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>End Date</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="End" type="date" class="form-control" placeholder="End Date">
-                                        <div class="form-control-position">
-                                            <i class="feather icon-calendar primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Start Time</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="StartTime" type="time" class="form-control" placeholder="Start Time">
-                                        <div class="form-control-position">
-                                            <i class="feather icon-clock primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>End Time</label>
-                                    <div class="form-group position-relative has-icon-left">
-                                        <input asp-for="EndTime" type="time" class="form-control" placeholder="End Time">
-                                        <div class="form-control-position">
-                                            <i class="feather icon-clock primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="custom-control custom-checkbox mb-2">
-                                <input asp-for="IsAllDay" type="checkbox" class="custom-control-input" id="isAllDay">
-                                <label class="custom-control-label" for="isAllDay">
-                                    <b>Is All Day Event?</b>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
-                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </form>
         </div>
@@ -280,80 +144,154 @@
 
 
 <script>
+    function ShowEvent(info) {
+        $.ajax({
+            url: '/Events/GetEvents/',
+            data: {
+                id: info.event.id
+            },
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                $(".modal-title.form-section").html("<i class='fa fa-calendar-plus-o'></i> Update Event Details");
+                $('#EventForm').attr('action', '/Events/UpdateEvent');
+                $('#EventForm :submit').text("Update");
+                // Setting Form Values
+                $("#Id").val(data.id);
+                $("#Title").val(data.title);
+                $("#Description").val(data.description);
+                $("#Url").val(data.url);
+                $("#Color").val(data.color);
+                $("#Start").val(data.start);
+                $("#End").val(data.end);
+                $("#isAllDay").prop('checked', data.isAllDay);
+                $("#CustomerId").val(data.customerId).trigger("change");
 
-    async function EventArray() {
-        let calendarEventsArray = [];
+                $("#NewEventModal").modal("show");
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    }
+    function OpenNewEventModal(info) {
+        // Get the current date without the time component
+        var currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
 
-        // Create a deferred object
-        const deferred = $.Deferred();
+        // Convert the clicked date string to a Date object without the time component
+        var clickedDate = new Date(info.dateStr);
+        clickedDate.setHours(0, 0, 0, 0);
 
-        // Use $.ajax inside a try-catch block to handle errors
-        try {
-            await $.ajax({
-                url: '/Events/GetEvents',
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    if (data != null) {
-                        for (var i = 0; i < data.length; i++) {
-                            calendarEventsArray.push({
-                                title: data[i].title,
-                                description: data[i].description,
-                                start: data[i].start,
-                                color: data[i].color,
-                                textColor: data[i].textColor,
-                                end: data[i].end,
-                                allDay: data[i].allDay,
-                                id: data[i].id
-                            });
-                        }
-                        // Resolve the deferred object with the result
-                        deferred.resolve(calendarEventsArray);
-                    }
-                },
-                error: function (error) {
-                    // Reject the deferred object with the error
-                    deferred.reject(error);
-                }
-            });
-        } catch (error) {
-            // Handle any synchronous errors
-            deferred.reject(error);
+        // Compare the dates without considering the time
+        if (clickedDate >= currentDate) {
+            // Allow adding events for current or future dates
+            $("#Start").val(info.dateStr + "T00:00");
+            $("#NewEventModal").modal("show");
+        } else {
+            // Show an error message for past dates
+            toastr.error('You are not allowed to add events in past dates!', 'Error!', { "progressBar": true });
         }
-
-        // Wait for the deferred object to be resolved or rejected
-        const result = await deferred.promise();
-        return result;
+    }
+    function ChangeEventDateOnDragDrop(info) {
+        var newDate = info.event.start.toISOString().split("T")[0] + "T";
+        var hours = info.event.start.getHours() > 9 ? info.event.start.getHours() + ":" : "0" + info.event.start.getHours() + ":";
+        var minutes = info.event.start.getMinutes() > 9 ? info.event.start.getMinutes() : "0" + info.event.start.getMinutes();
+        var eventNewDate = newDate + hours + minutes;
+        $.ajax({
+            url: '/Events/ChangeEventStart',
+            data: {
+                id: info.event.id,
+                newStart: eventNewDate
+            },
+            type: "POST",
+            success: function (data) {
+                toastr.success(data, 'Success', { "progressBar": true });
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
     }
 
     $(document).ready(async function () {
+
+        var customerList = @Html.Raw(Json.Serialize(customersList));
+        $("#CustomerId").select2({
+            dropdownAutoWidth: true,
+            width: '100%',
+            data: customerList.map(function (customer) {
+                return {
+                    id: customer.id,
+                    text: customer.firstName + " " + customer.lastName
+                };
+            })
+        });
+
+
         var calendarDiv = document.getElementById('event-calendar');
-        var events = new FullCalendar.Calendar(calendarDiv, {
+        var CalendarView = new FullCalendar.Calendar(calendarDiv, {
+            datesRender: function (info) {
+                LoadEvents(info);
+            },
+            dateClick: function (info) {
+                OpenNewEventModal(info);
+            },
+            eventDrop: function (info) {
+                ChangeEventDateOnDragDrop(info);
+            },
             eventClick: function (info) {
-                document.getElementById("Title").value = info.event.title;
-                document.getElementById("Description").value = info.event.extendedProps.description;
-                document.getElementById("Url").value = info.event.url;
-                document.getElementById("Color").value = info.event.backgroundColor;
-                document.getElementById("TextColor").value = info.event.textColor;
-                document.getElementById("Start").value = info.event.start.toISOString().split('T')[0];
-                // check if end is not null
-                if (info.event.end != null) {
-                    document.getElementById("End").value = info.event.end.toISOString().split('T')[0];
-                }
-                document.getElementById("isAllDay").checked = info.event.allDay;
-                $("#NewEventModal").modal("show");
+                ShowEvent(info);
             },
             header: {
                 left: 'prev,next today',
                 center: 'title',
                 right: "dayGridMonth,timeGridWeek,timeGridDay"
             },
+            eventMouseEnter: function (info) {
+                $(info.el).tooltip({
+                    title: info.event.title,
+                    container: 'body'
+                });
+            },
             editable: true,
             navLinks: true,
             plugins: ["dayGrid", "timeGrid", "interaction"],
-            eventLimit: true,
-            events: await EventArray()
         });
-        events.render();
+        CalendarView.render();
+
+        function LoadEvents(info) {
+            let calendarEventsArray = [];
+            $.ajax({
+                url: '/Events/GetEvents',
+                data: {
+                    startDate: info.view.activeStart.toISOString(),
+                    endDate: info.view.activeEnd.toISOString()
+                },
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+                            calendarEventsArray.push({
+                                id: data[i].id,
+                                title: data[i].title + " with " + data[i].customerIdFK.firstName,
+                                description: data[i].description,
+                                start: data[i].start,
+                                color: data[i].color,
+                                end: data[i].end,
+                                allDay: data[i].allDay
+                            });
+                        } 
+                        CalendarView.removeAllEvents();
+                        CalendarView.addEventSource(calendarEventsArray);
+                    }
+                },
+                error: function (error) {
+                    toastr.error(error, 'Error!', { "progressBar": true });
+                }
+            });
+        }
+
     });
 </script>

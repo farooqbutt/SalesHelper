@@ -2,7 +2,6 @@
     int customerId = ViewBag.CustomerId;
 }
 
-
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -12,7 +11,7 @@
             <div class="btn-group float-md-right" role="group" aria-label="Button group with nested dropdown">
                 @* <a class="sidebar-toggle d-block d-lg-none" href="#"><i class="feather icon-menu large mr-1 "></i></a> *@
                 <a class="btn btn-outline-primary" href="#"><i class="ti-pencil-alt mr-1 "></i>New Quote</a>
-                <a class="btn btn-outline-primary" asp-action="CalendarView" asp-route-id="@customerId" asp-controller="Events"><i class="fa fa-calendar mr-1 "></i>New Event</a>
+                <a class="btn btn-outline-primary" asp-action="CalendarView" asp-controller="Events"><i class="fa fa-calendar mr-1 "></i>New Event</a>
                 <a class="btn btn-outline-primary" href="#"><i class="feather icon-check-square mr-1 "></i>New Task</a>
                 @* <a class="btn btn-outline-primary" href="full-calender-basic.html"><i class="feather icon-mail"></i></a>
                 <a class="btn btn-outline-primary" href="timeline-center.html"><i class="feather icon-pie-chart"></i></a> *@

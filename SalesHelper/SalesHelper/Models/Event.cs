@@ -10,11 +10,8 @@ namespace SalesHelper.Models
         public string? Url { get; set; } = string.Empty;
         public string Start { get; set; } = string.Empty;
         public string? End { get; set; } = string.Empty;
-        public string? StartTime { get; set; } = string.Empty;
-        public string? EndTime { get; set; } = string.Empty;
         public bool IsAllDay { get; set; }
         public string? Color { get; set; } = string.Empty;
-        public string? TextColor { get; set; } = string.Empty;
 
         [ForeignKey("CustomerIdFK")]
         public int CustomerId { get; set; }
