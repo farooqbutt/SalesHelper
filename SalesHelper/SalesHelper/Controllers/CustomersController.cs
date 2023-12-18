@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Repository;
 
@@ -8,13 +10,26 @@ namespace SalesHelper.Controllers
     {
         private readonly CustomerRepo _customerService;
         private readonly AddressRepo _addressService;
+        private readonly EventRepo _eventService;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         public CustomersController(
+            EventRepo eventService,
+            SignInManager<ApplicationUser> signInManager,
             CustomerRepo customerService,
             AddressRepo addressService
             )
         {
             _customerService = customerService;
             _addressService = addressService;
+            _signInManager = signInManager;
+            _eventService = eventService;
+        }
+
+        public Customer SetAccountNumAndCreatorOfEvent(Customer customer)
+        {
+            customer.AccountNumber = _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber;
+            customer.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
+            return customer;
         }
 
         [HttpGet]
@@ -26,6 +41,7 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult AddCustomers(AddCustomerInterface customerDetails)
         {
+            SetAccountNumAndCreatorOfEvent(customerDetails.Customer);
             _addressService.Create(customerDetails.Address);
             customerDetails.Customer.AddressId = customerDetails.Address.AddressId;
             _customerService.Create(customerDetails.Customer);
@@ -41,7 +57,18 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public JsonResult CustomerList()
         {
-            var data = new { data = _customerService.ReadAll() };
+            var customers = _customerService.ReadAll().Where(a => a.AccountNumber == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber);
+            List<CustomerListInterface> result = new List<CustomerListInterface>();
+            foreach (var customer in customers)
+            {
+                result.Add(new CustomerListInterface
+                {
+                    CustomerObject = customer,
+                    Events = _eventService.ReadAll().Where(a => a.CustomerId == customer.Id).
+                    OrderBy(a => Convert.ToDateTime(a.Start)).Take(5).ToList()
+                });
+            }
+            var data = new { data = result };
             return Json(data);
         }
 
@@ -58,6 +85,7 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult EditCustomer(AddCustomerInterface customerDetails)
         {
+            SetAccountNumAndCreatorOfEvent(customerDetails.Customer);
             _customerService.Update(customerDetails.Customer);
             _addressService.Update(customerDetails.Address);
             return RedirectToAction("CustomerDetailedView", new { id = customerDetails.Customer.Id });

@@ -1,6 +1,5 @@
 ﻿using SalesHelper.Data;
 using SalesHelper.Models;
-using System.Net;
 
 namespace SalesHelper.Repository
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Models;
 using SalesHelper.Repository;
 
@@ -8,10 +9,15 @@ namespace SalesHelper.Controllers
     {
         private readonly EventRepo _eventService;
         private readonly CustomerRepo _customerService;
-        public EventsController(EventRepo eventService, CustomerRepo customerRepo)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public EventsController(
+            SignInManager<ApplicationUser> signInManager,
+            EventRepo eventService, 
+            CustomerRepo customerRepo)
         {
             _eventService = eventService;
             _customerService = customerRepo;
+            _signInManager = signInManager;
         }
 
         public IActionResult CalendarView()
@@ -19,8 +25,15 @@ namespace SalesHelper.Controllers
             return View();
         }
 
+        public Event SetAccountNumAndCreatorOfEvent(Event eventObject)
+        {
+            eventObject.AccountNumber = _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber;
+            eventObject.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
+            return eventObject;
+        }
         public IActionResult AddEvent(Event eventObject)
         {
+            SetAccountNumAndCreatorOfEvent(eventObject);
             _eventService.Create(eventObject);
             return RedirectToAction("CalendarView");
         }
@@ -50,15 +63,16 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult UpdateEvent(Event eventObject)
         {
+            SetAccountNumAndCreatorOfEvent(eventObject);
             _eventService.Update(eventObject);
             return RedirectToAction("CalendarView");
         }
 
         [HttpPost]
-        public IActionResult DeleteEvent(int id)
+        public string DeleteEvent(int id)
         {
             _eventService.Delete(id);
-            return RedirectToAction("CalendarView");
+            return "Event Deleted Successfully!";
         }
 
         [HttpPost]

@@ -7,6 +7,36 @@
     .select2-container .select2-selection--single .select2-selection__rendered {
         padding-left: 35px;
     }
+
+    .fc-unthemed .fc-today{
+        color:white;
+        font-weight:bold;
+    }
+
+    .fc-day.fc-today {
+        position: relative;
+    }
+
+    .fc-day.fc-today::before,
+    .fc-day.fc-today::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-color: transparent;
+        border-style: solid;
+    }
+
+    .fc-day.fc-today::before {
+        border-width: 1.5em;
+    }
+
+    .fc-day.fc-today::after {
+        border-radius: 0;
+        border-width: 1.5em;
+        border-right-color: #1967d2;
+        border-top-color: #1967d2;
+    }
 </style>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -88,7 +118,7 @@
                                     <div class="form-group position-relative has-icon-left">
                                         <select asp-for="CustomerId"></select>
                                         <div class="form-control-position">
-                                            <i class="feather icon-briefcase primary"></i>
+                                            <i class="feather icon-user primary"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -134,7 +164,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="reset" class="btn grey btn-outline-secondary">Reset</button>
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" onclick="DeleteEvent()" class="btn btn-danger">Delete</button>
                     <button type="submit" class="btn btn-primary">Add</button>
                 </div>
             </form>
@@ -144,6 +175,32 @@
 
 
 <script>
+    // Global Calendar View variable
+    var CalendarView = null;
+
+
+    function DeleteEvent() {
+        if (confirm("Are you sure to delete this Event?")) {
+            $.ajax({
+                type: "POST",
+                url: "/Events/DeleteEvent",
+                data: {
+                    id: parseInt($("#Id").val())
+                },
+                success: function (data) {
+                    // removing event from calendar view
+                    var event = CalendarView.getEventById(parseInt($("#Id").val()));
+                    event.remove()
+                    $("#NewEventModal").modal("hide");
+                    toastr.success(data, 'Success!', { "progressBar": true });
+                },
+                error: function (error) {
+                    toastr.error(error, 'Error!', { "progressBar": true });
+                }
+            })
+        }
+    }
+
     function ShowEvent(info) {
         $.ajax({
             url: '/Events/GetEvents/',
@@ -230,7 +287,7 @@
 
 
         var calendarDiv = document.getElementById('event-calendar');
-        var CalendarView = new FullCalendar.Calendar(calendarDiv, {
+        CalendarView = new FullCalendar.Calendar(calendarDiv, {
             datesRender: function (info) {
                 LoadEvents(info);
             },
@@ -257,6 +314,7 @@
             editable: true,
             navLinks: true,
             plugins: ["dayGrid", "timeGrid", "interaction"],
+            displayEventTime: false
         });
         CalendarView.render();
 
@@ -275,14 +333,14 @@
                         for (var i = 0; i < data.length; i++) {
                             calendarEventsArray.push({
                                 id: data[i].id,
-                                title: data[i].title + " with " + data[i].customerIdFK.firstName,
+                                title: data[i].customerIdFK.firstName + " " + data[i].customerIdFK.lastName + ": " + data[i].title,
                                 description: data[i].description,
                                 start: data[i].start,
                                 color: data[i].color,
                                 end: data[i].end,
                                 allDay: data[i].allDay
                             });
-                        } 
+                        }
                         CalendarView.removeAllEvents();
                         CalendarView.addEventSource(calendarEventsArray);
                     }
@@ -292,6 +350,5 @@
                 }
             });
         }
-
     });
 </script>

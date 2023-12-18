@@ -22,8 +22,8 @@
                                         <th>Phone No.</th>
                                         <th># of Quotes</th>
                                         <th># of Sales</th>
-                                        <th class="text-center"><i class="ficon feather icon-bell mr-1"></i>Event</th>
-                                        <th class="text-center"><i class="ficon feather icon-mail mr-1"></i>Message</th>
+                                        <th class="text-center"><i class="ficon feather icon-bell mr-1"></i>Events</th>
+                                        <th class="text-center"><i class="ficon feather icon-mail mr-1"></i>Messages</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -37,6 +37,36 @@
 </div>
 
 <script>
+
+    function Agotime(start_date) {
+        // Your start date
+        var startDate = new Date(start_date);
+
+        // Get the current date
+        var currentDate = new Date();
+
+        // Calculate the time difference in milliseconds
+        var timeDifference = currentDate - startDate;
+
+        // Convert milliseconds to seconds
+        var seconds = Math.floor(timeDifference / 1000);
+
+        // Calculate minutes, hours, days, etc.
+        var minutes = Math.floor(seconds / 60);
+        var hours = Math.floor(minutes / 60);
+        var days = Math.floor(hours / 24);
+        var months = Math.floor(days / 30.44); // Approximate average days in a month
+        var years = Math.floor(months / 12);
+        // Output the result
+        var agoTime = years > 0 ? years + ' years ago' :
+            months > 0 ? months + ' months ago' :
+                days > 0 ? days + ' days ago' :
+                    hours > 0 ? hours + ' hours ago' :
+                        minutes > 0 ? minutes + ' minutes ago' :
+                            seconds + ' seconds ago';
+        return agoTime;
+    }
+
     $(document).ready(function () {
 
         // Get My Vendors List
@@ -51,58 +81,140 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                    return `
-                            <a href="/Customers/CustomerDetailedView/${data.id}">${data.firstName} ${data.lastName}</a>
-                        `;
-                    }
-                },
-                { "data": "cellPhone" },
-                { "data": "id" },
-                { "data": "id" },
-                { 
-                    "data": null,
-                    "render": function (data, type, row) { 
                         return `
-                                <div class="text-center">
-                                        <div class="badge badge-pill dropdown-toggle badge-glow badge-danger" data-toggle="dropdown">
-                                            <i class="ficon feather icon-bell"></i> 3
-                                        </div>
-                                    </div>
-                            
+                                <a href="/Customers/CustomerDetailedView/${row.customerObject.id}">${row.customerObject.firstName} ${row.customerObject.lastName}</a>
                             `;
                     }
                 },
+                { "data": "customerObject.cellPhone" },
+                { "data": "customerObject.id" },
+                { "data": "customerObject.id" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `
-                                <div class="text-center">
-                                    <div class="badge badge-pill dropdown-toggle badge-glow badge-primary" data-toggle="dropdown">
-                                        <i class="ficon feather icon-bell"></i> 3
+                        // Check if there are any events
+                        if (row.events && row.events.length > 0) {
+                            // Build the dropdown content dynamically based on the events
+                            var dropdownContent = `
+                        <div class="text-center">
+                            <div class="badge badge-pill dropdown-toggle badge-glow badge-danger" data-toggle="dropdown" aria-expanded="false">
+                                <i class="ficon feather icon-bell"></i> ${row.events.length}
+                            </div>
+                            <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(946px, 83px, 0px);">
+                                <li class="dropdown-menu-header">
+                                    <h6 class="dropdown-header m-0"><span class="grey darken-2">Events</span><span class="notification-tag badge badge-danger float-right m-0">${row.events.length} New</span></h6>
+                                </li>
+                                <li class="scrollable-container media-list ps">
+                    `;
+
+                            // Iterate through events and append them to the dropdown content
+                            row.events.forEach(function (event) {
+                                dropdownContent += `
+                            <a href="javascript:void(0)">
+                                <div class="media">
+                                    <div class="media-left align-self-center"><i class="feather icon-plus-square icon-bg-circle bg-cyan"></i></div>
+                                    <div class="media-body">
+                                        <h6 class="media-heading">${event.title}</h6>
+                                        <p class="notification-text font-small-3 text-muted">${event.description}</p>
+                                        <small>
+                                            <time class="media-meta text-muted" datetime="">${Agotime(event.start)}</time>
+                                        </small>
                                     </div>
                                 </div>
+                            </a>
+                        `;
+                            });
 
-                                `;
+                            // Add the remaining part of the dropdown
+                            dropdownContent += `
+                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></li>
+                                <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all notifications</a></li>
+                            </ul>
+                        </div>
+                     `;
+
+                            // Return the dynamically generated dropdown content
+                            return dropdownContent;
+                        } else {
+                            // If there are no events, return an empty dropdown
+                            return '';
+                        }
                     }
                 },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                    return `
-                            <div class="text-center">
-                                <span class="dropdown">
-                                    <a id="btnSearchDrop6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="dropdown-toggle dropdown-menu-right"><i class="fa fa-ellipsis-v"></i></a>
-                                    <span aria-labelledby="btnSearchDrop6" class="dropdown-menu mt-1 dropdown-menu-right">
-                                        <a href="quote-create-new-quote.html" class="dropdown-item">
-                                        <i class="fa fa-pencil-square-o primary mr-1"></i>Edit
-                                        </a>
-                                        <a href="sales-new-sales.html" class="dropdown-item">
-                                        <i class="fa fa-trash danger"></i> Delete 
-                                        </a>
+                        return `
+                                <div class="text-center">
+                                            <div class="badge badge-pill dropdown-toggle badge-glow badge-danger" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="ficon feather icon-bell"></i> ${row.events.length}
+                                            </div>
+                                            <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(946px, 83px, 0px);">
+                                                <li class="dropdown-menu-header">
+                                                    <h6 class="dropdown-header m-0"><span class="grey darken-2">Events</span><span class="notification-tag badge badge-danger float-right m-0">3 New</span></h6>
+                                                </li>
+                                                <li class="scrollable-container media-list ps">
+                                                    <a href="javascript:void(0)">
+                                                        <div class="media">
+                                                            <div class="media-left align-self-center"><i class="feather icon-plus-square icon-bg-circle bg-cyan"></i></div>
+                                                            <div class="media-body">
+                                                                <h6 class="media-heading">Cabinet Delivery</h6>
+                                                                <p class="notification-text font-small-3 text-muted">Scheduled delivery on Dec 15th.</p><small>
+                                                                    <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">30 minutes ago</time>
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void(0)">
+                                                        <div class="media">
+                                                            <div class="media-left align-self-center"><i class="feather icon-download-cloud icon-bg-circle bg-red bg-darken-1"></i></div>
+                                                            <div class="media-body">
+                                                                <h6 class="media-heading red darken-1">Cabinet Installation</h6>
+                                                                <p class="notification-text font-small-3 text-muted">Cabinet installation was schedule on Dec 17th.</p>
+                                                                <small>
+                                                                    <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Five hour ago</time>
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+
+                                                    <a href="javascript:void(0)">
+                                                        <div class="media">
+                                                            <div class="media-left align-self-center"><i class="feather icon-file icon-bg-circle bg-teal"></i></div>
+                                                            <div class="media-body">
+                                                                <h6 class="media-heading">Countertop template</h6>
+                                                                <p class="notification-text font-small-3 text-muted">Imperial stone will make template on Dec 19th.</p>
+                                                                <small>
+                                                                    <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Last month</time>
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></li>
+                                                <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all notifications</a></li>
+                                            </ul>
+                                </div>
+                                 `;
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                                <div class="text-center">
+                                    <span class="dropdown">
+                                        <a id="btnSearchDrop6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="dropdown-toggle dropdown-menu-right"><i class="fa fa-ellipsis-v"></i></a>
+                                        <span aria-labelledby="btnSearchDrop6" class="dropdown-menu mt-1 dropdown-menu-right">
+                                            <a href="quote-create-new-quote.html" class="dropdown-item">
+                                            <i class="fa fa-pencil-square-o primary mr-1"></i>Edit
+                                            </a>
+                                            <a href="sales-new-sales.html" class="dropdown-item">
+                                            <i class="fa fa-trash danger"></i> Delete
+                                            </a>
+                                        </span>
                                     </span>
-                                </span>
-                            </div>
-                        `;
+                                </div>
+                            `;
                     }
                 }
             ]

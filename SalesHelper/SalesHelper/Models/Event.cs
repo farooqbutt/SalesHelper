@@ -12,9 +12,14 @@ namespace SalesHelper.Models
         public string? End { get; set; } = string.Empty;
         public bool IsAllDay { get; set; }
         public string? Color { get; set; } = string.Empty;
+        public string CreatedByUserId { get; set; } = string.Empty;
 
         [ForeignKey("CustomerIdFK")]
         public int CustomerId { get; set; }
         public Customer CustomerIdFK { get; set; } = default!;
+
+        [ForeignKey("AccountNumberFK")]
+        public int AccountNumber { get; set; }
+        public Account AccountNumberFK { get; set; } = default!;
     }
 }

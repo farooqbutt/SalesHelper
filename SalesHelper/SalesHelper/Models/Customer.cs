@@ -14,9 +14,14 @@ namespace SalesHelper.Models
         public string HomePhone { get; set; } = string.Empty;
         public string WorkPhone { get; set; } = string.Empty;
         public string Company { get; set; } = string.Empty;
+        public string CreatedByUserId { get; set; } = string.Empty;
 
         [ForeignKey("AddressId")]
         public int AddressId { get; set; }
-        public virtual Address AddressIdFK { get; set; } = default!; 
+        public virtual Address AddressIdFK { get; set; } = default!;
+
+        [ForeignKey("AccountNumberFK")]
+        public int AccountNumber { get; set; }
+        public Account AccountNumberFK { get; set; } = default!;
     }
 }
