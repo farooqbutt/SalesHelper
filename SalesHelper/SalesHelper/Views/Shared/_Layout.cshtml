@@ -372,6 +372,10 @@
                         ViewContext.RouteData.Values["action"]!.ToString() == "CustomerListView" ? "active" : "")">
                             <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">View Customers</a>
                         </li>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
+                        ViewContext.RouteData.Values["action"]!.ToString() == "CustomerDetailedView" ? "active" : "")">
+                            <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">View Customer Details</a>
+                        </li>
                     </ul>
                 </li>
                 <li class=" nav-item">
