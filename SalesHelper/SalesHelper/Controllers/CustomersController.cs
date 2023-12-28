@@ -105,5 +105,12 @@ namespace SalesHelper.Controllers
             data.data.AddressIdFK = _addressService.Read(data.data.AddressId);
             return Json(data);
         }
+
+        [HttpPost]
+        public string DeleteCustomer(int id)
+        {
+            _customerService.Delete(id);
+            return "Customer Deleted Successfully!";
+        }
     }
 }

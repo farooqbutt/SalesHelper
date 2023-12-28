@@ -27,38 +27,38 @@
                                                 <h4 class="form-section"><i class="feather icon-user"></i> Customer Info</h4>
 
                                                 <div class="form-group">
-                                                    <label>First Name</label>
+                                                    <label>First Name <span class="required">*</span></label>
                                                     <input asp-for="Customer.FirstName" type="text" class="form-control square" placeholder="First Name" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Last Name</label>
+                                                    <label>Last Name <span class="required">*</span></label>
                                                     <input asp-for="Customer.LastName" type="text" class="form-control square" placeholder="Last Name" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Email</label>
-                                                    <input asp-for="Customer.Email" type="email" class="form-control square" placeholder="Email">
+                                                    <label>Email <span class="required">*</span></label>
+                                                    <input asp-for="Customer.Email" type="email" class="form-control square" placeholder="Email" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Cell Phone</label>
+                                                    <label>Cell Phone <span class="required">*</span></label>
                                                     <input asp-for="Customer.CellPhone" type="text" class="form-control square" placeholder="Cell Phone" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Home Phone</label>
-                                                    <input asp-for="Customer.HomePhone" type="text" class="form-control square" placeholder="Home Phone">
+                                                    <label>Home Phone <span class="required">*</span></label>
+                                                    <input asp-for="Customer.HomePhone" type="text" class="form-control square" placeholder="Home Phone" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Work Phone</label>
-                                                    <input asp-for="Customer.WorkPhone" type="text" class="form-control square" placeholder="Work Phone">
+                                                    <label>Work Phone <span class="required">*</span></label>
+                                                    <input asp-for="Customer.WorkPhone" type="text" class="form-control square" placeholder="Work Phone" required>
                                                 </div>
                                                 
                                                 <div class="form-group">
-                                                    <label>Company</label>
-                                                    <input asp-for="Customer.Company" type="text" class="form-control square" placeholder="Company">
+                                                    <label>Company <span class="required">*</span></label>
+                                                    <input asp-for="Customer.Company" type="text" class="form-control square" placeholder="Company" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -66,32 +66,32 @@
                                                 <h4 class="form-section"><i class="feather icon-home"></i> Customer Address Info</h4>
 
                                                 <div class="form-group">
-                                                    <label>Address Line 1</label>
-                                                    <input asp-for="Address.Address1" class="form-control square" type="text" placeholder="address line 1">
+                                                    <label>Address Line 1 <span class="required">*</span></label>
+                                                    <input asp-for="Address.Address1" class="form-control square" type="text" placeholder="address line 1" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>Address Line 2</label>
-                                                    <input asp-for="Address.Address2" class="form-control square" type="text" placeholder="address line 2">
+                                                    <label>Address Line 2 <span class="required">*</span></label>
+                                                    <input asp-for="Address.Address2" class="form-control square" type="text" placeholder="address line 2" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>City</label>
-                                                    <input asp-for="Address.City" class="form-control square" type="text" placeholder="city">
+                                                    <label>City <span class="required">*</span></label>
+                                                    <input asp-for="Address.City" class="form-control square" type="text" placeholder="city" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>Country</label>
-                                                    <input asp-for="Address.Country" class="form-control square" type="text" placeholder="country">
+                                                    <label>Country <span class="required">*</span></label>
+                                                    <input asp-for="Address.Country" class="form-control square" type="text" placeholder="country" required>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label>State</label>
-                                                            <input asp-for="Address.State" type="text" class="form-control square" placeholder="state">
+                                                            <label>State <span class="required">*</span></label>
+                                                            <input asp-for="Address.State" type="text" class="form-control square" placeholder="state" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label>Zip</label>
-                                                            <input asp-for="Address.PostalCode" type="text" class="form-control square" placeholder="zip code">
+                                                            <label>Zip <span class="required">*</span></label>
+                                                            <input asp-for="Address.PostalCode" type="text" class="form-control square" placeholder="zip code" required>
                                                         </div>
                                                     </div>
                                                 </div>
