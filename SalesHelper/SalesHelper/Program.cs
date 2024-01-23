@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using SalesHelper.Data;
 using SalesHelper.Models;
@@ -13,6 +14,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<CustomerRepo>();
 builder.Services.AddScoped<AddressRepo>();
 builder.Services.AddScoped<EventRepo>();
+builder.Services.AddScoped<CabinetQuotationRepo>();
+
+// For uploading larg files to the server
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = int.MaxValue;
+});
+// For uploading larg files to the IIS Server
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = int.MaxValue;
+});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

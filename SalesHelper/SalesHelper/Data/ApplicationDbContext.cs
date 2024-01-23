@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SalesHelper.Models;
+using SalesHelper.Models.CabinetCatalog;
 
 namespace SalesHelper.Data
 {
@@ -17,6 +18,11 @@ namespace SalesHelper.Data
         public DbSet<VendorDocuments> VendorDocuments { get; set; } = default!;
         public DbSet<Customer> Customers { get; set; } = default!;
         public DbSet<Event> Events { get; set; } = default!;
+        public DbSet<CabinetQuotation> CabinetQuotations { get; set; } = default!;
+        public DbSet<QuotationItem> QuotationItems { get; set; } = default!;
+        public DbSet<CatalogItem> CatalogItems { get; set; } = default!; 
+        public DbSet<CabinetryDoorStyle> CabinetryDoorStyles { get; set; } = default!;
+        public DbSet<QuotationDocument> QuotationDocuments { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

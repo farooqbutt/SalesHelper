@@ -70,7 +70,7 @@
                     <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu font-large-1"></i></a></li>
                     <li class="nav-item">
                         <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                            <img class="brand-logo" alt="stack admin logo" src="/images/logo/SH-28-OL.png" width="40" height="35">
+                            <img class="brand-logo" alt="saleshelper" src="/images/logo/SH-28-OL.png" width="40" height="35">
                             <h2 class="brand-text">SalesHelper</h2>
                         </a>
                     </li>
@@ -383,6 +383,23 @@
                     <ul class="menu-content">
                         <li class="">
                             <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Quotes</a>
+                            <ul class="menu-content">
+                                <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCabinetQuotation" ? "active" : "")">
+                                    <a class="menu-item"
+                                       asp-controller="Quotations" asp-action="CreateCabinetQuotation">Cabinet Quote</a>
+                                </li>
+                                <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopQuotation" ? "active" : "")">
+                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Countertop Quote</a>
+                                </li>
+                                <li class="">
+                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Hardware Quote</a>
+                                </li>
+                                <li class="">
+                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Other Quote</a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="">
                             <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Quotes</a>

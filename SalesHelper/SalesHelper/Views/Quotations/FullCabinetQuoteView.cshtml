@@ -1,0 +1,214 @@
+﻿@model SalesHelper.Models.CabinetQuotation
+@inject SalesHelper.Data.ApplicationDbContext _context
+@{
+    var quoteDocuments = _context.QuotationDocuments.Where(a => a.QuotationId == Model.Id).ToList();
+}
+<style>
+    .AvatarMedia {
+        align-items: center;
+    }
+</style>
+<div class="content-wrapper">
+
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">Cabinet Quotation Details</h3>
+        </div>
+    </div>
+
+    <div class="content-detached content-left">
+        <div class="content-body">
+            <div class="media p-1 AvatarMedia">
+                <div class="media-left pr-1">
+                    <span class="avatar avatar-online avatar-xl rounded-circle">
+                        <img src="/images/portrait/small/avatar-s-1.png" alt="avatar">
+                    </span>
+                </div>
+                <div class="media-body media-middle">
+                    <a class="text-primary" asp-controller="Customers" asp-action="CustomerDetailedView" asp-route-id="@Model.CustomerId">
+                        <h5 class="media-heading">@Model.CustomerIdFk.FirstName @Model.CustomerIdFk.LastName</h5>
+                    </a>
+                </div>
+            </div>
+            <section class="row  match-height">
+                <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="card" style="height: 320.5px;">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.Id</b></span></h2>
+                                <p class="card-text"><b>Customer Name:</b> @Model.CustomerIdFk.FirstName @Model.CustomerIdFk.LastName</p>
+                                <p class="card-text"><b>Quote Name:</b> @Model.Name</p>
+                                <p class="card-text"><b>Cabinetry:</b> @Model.VendorIdFk.CompanyName </p>
+                                <p class="card-text"><b>Construction:</b> @Model.Construction </p>
+                                <p class="card-text"><b>Box Materials:</b> @Model.BoxMaterials </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.WoodSpeciesForOneColorDesign != "" && Model.WoodSpeciesForOneColorDesign != null)
+                {
+                // it means it is one color design
+                    <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="card" style="height: 320.5px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title text-primary mt-0"><span><b>One Color Design</b></span></h2>
+                                    <p class="card-text"><b>Wood Species:</b> @Model.WoodSpeciesForOneColorDesign </p>
+                                    <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForOneColorDesign </p>
+                                    <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetFinishForOneColorDesign </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                // it means it is multiple color design
+                    <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="card" style="height: 320.5px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title text-primary mt-0"><span><b>Upper Cabinet Details</b></span></h2>
+                                    <p class="card-text"><b>Upper Wood Species:</b> @Model.UpperWoodSpeciesForMultipleColorDesign </p>
+                                    <p class="card-text"><b>Upper Finish:</b> @Model.UpperFinishForMultipleColorDesign </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="card" style="height: 320.5px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title text-primary mt-0"><span><b>Lower Cabinet Details</b></span></h2>
+                                    <p class="card-text"><b>Lower Wood Species:</b> @Model.LowerWoodSpeciesForMultipleColorDesign </p>
+                                    <p class="card-text"><b>Lower Finish:</b> @Model.LowerFinishForMultipleColorDesign </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="card" style="height: 320.5px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title text-primary mt-0"><span><b>Island Cabinet Details</b></span></h2>
+                                    <p class="card-text"><b>Island Wood Sepcies:</b> @Model.IslandWoodSpeciesForMultipleColorDesign </p>
+                                    <p class="card-text"><b>Island Finish:</b> @Model.IslandFinishForMultipleColorDesign </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </section>
+
+            <section class="row  match-height">
+                <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="card" style="height: 389.2px;">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <h2 class="card-title text-primary mt-0"><span><b>Appliance Information</b></span></h2>
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        @Model.ApplianceInformation
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="card" style="height: 389.2px;">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <h2 class="card-title text-primary mt-0"><span><b>Hood Information</b></span></h2>
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        @Model.HoodInformation
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="card" style="height: 389.2px;">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <h2 class="card-title text-primary mt-0"><span><b>Sink Infomation</b></span></h2>
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        @Model.SinkInformation
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="card" style="height: 389.2px;">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <h2 class="card-title text-primary mt-0"><span><b>Attach Documents</b></span></h2>
+                                <div class="form-body">
+                                    @foreach (var item in quoteDocuments)
+                                    {
+                                        <div class="btn-group">
+                                            <div class="badge badge-warning">
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                    @item.DocumentName!.Substring(item.DocumentName.IndexOf("_") + 1)
+                                                </a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(5px, 19px, 0px);">
+                                                    <a class="dropdown-item" href="/Vendors/ShowVendorFile?filePath=@item.FilePath" target="_blank">View Document</a>
+                                                    @* <a class="dropdown-item" href="#">Delete Document</a> *@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <div class="form-actions text-center mb-5">
+                <button onclick="javascript:history.goback()" class="width-150 btn btn-primary"><i class="feather icon-arrow-left"></i> Previous</button>
+                <button type="submit" class="width-150 btn btn-outline-primary"><i class="fa fa-check-square-o"></i> Save & Close</button>
+                <a asp-controller="Quotations" asp-action="AttachCabinetItems" asp-route-id="@Model.Id" class="width-150 btn btn-primary"><i class="feather icon-paperclip"></i> Attach Items</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="sidebar-detached sidebar-right">
+        <div class="sidebar">
+            <div class="project-sidebar-content">
+                <div class="card mb-1">
+                    <div class="card-content collapse show">
+                        <div class="card-body height-700">
+                            <h2 class="card-title mt-0 text-primary"><span><b>Quote Price</b></span></h2>
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <p class="card-text"><b>Cabinet Price:</b> $@Model.CabinetPrice </p>
+                                    <p class="card-text"><b>Delivery Charges:</b> $@Model.DeliveryCharge </p>
+                                    <p class="card-text"><b>Installation Fee:</b> $@Model.InstallationFee </p>
+                                    <p class="card-text"><b>Tax:</b> $@Model.Tax </p>
+                                    <p class="card-text"><b>Comments:</b> @Model.CommentOnPrice</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

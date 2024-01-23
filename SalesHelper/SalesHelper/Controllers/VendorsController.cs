@@ -188,7 +188,7 @@ namespace SalesHelper.Controllers
                 if (vendor.VendorFile != null && vendor.VendorFile.Length > 0)
                 {
                     // Check the file size
-                    if (vendor.VendorFile.Length > 1024 * 1024) // 1MB in bytes
+                    if (vendor.VendorFile.Length > 1024 * 1024 * 50) // 50MB in bytes
                     {
                         // return error
                         var err = new { message = "error", result = "The file size should not exceed 1MB." };
@@ -236,7 +236,7 @@ namespace SalesHelper.Controllers
             }
             catch (Exception ex)
             {
-                var data = new { message = "error", result = ex.InnerException?.Message };
+                var data = new { message = "error", result = ex.Message };
                 return Json(data);
             }
         }

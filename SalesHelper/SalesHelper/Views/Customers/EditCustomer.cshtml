@@ -30,13 +30,13 @@
                                                 <input asp-for="Address.AddressId" hidden />
 
                                                 <div class="form-group">
-                                                    <label>First Name</label>
+                                                    <label>First Name <span class="required">*</span></label>
                                                     <input asp-for="Customer.FirstName" type="text" class="form-control square" placeholder="First Name" required>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Last Name</label>
-                                                    <input asp-for="Customer.LastName" type="text" class="form-control square" placeholder="Last Name" required>
+                                                    <input asp-for="Customer.LastName" type="text" class="form-control square" placeholder="Last Name">
                                                 </div>
 
                                                 <div class="form-group">
@@ -45,7 +45,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Cell Phone</label>
+                                                    <label>Cell Phone <span class="required">*</span></label>
                                                     <input asp-for="Customer.CellPhone" type="text" class="form-control square" placeholder="Cell Phone" required>
                                                 </div>
 
@@ -58,7 +58,7 @@
                                                     <label>Work Phone</label>
                                                     <input asp-for="Customer.WorkPhone" type="text" class="form-control square" placeholder="Work Phone">
                                                 </div>
-                                                
+
                                                 <div class="form-group">
                                                     <label>Company</label>
                                                     <input asp-for="Customer.Company" type="text" class="form-control square" placeholder="Company">

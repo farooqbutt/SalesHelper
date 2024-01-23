@@ -649,9 +649,6 @@
                 };
             })
         });
-
-        // Select a specific option by setting its value
-        var defaultValue = @Model?.BusinessTypeId;
-        $("#businessTypesSelect").val(defaultValue).trigger("change");
+        $("#businessTypesSelect").val(null).trigger("change");
     });
 </script>

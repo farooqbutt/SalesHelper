@@ -10,7 +10,7 @@
         padding-right: 0;
     }
 
-    .AvatarMedia{
+    .AvatarMedia {
         align-items: center;
     }
 </style>
@@ -21,13 +21,21 @@
             <h3 class="content-header-title mt-1">Customer Details</h3>
         </div>
         <div class="content-header-right col-md-6 col-12">
-            <div class="btn-group float-md-right" role="group" aria-label="Button group with nested dropdown">
-                @* <a class="sidebar-toggle d-block d-lg-none" href="#"><i class="feather icon-menu large mr-1 "></i></a> *@
-                <a class="btn btn-outline-primary" href="#"><i class="ti-pencil-alt mr-1 "></i>New Quote</a>
-                <a class="btn btn-outline-primary" asp-action="CalendarView" asp-controller="Events"><i class="fa fa-calendar mr-1 "></i>New Event</a>
-                <a class="btn btn-outline-primary" href="#"><i class="feather icon-check-square mr-1 "></i>New Task</a>
-                @* <a class="btn btn-outline-primary" href="full-calender-basic.html"><i class="feather icon-mail"></i></a>
-                <a class="btn btn-outline-primary" href="timeline-center.html"><i class="feather icon-pie-chart"></i></a> *@
+            <div class="btn-group float-md-right" role="group">
+                <div class="btn-group mr-1 mb-1">
+                    <button style="border-bottom-right-radius: 0px;border-top-right-radius: 0px;" 
+                            type="button" class="btn btn-outline-primary btn-min-width dropdown-toggle" data-toggle="dropdown">
+                        <i class="ti-pencil-alt mr-1"></i>New Quote
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" asp-controller="Quotations" asp-action="CreateCabinetQuotation" asp-route-customerId="@customerId">Cabinet Quote</a>
+                        <a class="dropdown-item" href="#">Countertop Quote</a>
+                        <a class="dropdown-item" href="#">Hardware Quote</a>
+                        <a class="dropdown-item" href="#">Other Quote</a>
+                    </div>
+                    <a class="btn btn-outline-primary" asp-action="CalendarView" asp-controller="Events"><i class="fa fa-calendar mr-1"></i>New Event</a>
+                    <a class="btn btn-outline-primary" href="#"><i class="feather icon-check-square mr-1"></i>New Task</a>
+                </div>
             </div>
         </div>
     </div>
@@ -104,7 +112,7 @@
                         </ul>
                     </div>
 
-                  
+
                 </div>
                 <!--/ Predefined Views -->
             </div>

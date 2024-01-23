@@ -45,6 +45,8 @@ namespace SalesHelper.Models
         [MaxLength(1024)]
         public string? Description { get; set; } =   string.Empty;
 
+        public bool IsRTA { get; set; } = false;
+
         [ForeignKey("BusinessTypeIdFK")]
         public int BusinessTypeId { get; set; }
         public BusinessTypes BusinessTypeIdFK { get; set; } = default!;

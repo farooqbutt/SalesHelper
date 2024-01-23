@@ -40,6 +40,8 @@ namespace SalesHelper.Models
         [Required]
         public bool IsPrivate { get; set; }
 
+        public bool IsRTA { get; set; } = false;
+
 
         [ForeignKey("BusinessAddressIdFK")]
         public int? BusinessAddressId { get; set; }
