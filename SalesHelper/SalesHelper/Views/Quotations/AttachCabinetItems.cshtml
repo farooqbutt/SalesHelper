@@ -331,7 +331,7 @@
             success: function (data) {
                 if (data.message == "success") {
                     toastr.success(data.result, "Success", { "progressBar": true });
-                    setTimeout(window.location.reload(), 300);
+                    setTimeout(window.location.reload(), 2000);
                 } else {
                     toastr.info(data.result, "Information", { "progressBar": true });
                 }
@@ -351,8 +351,12 @@
                     itemid: itemid
                 },
                 success: function (data) {
-                    toastr.success(data.result, 'Success', { "progressBar": true });
-                    setTimeout(window.location.reload(), 300);
+                    if (data.message == "success") {
+                        toastr.success(data.result, "Success", { "progressBar": true });
+                        setTimeout(window.location.reload(), 2000);
+                    } else {
+                        toastr.info(data.result, "Information", { "progressBar": true });
+                    }
                 },
                 error: function (error) {
                     toastr.error(data.result, 'Error!', { "progressBar": true });

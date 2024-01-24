@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Repository;
 using System.Net.Mime;
-using System.Text.Json.Nodes;
 
 namespace SalesHelper.Controllers
 {
@@ -16,13 +15,20 @@ namespace SalesHelper.Controllers
         private readonly CustomerRepo _customerService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public QuotationsController(CabinetQuotationRepo cabinetQuotationRepo, CustomerRepo customerRepo, ApplicationDbContext context, IWebHostEnvironment env)
+        public QuotationsController(
+            CabinetQuotationRepo cabinetQuotationRepo, 
+            CustomerRepo customerRepo, 
+            ApplicationDbContext context, 
+            IWebHostEnvironment env,
+            SignInManager<ApplicationUser> signInManager)
         {
             _cabinetQuotationService = cabinetQuotationRepo;
             _customerService = customerRepo;
             _context = context;
             _env = env;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -35,6 +41,9 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult CreateCabinetQuotation(CabinetQuotation cabinetQuotation)
         {
+            cabinetQuotation.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
+            cabinetQuotation.CreatedDateTime = DateTime.Now;
+            cabinetQuotation.ModifiedDateTime = DateTime.Now;
             _cabinetQuotationService.Create(cabinetQuotation);
             cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
             return RedirectToAction("CabinetQuotationAdditionalInformation", new { id = cabinetQuotation.Id });
@@ -105,6 +114,11 @@ namespace SalesHelper.Controllers
             {
                 if (ItemsList.Count() > 0)
                 {
+                    // update modified date time of cabinet quotation
+                    var quote = _cabinetQuotationService.Read(ItemsList.First().QuotationId);
+                    quote.ModifiedDateTime = DateTime.Now;
+                    _cabinetQuotationService.Update(quote);
+                    /////////////////////////////////
                     _context.QuotationItems.AddRange(ItemsList);
                     _context.SaveChanges();
                     return Json(new { message = "success", result = "Items Saved Successfully!" });
@@ -125,6 +139,11 @@ namespace SalesHelper.Controllers
         {
             try
             {
+                // update modified date time of cabinet quotation
+                var quote = _cabinetQuotationService.Read(_context.QuotationItems.Find(itemid)!.QuotationId);
+                quote.ModifiedDateTime = DateTime.Now;
+                _cabinetQuotationService.Update(quote);
+                /////////////////////////////////
                 _context.QuotationItems.Remove(_context.QuotationItems.Find(itemid)!);
                 _context.SaveChanges();
                 return Json(new { message = "success", result = "Deleted Successfully!" });
@@ -247,6 +266,28 @@ namespace SalesHelper.Controllers
                 default:
                     return "application/octet-stream"; // Default to binary data if the file type is unknown.
             }
+        }
+
+        [HttpGet]
+        public IActionResult QuotationsListView()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult QuotationsList()
+        {
+            // right now this is only for getting cabinet quotations
+            //TODO: add other quotations logic here as well
+            var quotations = _cabinetQuotationService.ReadAll().Where(a => a.CreatedByUserId ==
+                            _signInManager.UserManager.GetUserAsync(User).Result.Id).OrderByDescending(a => a.ModifiedDateTime).ToList();
+            foreach (var item in quotations)
+            {
+                item.CustomerIdFk = _customerService.Read(item.CustomerId);
+                item.VendorIdFk = _context.Vendor.Find(item.VendorId)!;
+            }
+            var data = new { data = quotations };
+            return Json(data); 
         }
     }
 }

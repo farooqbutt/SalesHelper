@@ -22,7 +22,7 @@ namespace SalesHelper.Models
         public string? WoodSpeciesForOneColorDesign { get; set; } = string.Empty;
         public string? DoorStyleForOneColorDesign { get; set; } = string.Empty;
         public string? CabinetFinishForOneColorDesign { get; set; } = string.Empty;
-        //feilds for multiple color design
+        // Fields for multiple color design
         public string? DoorStyleForMultipleColorDesign { get; set; } = string.Empty;
         public string? UpperWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
         public string? LowerWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
@@ -36,12 +36,18 @@ namespace SalesHelper.Models
         public string? SinkInformation { get; set; } = string.Empty;
         public string? CommentsOnDocumentFiles { get; set; } = string.Empty;
 
-        //feilds for pricing
+        // Fields for pricing
         public decimal? CabinetPrice { get; set; }
         public decimal? DeliveryCharge { get; set; }
         public decimal? InstallationFee { get; set; }
         public decimal? Tax { get; set; }
         public decimal? VendorPrice { get; set; } 
         public string? CommentOnPrice { get; set; } = string.Empty;
+        // Created By 
+        public string CreatedByUserId { get; set; } = string.Empty;
+
+        // Fields for time tracking
+        public DateTime? CreatedDateTime { get; set; } = new DateTime();
+        public DateTime? ModifiedDateTime { get; set; } = new DateTime();
     }
 }
