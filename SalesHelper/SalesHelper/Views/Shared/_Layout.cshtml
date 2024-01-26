@@ -374,7 +374,7 @@
                         </li>
                         <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "CustomerDetailedView" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">View Customer Details</a>
+                            <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">Customer Details View</a>
                         </li>
                     </ul>
                 </li>
@@ -401,7 +401,8 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="">
+                        <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "QuotationsListView" ? "active" : "")">
                             <a class="menu-item" asp-controller="Quotations" asp-action="QuotationsListView">View Quotes</a>
                         </li>
                     </ul>

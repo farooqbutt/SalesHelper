@@ -6,7 +6,7 @@
         <div class="content-header-right col-md-6 col-12 mb-md-0 mb-2">
             <span class="dropdown">
                 <button id="btnQuote" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" 
-                        class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md float-right">
+                        class="btn btn-primary dropdown-menu-right dropdown-toggle btn-md float-right">
                     <i class="fa fa-plus"></i> Add New Quote
                 </button>
                 <span aria-labelledby="btnQuote" class="dropdown-menu dropdown-menu-right mt-1">
@@ -49,9 +49,7 @@
 <script>
     $(document).ready(function () {
         $('#quotationsList').DataTable({
-            "columnDefs": [
-                { "orderable": false, "targets": [1,2,3,4,7] }
-            ],
+            "ordering": false,
             "ajax": {
                 "url": "/Quotations/QuotationsList",
                 "type": "GET",
@@ -105,7 +103,7 @@
                         if(row.modifiedDateTime != null) {
                             const dateTime = new Date(row.modifiedDateTime);
                             return `
-                                        ${row.modifiedDateTime.split("T")[0]} (${dateTime.getHours()}:${dateTime.getMinutes()})
+                                        ${row.modifiedDateTime.split("T")[0]} -- ${dateTime.getHours()}:${dateTime.getMinutes()}
                                 `;
                         }
                         else {

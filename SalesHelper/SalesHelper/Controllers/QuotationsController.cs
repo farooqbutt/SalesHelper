@@ -31,6 +31,13 @@ namespace SalesHelper.Controllers
             _signInManager = signInManager;
         }
 
+        public CabinetQuotation TimeAndUserUpdate(CabinetQuotation cabinetQuotation)
+        {
+            cabinetQuotation.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
+            cabinetQuotation.ModifiedDateTime = DateTime.Now;
+            return cabinetQuotation;
+        }
+
         [HttpGet]
         public IActionResult CreateCabinetQuotation(int? customerId)
         {
@@ -41,10 +48,8 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult CreateCabinetQuotation(CabinetQuotation cabinetQuotation)
         {
-            cabinetQuotation.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
             cabinetQuotation.CreatedDateTime = DateTime.Now;
-            cabinetQuotation.ModifiedDateTime = DateTime.Now;
-            _cabinetQuotationService.Create(cabinetQuotation);
+            _cabinetQuotationService.Create(TimeAndUserUpdate(cabinetQuotation));
             cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
             return RedirectToAction("CabinetQuotationAdditionalInformation", new { id = cabinetQuotation.Id });
         }
@@ -65,18 +70,23 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public async Task<IActionResult> CabinetQuotationAdditionalInformation(QuotationFullViewInterface quoteData)
         {
-            _cabinetQuotationService.Update(quoteData.CabinetQuotation);
-            var data = await UploadQuotationDocument(quoteData);
-            // get message value from data.value object
-            dynamic obj = data.Value!;
-            if (obj.message != "error")
+            _cabinetQuotationService.Update(TimeAndUserUpdate(quoteData.CabinetQuotation));
+            // if document file is not null then upload it
+            if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
             {
-                return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
+                var data = await UploadQuotationDocuments(quoteData);
+                // get message value from data.value object
+                dynamic obj = data.Value!;
+                if (obj.message != "error")
+                {
+                    return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
+                }
+                else
+                {
+                    return Json(new { status = "error", message = obj.result });
+                }
             }
-            else
-            {
-                return Json(new { status = "error", message = obj.result });
-            }
+            return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
         }
 
         [HttpGet]
@@ -115,9 +125,7 @@ namespace SalesHelper.Controllers
                 if (ItemsList.Count() > 0)
                 {
                     // update modified date time of cabinet quotation
-                    var quote = _cabinetQuotationService.Read(ItemsList.First().QuotationId);
-                    quote.ModifiedDateTime = DateTime.Now;
-                    _cabinetQuotationService.Update(quote);
+                    _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(ItemsList.First().QuotationId)));
                     /////////////////////////////////
                     _context.QuotationItems.AddRange(ItemsList);
                     _context.SaveChanges();
@@ -140,9 +148,7 @@ namespace SalesHelper.Controllers
             try
             {
                 // update modified date time of cabinet quotation
-                var quote = _cabinetQuotationService.Read(_context.QuotationItems.Find(itemid)!.QuotationId);
-                quote.ModifiedDateTime = DateTime.Now;
-                _cabinetQuotationService.Update(quote);
+                _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(_context.QuotationItems.Find(itemid)!.QuotationId)));
                 /////////////////////////////////
                 _context.QuotationItems.Remove(_context.QuotationItems.Find(itemid)!);
                 _context.SaveChanges();
@@ -166,21 +172,22 @@ namespace SalesHelper.Controllers
         // Attaching Quotations Files and Documents
 
         [HttpPost]
-        public async Task<JsonResult> UploadQuotationDocument(QuotationFullViewInterface quoteData)
+        public async Task<JsonResult> UploadQuotationDocuments(QuotationFullViewInterface quoteData)
         {
             try
             {
-                if (quoteData.DocumentFile != null && quoteData.DocumentFile.Length > 0)
+                if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
                 {
-                    // Check the file size
-                    if (quoteData.DocumentFile.Length > 1024 * 1024) // 1MB in bytes
+                    foreach (var file in quoteData.DocumentFiles)
                     {
-                        // return error
-                        var err = new { message = "error", result = "The file size should not exceed 1MB." };
-                        return Json(err);
-                    }
-                    else
-                    {
+                        // Check the file size
+                        if (file.Length > 1024 * 1024 * 50) // 50MB in size
+                        {
+                            // return error
+                            var err = new { message = "error", result = "The file size should not exceed 1MB." };
+                            return Json(err);
+                        }
+
                         // Specify the folder where you want to save the uploaded files
                         string uploadFolder = Path.Combine(_env.WebRootPath, "QuotationDocuments");
 
@@ -188,10 +195,10 @@ namespace SalesHelper.Controllers
                         Directory.CreateDirectory(uploadFolder);
 
                         // Get the file extension
-                        string fileExtension = Path.GetExtension(quoteData.DocumentFile.FileName);
+                        string fileExtension = Path.GetExtension(file.FileName);
 
                         // Generate a unique file name to avoid overwriting existing files
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + quoteData.DocumentFile.FileName + fileExtension;
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName + fileExtension;
 
                         // Combine the folder path with the unique file name
                         string filePath = Path.Combine(uploadFolder, uniqueFileName);
@@ -199,25 +206,28 @@ namespace SalesHelper.Controllers
                         var document = new QuotationDocument
                         {
                             DocumentName = uniqueFileName,
-                            Description = quoteData.DocumentFile.FileName,
+                            Description = file.FileName,
                             FilePath = filePath,
                             UploadDate = DateTime.Now,
                             QuotationId = quoteData.CabinetQuotation.Id,
                             QuotationIdFK = quoteData.CabinetQuotation
                         };
+
                         await _context.QuotationDocuments.AddAsync(document);
                         await _context.SaveChangesAsync();
 
                         // Save the file to the server
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
                         {
-                            await quoteData.DocumentFile.CopyToAsync(fileStream);
+                            await file.CopyToAsync(fileStream);
                         }
-                        return Json(new { message = "success", result = "File uploaded successfully!" });
                     }
+
+                    return Json(new { message = "success", result = "Files uploaded successfully!" });
                 }
+
                 // return error
-                var data = new { message = "error", result = "File not found!" };
+                var data = new { message = "error", result = "No files found for upload!" };
                 return Json(data);
             }
             catch (Exception ex)
@@ -226,6 +236,7 @@ namespace SalesHelper.Controllers
                 return Json(data);
             }
         }
+
 
         public IActionResult ShowVendorFile(string filePath)
         {

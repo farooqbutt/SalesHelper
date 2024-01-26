@@ -1,9 +1,5 @@
 ﻿@model SalesHelper.Models.InterfaceModels.QuotationFullViewInterface
-<style>
-    .AvatarMedia {
-        align-items: center;
-    }
-</style>
+
 <div class="content-wrapper">
     <form asp-controller="Quotations" asp-action="CabinetQuotationAdditionalInformation" method="post" enctype="multipart/form-data">
         @* hidden fields *@
@@ -23,6 +19,7 @@
             <input asp-for="CabinetQuotation.UpperFinishForMultipleColorDesign" value="@Model.CabinetQuotation.UpperFinishForMultipleColorDesign" />
             <input asp-for="CabinetQuotation.LowerFinishForMultipleColorDesign" value="@Model.CabinetQuotation.LowerFinishForMultipleColorDesign" />
             <input asp-for="CabinetQuotation.IslandFinishForMultipleColorDesign" value="@Model.CabinetQuotation.IslandFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.CreatedDateTime" value="@Model.CabinetQuotation.CreatedDateTime?.ToString("yyyy-MM-ddThh:mm")" />
         </div>
 
         <div class="content-header row">
@@ -33,25 +30,19 @@
 
         <div class="content-detached content-left">
             <div class="content-body">
-                <div class="media p-1 AvatarMedia">
-                    <div class="media-left pr-1">
-                        <span class="avatar avatar-online avatar-xl rounded-circle">
-                            <img src="/images/portrait/small/avatar-s-1.png" alt="avatar">
-                        </span>
-                    </div>
-                    <div class="media-body media-middle">
-                        <a class="text-primary" asp-controller="Customers" asp-action="CustomerDetailedView" asp-route-id="@Model.CabinetQuotation.CustomerId">
-                            <h5 class="media-heading">@Model.CabinetQuotation.CustomerIdFk.FirstName @Model.CabinetQuotation.CustomerIdFk.LastName</h5>
-                        </a>
-                    </div>
-                </div>
-                <section class="row  match-height">
-                    <div class="col-xl-3 col-lg-12 col-md-12">
+
+                <div class="row row-cols-1 row-cols-md-4 match-height">
+                    <div class="col">
                         <div class="card" style="height: 320.5px;">
                             <div class="card-content">
                                 <div class="card-body">
                                     <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.CabinetQuotation.Id</b></span></h2>
-                                    <p class="card-text"><b>Customer Name:</b> @Model.CabinetQuotation.CustomerIdFk.FirstName @Model.CabinetQuotation.CustomerIdFk.LastName</p>
+                                    <p class="card-text">
+                                        <b>Customer Name:</b>
+                                        <a class="text-primary" asp-controller="Customers" asp-action="CustomerDetailedView" asp-route-id="@Model.CabinetQuotation.CustomerId">
+                                            @Model.CabinetQuotation.CustomerIdFk.FirstName @Model.CabinetQuotation.CustomerIdFk.LastName
+                                        </a>
+                                    </p>
                                     <p class="card-text"><b>Quote Name:</b> @Model.CabinetQuotation.Name</p>
                                     <p class="card-text"><b>Cabinetry:</b> @Model.CabinetQuotation.VendorIdFk.CompanyName </p>
                                     <p class="card-text"><b>Construction:</b> @Model.CabinetQuotation.Construction </p>
@@ -63,7 +54,7 @@
                     @if (Model.CabinetQuotation.WoodSpeciesForOneColorDesign != null && Model.CabinetQuotation.WoodSpeciesForOneColorDesign != "") 
                     {
                     // it means it is one color design
-                        <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="col">
                             <div class="card" style="height: 320.5px;">
                                 <div class="card-content">
                                     <div class="card-body">
@@ -80,7 +71,7 @@
                     else
                     {
                     // it means it is multiple color design
-                        <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="col">
                             <div class="card" style="height: 320.5px;">
                                 <div class="card-content">
                                     <div class="card-body">
@@ -93,7 +84,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="col">
                             <div class="card" style="height: 320.5px;">
                                 <div class="card-content">
                                     <div class="card-body">
@@ -105,7 +96,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-3 col-lg-12 col-md-12">
+                        <div class="col">
                             <div class="card" style="height: 320.5px;">
                                 <div class="card-content">
                                     <div class="card-body">
@@ -118,10 +109,8 @@
                         </div>
                     }
 
-                </section>
 
-                <section class="row  match-height">
-                    <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="col">
                         <div class="card" style="height: 389.2px;">
                             <div class="card-content">
                                 <div class="card-body">
@@ -136,7 +125,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="col">
                         <div class="card" style="height: 389.2px;">
                             <div class="card-content">
                                 <div class="card-body">
@@ -151,7 +140,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="col">
                         <div class="card" style="height: 389.2px;">
                             <div class="card-content">
                                 <div class="card-body">
@@ -166,7 +155,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-lg-12 col-md-12">
+                    <div class="col">
                         <div class="card" style="height: 389.2px;">
                             <div class="card-content">
                                 <div class="card-body">
@@ -181,7 +170,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="feather icon-paperclip"></i></span>
                                                     </div>
-                                                    <input asp-for="DocumentFile" type="file" class="form-control" />
+                                                    <input asp-for="DocumentFiles" type="file" multiple class="form-control" />
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -190,12 +179,12 @@
                             </div>
                         </div>
                     </div>
-                </section>
+
+                </div>
 
 
                 <div class="form-actions text-center mb-5">
                     <button onclick="javascript:history.goback()" class="width-150 btn btn-primary"><i class="feather icon-arrow-left"></i> Previous</button>
-                    <button type="submit" class="width-150 btn btn-outline-primary"><i class="feather icon-check-square-o"></i> Save & Close</button>
                     <button type="submit" class="width-150 btn btn-primary">Next <i class="feather icon-arrow-right"></i></button>
                 </div>
             </div>
