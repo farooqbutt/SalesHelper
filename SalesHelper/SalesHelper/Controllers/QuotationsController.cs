@@ -12,30 +12,130 @@ namespace SalesHelper.Controllers
     public class QuotationsController : Controller
     {
         private readonly CabinetQuotationRepo _cabinetQuotationService;
+        private readonly CountertopQuotationRepo _countertopQuotationService;
         private readonly CustomerRepo _customerService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly AddressRepo _addressService;
 
         public QuotationsController(
-            CabinetQuotationRepo cabinetQuotationRepo, 
-            CustomerRepo customerRepo, 
-            ApplicationDbContext context, 
+            CabinetQuotationRepo cabinetQuotationRepo,
+            CountertopQuotationRepo countertopQuotationRepo,
+            CustomerRepo customerRepo,
+            ApplicationDbContext context,
             IWebHostEnvironment env,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            AddressRepo addressService)
         {
             _cabinetQuotationService = cabinetQuotationRepo;
+            _countertopQuotationService = countertopQuotationRepo;
             _customerService = customerRepo;
             _context = context;
             _env = env;
             _signInManager = signInManager;
+            _addressService = addressService;
         }
+
+        #region COMMON METHODS START
+
+        [HttpGet]
+        public IActionResult QuotationsListView()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult QuotationsList()
+        {
+            // right now this is only for getting cabinet quotations
+            //TODO: add other quotations logic here as well
+            var cabinetQuotations = _cabinetQuotationService.ReadAll().Where(a => a.CreatedByUserId ==
+                            _signInManager.UserManager.GetUserAsync(User).Result.Id).OrderByDescending(a => a.ModifiedDateTime).ToList();
+            var countertopQuotations = _countertopQuotationService.ReadAll().Where(a => a.CreatedByUserId ==
+                                       _signInManager.UserManager.GetUserAsync(User).Result.Id).OrderByDescending(a => a.ModifiedDateTime).ToList();
+            var quotationsList = new List<QuotationsListVM>();
+
+            foreach (var item in cabinetQuotations)
+            {
+                var quotation = new QuotationsListVM
+                {
+                    QuotationId = QuotationsListVM.QuoteTypesIntials.CBNT.ToString() + "-" + item.Id,
+                    QuotationName = item.Name,
+                    Customer = item.CustomerIdFk,
+                    QuoteType = QuotationsListVM.QuoteTypes.Cabinet.ToString(),
+                    Vendor = item.VendorIdFk,
+                    CreatedDate = item.CreatedDateTime,
+                    ModifiedDate = item.ModifiedDateTime
+                };
+                quotationsList.Add(quotation);
+            }
+
+            foreach (var item in countertopQuotations)
+            {
+                var quotation = new QuotationsListVM
+                {
+                    QuotationId = QuotationsListVM.QuoteTypesIntials.CNTP.ToString() + "-" + item.Id,
+                    QuotationName = item.Name,
+                    Customer = item.CustomerIdFk,
+                    QuoteType = QuotationsListVM.QuoteTypes.Countertop.ToString(),
+                    Vendor = null,
+                    CreatedDate = item.CreatedDateTime,
+                    ModifiedDate = item.ModifiedDateTime
+                };
+                quotationsList.Add(quotation);
+            }
+
+            var data = new { data = quotationsList.OrderByDescending(a => a.ModifiedDate) };
+
+            return Json(data);
+        }
+
+        #endregion COMMON METHODS END
+
+        #region CABINET QUOTATIONS
 
         public CabinetQuotation TimeAndUserUpdate(CabinetQuotation cabinetQuotation)
         {
             cabinetQuotation.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
             cabinetQuotation.ModifiedDateTime = DateTime.Now;
             return cabinetQuotation;
+        }
+
+        [HttpGet]
+        public IActionResult EditCabinetQuotation(int id)
+        {
+            var cabinetQuotation = _cabinetQuotationService.Read(id);
+            cabinetQuotation.CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId);
+            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
+            return View(cabinetQuotation);
+        }
+
+        [HttpPost]
+        public IActionResult EditCabinetQuotation(CabinetQuotation cabinetQuotation)
+        {
+            var quoteToUpdate = _cabinetQuotationService.Read(cabinetQuotation.Id);
+            // updating only fields that are changed in cabinet quotation
+            quoteToUpdate.Name = cabinetQuotation.Name;
+            quoteToUpdate.CustomerId = cabinetQuotation.CustomerId;
+            quoteToUpdate.VendorId = cabinetQuotation.VendorId;
+            quoteToUpdate.Construction = cabinetQuotation.Construction;
+            quoteToUpdate.BoxMaterials = cabinetQuotation.BoxMaterials;
+            quoteToUpdate.WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign;
+            quoteToUpdate.DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign;
+            quoteToUpdate.CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign;
+            quoteToUpdate.DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign;
+            quoteToUpdate.UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign;
+            quoteToUpdate.LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign;
+            quoteToUpdate.IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign;
+            quoteToUpdate.UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign;
+            quoteToUpdate.LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign;
+            quoteToUpdate.IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign;
+            quoteToUpdate.CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign;
+
+            _cabinetQuotationService.Update(TimeAndUserUpdate(quoteToUpdate));
+            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
+            return RedirectToAction("CabinetQuotationAdditionalInformation", new { id = cabinetQuotation.Id });
         }
 
         [HttpGet]
@@ -154,7 +254,7 @@ namespace SalesHelper.Controllers
                 _context.SaveChanges();
                 return Json(new { message = "success", result = "Deleted Successfully!" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { message = "success", result = ex.InnerException!.Message });
             }
@@ -279,26 +379,76 @@ namespace SalesHelper.Controllers
             }
         }
 
+        #endregion CABINET QUOTATIONS
+
+        #region COUNTERTOP QUOTATIONS
+
         [HttpGet]
-        public IActionResult QuotationsListView()
+        public IActionResult CreateCountertopQuotationView(int? customerId)
         {
+            TempData["CustomerId"] = customerId != null ? customerId : null;
             return View();
         }
 
-        [HttpGet]
-        public JsonResult QuotationsList()
+        [HttpPost]
+        public IActionResult CreateCountertopQuotation(CountertopQuotationCreateInterface quotation)
         {
-            // right now this is only for getting cabinet quotations
-            //TODO: add other quotations logic here as well
-            var quotations = _cabinetQuotationService.ReadAll().Where(a => a.CreatedByUserId ==
-                            _signInManager.UserManager.GetUserAsync(User).Result.Id).OrderByDescending(a => a.ModifiedDateTime).ToList();
-            foreach (var item in quotations)
+            _countertopQuotationService.Create(quotation.CountertopQuotation);
+            foreach (var item in quotation.CountertopMaterials)
             {
-                item.CustomerIdFk = _customerService.Read(item.CustomerId);
-                item.VendorIdFk = _context.Vendor.Find(item.VendorId)!;
+                item.CountertopQuotationId = quotation.CountertopQuotation.Id;
+                _context.CountertopMaterials.Add(item);
             }
-            var data = new { data = quotations };
-            return Json(data); 
+            _context.SaveChanges();
+            return Json(new { message = "success", result = "Quotation Created Successfully!" });
         }
+
+        [HttpGet]
+        public IActionResult FullCountertopQuoteView(int id)
+        {
+            var quotation = _countertopQuotationService.Read(id);
+            quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
+            quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
+            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).ToList();
+            var data = new CountertopQuotationCreateInterface
+            {
+                CountertopQuotation = quotation,
+                CountertopMaterials = quotationMaterials
+            };
+            return View(data);
+        }
+
+        [HttpGet]
+        public IActionResult EditCountertopQuotation(int id)
+        {
+            var quotation = _countertopQuotationService.Read(id);
+            quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
+            var data = new CountertopQuotationCreateInterface
+            {
+                CountertopQuotation = quotation,
+                CountertopMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).ToList()
+            };
+            return View(data);
+        }
+
+        [HttpPost]
+        public IActionResult EditCountertopQuotation(CountertopQuotationCreateInterface quote)
+        {
+            // first delete all countertop materials related to this quotation
+            _context.CountertopMaterials.RemoveRange(_context.CountertopMaterials.Where(a => a.CountertopQuotationId == quote.CountertopQuotation.Id));
+            _context.SaveChanges();
+            // update countertop quotation
+            _countertopQuotationService.Update(quote.CountertopQuotation);
+            // add countertop materials
+            foreach (var item in quote.CountertopMaterials)
+            {
+                item.CountertopQuotationId = quote.CountertopQuotation.Id;
+                _context.CountertopMaterials.Add(item);
+            }
+            _context.SaveChanges();
+            return Json(new { message = "success", result = "Quotation Updated Successfully!" });
+        }
+
+        #endregion COUNTERTOP QUOTATIONS
     }
 }

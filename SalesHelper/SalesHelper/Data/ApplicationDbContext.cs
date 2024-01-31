@@ -23,6 +23,8 @@ namespace SalesHelper.Data
         public DbSet<CatalogItem> CatalogItems { get; set; } = default!; 
         public DbSet<CabinetryDoorStyle> CabinetryDoorStyles { get; set; } = default!;
         public DbSet<QuotationDocument> QuotationDocuments { get; set; } = default!;
+        public DbSet<CountertopQuotation> CountertopQuotations { get; set; } = default!;
+        public DbSet<CountertopMaterial> CountertopMaterials { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

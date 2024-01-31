@@ -1,10 +1,12 @@
-﻿@model SalesHelper.Models.CabinetQuotation
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@model SalesHelper.Models.CabinetQuotation
 @inject SalesHelper.Repository.CustomerRepo _customerService
 @inject SalesHelper.Data.ApplicationDbContext _context
 @{
     var customerId = TempData["CustomerId"];
-    var customersList = _customerService.ReadAll();
-    var cabinetryVendors = _context.Vendor.Where(v => v.BusinessTypeId == 1).Take(10).ToList();
+    var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+    var cabinetryVendors = _context.Vendor.Where(v => v.BusinessTypeId == 1).ToList();
 }
 <style>
     .select2-container .select2-selection--single .select2-selection__rendered {

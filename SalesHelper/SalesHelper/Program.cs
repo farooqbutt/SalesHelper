@@ -15,6 +15,7 @@ builder.Services.AddScoped<CustomerRepo>();
 builder.Services.AddScoped<AddressRepo>();
 builder.Services.AddScoped<EventRepo>();
 builder.Services.AddScoped<CabinetQuotationRepo>();
+builder.Services.AddScoped<CountertopQuotationRepo>();
 
 // For uploading larg files to the server
 builder.Services.Configure<KestrelServerOptions>(options =>

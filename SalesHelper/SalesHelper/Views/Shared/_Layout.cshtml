@@ -390,8 +390,8 @@
                                        asp-controller="Quotations" asp-action="CreateCabinetQuotation">Cabinet Quote</a>
                                 </li>
                                 <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
-                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopQuotation" ? "active" : "")">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Countertop Quote</a>
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopQuotationView" ? "active" : "")">
+                                    <a class="menu-item" asp-controller="Quotations" asp-action="CreateCountertopQuotationView">Countertop Quote</a>
                                 </li>
                                 <li class="">
                                     <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Hardware Quote</a>

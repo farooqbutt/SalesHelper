@@ -11,7 +11,7 @@
                 </button>
                 <span aria-labelledby="btnQuote" class="dropdown-menu dropdown-menu-right mt-1">
                     <a asp-controller="Quotations" asp-action="CreateCabinetQuotation" class="dropdown-item">Cabinet Quotation</a>
-                    <a asp-controller="Quotations" asp-action="" class="dropdown-item">Countertop Quotation</a>
+                    <a asp-controller="Quotations" asp-action="CreateCountertopQuotationView" class="dropdown-item">Countertop Quotation</a>
                     <a asp-controller="Quotations" asp-action="" class="dropdown-item">Hardware Quotation</a>
                     <a asp-controller="Quotations" asp-action="" class="dropdown-item">Installation Quotation</a>
                 </span>
@@ -60,50 +60,66 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `
-                            <div class="text-center">
-                                <a href="/Quotations/FullCabinetQuoteView/${row.id}"><b>${row.id}</b></a>
-                            </div>
-                                `;
+                        if (row.quoteType == "Cabinet") {
+                            return `
+                                <div class="text-center">
+                                    <a href="/Quotations/FullCabinetQuoteView/${row.quotationId.split("-")[1]}"><b>${row.quotationId}</b></a>
+                                </div>
+                                    `;
+                        } else if (row.quoteType == "Countertop") {
+                            return `
+                                <div class="text-center">
+                                    <a href="/Quotations/FullCountertopQuoteView/${row.quotationId.split("-")[1]}"><b>${row.quotationId}</b></a>
+                                </div>
+                                    `;
+                        }
                     }
                 },
                 {
-                    "data": "name"
+                    "data": "quotationName"
                 },
                 {
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                                    <a href="/Customers/CustomerDetailedView/${row.customerIdFk.id}">${row.customerIdFk.firstName} ${row.customerIdFk.lastName}</a>
+                                    <a href="/Customers/CustomerDetailedView/${row.customer.id}">${row.customer.firstName} ${row.customer.lastName}</a>
                             `;
                     }
                 },
                 {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        return `
-                                Cabinet
-                                `;
-                    }
-                },
-                {
-                    "data": "vendorIdFk.companyName"
+                    "data": "quoteType"
                 },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `
-                                        ${row.createdDateTime.split("T")[0]}
-                                `;
-                    }
-                },
-                {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        if(row.modifiedDateTime != null) {
-                            const dateTime = new Date(row.modifiedDateTime);
+                        if(row.vendor != null) {
                             return `
-                                        ${row.modifiedDateTime.split("T")[0]} -- ${dateTime.getHours()}:${dateTime.getMinutes()}
+                                    <a href="/Vendors/VendorDetailedView/${row.vendor.vendorId}">${row.vendor.companyName}</a>
+                                `;
+                        }
+                        else {
+                            return `
+                                    N/A
+                                `;
+                        }
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                                        ${row.createdDate.split("T")[0]}
+                                `;
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        console.log(row.modifiedDate);
+                        if(row.modifiedDate != null) {
+                            const dateTime = new Date(row.modifiedDate);
+                            return `
+                                        ${row.modifiedDate.split("T")[0]} -- ${dateTime.getHours()}:${dateTime.getMinutes()}
                                 `;
                         }
                         else {
@@ -116,18 +132,34 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `
-                            <div class="text-center">
-                                <span class="dropdown">
-                                    <a id="btnSearchDrop4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></a>
-                                    <span aria-labelledby="btnSearchDrop4" class="dropdown-menu mt-1" x-placement="bottom-start">
-                                        <a href="quote-cabinet-edit.html" class="dropdown-item delete"><i class="feather icon-edit-2"></i>Edit quote</a>
-                                        <a href="#" class="dropdown-item delete"><i class="feather icon-plus-circle primary"></i> Convert to sales</a>
-                                        <a href="#" class="dropdown-item"><i class="feather icon-plus-circle primary"></i> Send reminder</a>
+                        if (row.quoteType == "Cabinet") {
+                            return `
+                                <div class="text-center">
+                                    <span class="dropdown">
+                                        <a id="btnSearchDrop4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></a>
+                                        <span aria-labelledby="btnSearchDrop4" class="dropdown-menu mt-1" x-placement="bottom-start">
+                                            <a href="/Quotations/EditCabinetQuotation/${row.quotationId.split("-")[1]}" class="dropdown-item delete"><i class="feather icon-edit-2"></i>Edit Quote</a>
+                                            <a href="#" class="dropdown-item delete"><i class="feather icon-plus-circle primary"></i> Convert to sales</a>
+                                            <a href="#" class="dropdown-item"><i class="feather icon-plus-circle primary"></i> Send reminder</a>
+                                        </span>
                                     </span>
-                                </span>
-                            </div>
-                                `;
+                                </div>
+                                    `;
+                        }
+                        if (row.quoteType == "Countertop") {
+                            return `
+                                <div class="text-center">
+                                    <span class="dropdown">
+                                        <a id="btnSearchDrop4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></a>
+                                        <span aria-labelledby="btnSearchDrop4" class="dropdown-menu mt-1" x-placement="bottom-start">
+                                            <a href="quote-cabinet-edit.html" class="dropdown-item delete"><i class="feather icon-edit-2"></i>Edit Quote</a>
+                                            <a href="#" class="dropdown-item delete"><i class="feather icon-plus-circle primary"></i> Convert to sales</a>
+                                            <a href="#" class="dropdown-item"><i class="feather icon-plus-circle primary"></i> Send reminder</a>
+                                        </span>
+                                    </span>
+                                </div>
+                                    `;
+                        }
                     }
                 },
             ]

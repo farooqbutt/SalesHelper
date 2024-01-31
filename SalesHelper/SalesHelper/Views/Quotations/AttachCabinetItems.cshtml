@@ -226,62 +226,49 @@
             }
         });
 
-
+        // Function to add row in table
         function addRow(data) {
             var newRow = `
-                                            <tr>
-                                                <td><b class="item-number"></b></td>
-                                                <td class="hidden"><input name="DoorStyleName" value="${data.doorStyleName}"/></td>
-                                                <td class="input-group-sm">
-                                                    <input type="number" name="Quantity" class="form-control" value="1" placeholder="Qty" />
-                                                </td>
-                                                <td>
-                                                    ${data.catalogItemIdFK.itemCode}
-                                                </td>
-                                                <td class="input-group-sm">
-                                                    <input type="text" name="Description" class="form-control square" value="${data.catalogItemIdFK.manufactureSectionName}" placeholder="Description" />
-                                                </td>
-                                                <td class="input-group-sm">
-                                                    <select name="Hinge" class="form-control square">
-                                                        <option value="N/A">N/A</option>
-                                                        <option value="Left">Left</option>
-                                                        <option value="Right">Right</option>
-                                                    </select>
-                                                </td>
-                                                <td class="input-group-sm">
-                                                    <select name="Finish" class="form-control square">
-                                                        <option value="N/A">N/A</option>
-                                                        <option value="Left">Left</option>
-                                                        <option value="Right">Right</option>
-                                                        <option value="Bottom">Bottom</option>
-                                                    </select>
-                                                </td>
-                                                <td class="input-group-sm">
-                                                    ${data.price.toFixed(2)}
-                                                </td>
-                                                <td style="vertical-align:middle;">
-                                                    <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
-                                                </td>
-                                            </tr>
-                                        `;
+                        <tr>
+                            <td><b class="item-number"></b></td>
+                            <td class="hidden"><input name="DoorStyleName" value="${data.doorStyleName}"/></td>
+                            <td class="input-group-sm">
+                                <input type="number" name="Quantity" class="form-control" value="1" placeholder="Qty" />
+                            </td>
+                            <td>
+                                ${data.catalogItemIdFK.itemCode}
+                            </td>
+                            <td class="input-group-sm">
+                                <input type="text" name="Description" class="form-control square" value="${data.catalogItemIdFK.manufactureSectionName}" placeholder="Description" />
+                            </td>
+                            <td class="input-group-sm">
+                                <select name="Hinge" class="form-control square">
+                                    <option value="N/A">N/A</option>
+                                    <option value="Left">Left</option>
+                                    <option value="Right">Right</option>
+                                </select>
+                            </td>
+                            <td class="input-group-sm">
+                                <select name="Finish" class="form-control square">
+                                    <option value="N/A">N/A</option>
+                                    <option value="Left">Left</option>
+                                    <option value="Right">Right</option>
+                                    <option value="Bottom">Bottom</option>
+                                </select>
+                            </td>
+                            <td class="input-group-sm">
+                                ${data.price.toFixed(2)}
+                            </td>
+                            <td style="vertical-align:middle;">
+                                <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
+                            </td>
+                        </tr>
+                    `;
 
             $('#itemTable tbody').append(newRow);
 
             // Update item numbers
             updateItemNumbers();
-        }
-
-        // Function to update price
-        function updatePrice() {
-            $('#itemTable tbody tr').each(function () {
-                var quantity = parseInt($(this).find('input[name^="Items["]').val()) || 0;
-                var individualPrice = parseFloat($(this).find('td:eq(6)').text()) || 0; // Assuming the price cell is at index 6
-
-                var totalPrice = quantity * individualPrice;
-
-                // Update the total price cell
-                $(this).find('td:eq(7)').text(totalPrice.toFixed(2)); // Assuming the total price cell is at index 7
-            });
         }
 
         // Function to update item numbers
@@ -290,11 +277,6 @@
                 $(this).text(index + 1);
             });
         }
-
-        // Add row when the "Add Item" button is clicked
-        $('#addItemBtn').on('click', function () {
-            addRow();
-        });
 
         // Remove row when the "Delete Item" button is clicked
         $('#itemTable').on('click', '.delete-row', function () {

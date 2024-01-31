@@ -4,18 +4,18 @@ using SalesHelper.Models;
 
 namespace SalesHelper.Repository
 {
-    public class CabinetQuotationRepo : ICabinetQuotationRepo
+    public class CountertopQuotationRepo : ICountertopQuotationRepo
     {
         private readonly ApplicationDbContext _context;
-        public CabinetQuotationRepo(ApplicationDbContext context)
+        public CountertopQuotationRepo(ApplicationDbContext context)
         {
             _context = context;
         }
-        public void Create(CabinetQuotation cabinetQuotation)
+        public void Create(CountertopQuotation quotation)
         {
             try
             {
-                _context.CabinetQuotations.Add(cabinetQuotation);
+                _context.CountertopQuotations.Add(quotation);
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -28,7 +28,7 @@ namespace SalesHelper.Repository
         {
             try
             {
-                _context.CabinetQuotations.Remove(Read(id));
+                _context.CountertopQuotations.Remove(Read(id));
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -37,11 +37,11 @@ namespace SalesHelper.Repository
             }
         }
 
-        public CabinetQuotation Read(int id)
+        public CountertopQuotation Read(int id)
         {
             try
             {
-                return _context.CabinetQuotations.Find(id)!;
+                return _context.CountertopQuotations.Find(id)!;
             }
             catch (Exception e)
             {
@@ -49,11 +49,11 @@ namespace SalesHelper.Repository
             }
         }
 
-        public List<CabinetQuotation> ReadAll()
+        public List<CountertopQuotation> ReadAll()
         {
             try
             {
-                return _context.CabinetQuotations.Include(a => a.VendorIdFk).Include(a => a.CustomerIdFk).ToList();
+                return _context.CountertopQuotations.Include(a => a.CustomerIdFk).ToList();
             }
             catch (Exception e)
             {
@@ -61,11 +61,11 @@ namespace SalesHelper.Repository
             }
         }
 
-        public void Update(CabinetQuotation cabinetQuotation)
+        public void Update(CountertopQuotation quotation)
         {
             try
             {
-                _context.CabinetQuotations.Update(cabinetQuotation);
+                _context.CountertopQuotations.Update(quotation);
                 _context.SaveChanges();
             }
             catch (Exception e)

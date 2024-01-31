@@ -1,0 +1,483 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
+@inject SalesHelper.Repository.CustomerRepo _customerService
+@{
+    var roomTypes = Enum.GetValues(typeof(CountertopQuotation.RoomTypes))
+                                .Cast<CountertopQuotation.RoomTypes>()
+                                .Select(e => e.GetEnumMemberAttributeValue())
+                                .ToList();
+    var edgeProfiles = Enum.GetValues(typeof(CountertopQuotation.EdgeProfiles))
+                        .Cast<CountertopQuotation.EdgeProfiles>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var materials = Enum.GetValues(typeof(CountertopMaterial.Materials))
+                        .Cast<CountertopMaterial.Materials>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var brands = Enum.GetValues(typeof(CountertopMaterial.Brands))
+                        .Cast<CountertopMaterial.Brands>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var customerId = Model.CountertopQuotation.CustomerId;
+    var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+}
+<style>
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-left: 35px;
+    }
+
+    .select2-selection {
+        border-radius: 0px !important;
+    }
+
+    .input-group > .select2-container--default {
+        width: auto;
+        flex: 1 1 auto;
+    }
+
+        .input-group > .select2-container--default .select2-selection--single {
+            height: 100%;
+            line-height: inherit;
+            padding: 0.5rem 1rem;
+        }
+</style>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">Edit Countertop Quotation</h3>
+        </div>
+    </div>
+    <div class="content-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title text-primary">Countertop Quote Details</h4>
+            </div>
+            <div class="card-content collapse show">
+                <div class="card-body">
+                    <form class="form" id="CountertopQuotationForm">
+                        <div class="form-body">
+
+                            <div class="form-group">
+                                <label>Customer Name <span class="required">*</span></label>
+                                <div class="input-group has-icon-left">
+                                    <select class="form-control square" asp-for="CountertopQuotation.CustomerId" data-placeholder="Select a Customer" required></select>
+                                    <div class="form-control-position">
+                                        <i class="feather icon-user primary"></i>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <a class="btn btn-primary" asp-controller="Customers" asp-action="AddCustomers" target="_blank">
+                                            Add New Customer
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden">
+                                <input asp-for="CountertopQuotation.Id" />
+                                <input asp-for="CountertopQuotation.CreatedDateTime" />
+                                <input asp-for="CountertopQuotation.ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                                <input asp-for="CountertopQuotation.CreatedByUserId" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Quote Name <span class="required">*</span></label>
+                                <input class="form-control square" asp-for="CountertopQuotation.Name" placeholder="Quote Name" required />
+                            </div>
+
+                            <h4 class="form-section"><i class="feather icon-file-text"></i> Quote Details</h4>
+
+                            <div class="form-group">
+                                <label>Room Type</label>
+                                <select class="form-control square" asp-for="CountertopQuotation.RoomType">
+                                    <option selected disabled>Choose Room Type</option>
+                                    @foreach (var item in roomTypes)
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Edge Profile</label>
+                                <select class="form-control square" asp-for="CountertopQuotation.EdgeProfile">
+                                    <option selected disabled>Choose Edge Profile</option>
+                                    @foreach (var item in edgeProfiles)
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-3">
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.MiteredEdge" class="custom-control-input" id="MiteredEdge" />
+                                            <label class="custom-control-label" for="MiteredEdge">Mitered Edge</label>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.MiteredEdgeOnIsland" class="custom-control-input" id="MiteredEdgeOnIsland" />
+                                            <label class="custom-control-label" for="MiteredEdgeOnIsland">Mitered Edge On Island</label>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.WaterfallOnIsland" class="custom-control-input" id="WaterfallOnIsland" />
+                                            <label class="custom-control-label" for="WaterfallOnIsland">Walterfall On Island</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-3">
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.FarmhouseSink" class="custom-control-input" id="FarmhouseSink" />
+                                            <label class="custom-control-label" for="FarmhouseSink">Farmhouse Sink</label>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.IslandPrepSink" class="custom-control-input" id="IslandPrepSink" />
+                                            <label class="custom-control-label" for="IslandPrepSink">Island Prep Sink</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.Cooktop" class="custom-control-input" id="Cooktop" />
+                                            <label class="custom-control-label" for="Cooktop">Cooktop</label>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.Rangetop" class="custom-control-input" id="Rangetop" />
+                                            <label class="custom-control-label" for="Rangetop">Rangetop</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-3">
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.FullBacksplash" class="custom-control-input" id="FullBacksplash" />
+                                            <label class="custom-control-label" for="FullBacksplash">Full Backsplash</label>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" asp-for="CountertopQuotation.FourIncBacksplash" class="custom-control-input" id="FourInchBacksplash" />
+                                            <label class="custom-control-label" for="FourInchBacksplash">4" Backsplash</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Estimate Square Feet</label>
+                                <input class="form-control square" asp-for="CountertopQuotation.EstimateSquareFeet" placeholder="Estimate Square Feet" />
+                            </div>
+
+                            <div class="d-flex justify-content-between align-content-lg-end">
+                                <h4 class="card-title text-primary">
+                                    Material & Price
+                                </h4>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="true" data-target="#AddMaterialModal">
+                                        <i class="feather icon-plus"></i> Add New Material
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-content collapse show">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table" id="materialTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Material</th>
+                                                    <th>Brand</th>
+                                                    <th>Color</th>
+                                                    <th>Vendor</th>
+                                                    <th>Vendor Rate</th>
+                                                    <th>Price Quote</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.CountertopMaterials)
+                                                {
+                                                    var index = Model.CountertopMaterials.IndexOf(item) + 1;
+                                                    <tr>
+                                                        <td><b class="item-number">@index</b></td>
+                                                        <td>@item.Material</td>
+                                                        @if(item.Brand == null)
+                                                        {
+                                                            <td>@item.OtherBrand</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@item.Brand</td>
+                                                        }
+                                                        <td>@item.Color</td>
+                                                        <td>@item.VendorName</td>
+                                                        <td>@item.VendorRate</td>
+                                                        <td>@item.PriceQuote</td>
+                                                        <td style="vertical-align:middle;">
+                                                            <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-actions text-center">
+                            <a asp-controller="Quotations" asp-action="QuotationsListView" class="width-150 btn btn-warning"><i class="feather icon-x"></i> Cancel</a>
+                            <button type="submit" class="width-150 btn btn-primary"><i class="feather icon-save"></i> Update Quote</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade text-left" id="AddMaterialModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-box"></i> Add New Material</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <label>Material</label>
+                <div class="form-group position-relative has-icon-left">
+                    <select id="Material" class="form-control square" required>
+                        <option selected disabled>Choose Material</option>
+                        @foreach (var item in materials)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
+                    <div class="form-control-position">
+                        <i class="feather icon-box primary"></i>
+                    </div>
+                </div>
+
+                <label>Major Quartz Brand</label>
+                <div class="form-group position-relative has-icon-left">
+                    <select id="Brand" class="form-control square" required>
+                        <option selected disabled>Choose Brand</option>
+                        @foreach (var item in brands)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                        <option value="">Other</option>
+                    </select>
+                    <div class="form-control-position">
+                        <i class="feather icon-star primary"></i>
+                    </div>
+                </div>
+
+                <label>Other Brand</label>
+                <div class="form-group position-relative has-icon-left">
+                    <input id="OtherBrand" type="text" class="form-control square" placeholder="Other Brand Name" />
+                    <div class="form-control-position">
+                        <i class="feather icon-star primary"></i>
+                    </div>
+                </div>
+
+                <label>Color</label>
+                <div class="form-group position-relative has-icon-left">
+                    <input id="Color" type="text" class="form-control square" placeholder="Color" />
+                    <div class="form-control-position">
+                        <i class="feather icon-droplet primary"></i>
+                    </div>
+                </div>
+
+                <label>Vendor Name</label>
+                <div class="form-group position-relative has-icon-left">
+                    <input id="VendorName" type="text" class="form-control square" placeholder="Vendor Name" />
+                    <div class="form-control-position">
+                        <i class="feather icon-user primary"></i>
+                    </div>
+                </div>
+
+                <label>Vendor Rate</label>
+                <div class="form-group position-relative has-icon-left">
+                    <input id="VendorRate" type="number" class="form-control square" placeholder="Vendor Rate" />
+                    <div class="form-control-position">
+                        <i class="fa fa-money primary"></i>
+                    </div>
+                </div>
+
+                <label>Price Quote</label>
+                <div class="form-group position-relative has-icon-left">
+                    <input id="PriceQuote" type="number" class="form-control square" placeholder="Price Quote" />
+                    <div class="form-control-position">
+                        <i class="fa fa-money primary"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                <button id="btnAddtolist" class="btn btn-primary">Add To List</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // For Customers Select List
+        var customerList = @Html.Raw(Json.Serialize(customersList));
+        $("#CountertopQuotation_CustomerId").select2({
+            placeholder: $(this).data("placeholder"),
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            data: customerList.map(function (customer) {
+                return {
+                    id: customer.id,
+                    text: customer.firstName + " " + customer.lastName
+                };
+            })
+        });
+        $("#CountertopQuotation_CustomerId").val(@customerId).trigger("change");
+
+        // Submitting Countertop Quotation Form with Material List
+        $("#CountertopQuotationForm").submit(function (e) {
+            e.preventDefault();
+
+            var countertopQuotationData = {};
+            $(this).find("input, select").each(function () {
+                if (this.type === "checkbox") {
+                    if (this.checked) {
+                        countertopQuotationData[this.name.split(".")[1]] = this.checked;
+                    }
+                } else if (this.type != "hidden") {
+                    countertopQuotationData[this.name.split(".")[1]] = $(this).val();
+                }
+            });
+
+            var data = {
+                countertopQuotation: countertopQuotationData,
+                countertopMaterials: GetMaterials()
+            };
+
+            $.ajax({
+                url: "/Quotations/EditCountertopQuotation",
+                type: "POST",
+                data: {
+                    quote: data
+                },
+                success: function (data) {
+                    if (data.message == "success") {
+                        toastr.success(data.result, "Success", { "progressBar": true });
+                        setTimeout(function () {
+                            window.location.href = "/Quotations/QuotationsListView";
+                        }, 4000);
+                    } else {
+                        toastr.info(data.result, "Information", { "progressBar": true });
+                    }
+                },
+                error: function (error) {
+                    toastr.error(error, 'Error!', { "progressBar": true });
+                }
+            });
+        });
+
+        $('#btnAddtolist').on('click', function () {
+            var materialData = {
+                material: $('#Material').val(),
+                brand: $('#Brand').val(),
+                otherBrand: $('#OtherBrand').val(),
+                color: $('#Color').val(),
+                vendorName: $('#VendorName').val(),
+                vendorRate: $('#VendorRate').val(),
+                priceQuote: $('#PriceQuote').val()
+            };
+            if (materialData.material != null || materialData.brand != null) {
+                addRow(materialData);
+                // close modal
+                $("#AddMaterialModal").modal("hide");
+            } else {
+                alert("Please Select Material and Brand to continue!");
+            }
+        });
+
+        function GetMaterials() {
+            var listOfMaterials = new Array();
+            $("#materialTable").find("tr:gt(0)").each(function () {
+                var material = $(this).find("td:eq(1)").text().trim();
+                var brand = $(this).find("td:eq(2)").text().trim();
+                var color = $(this).find("td:eq(3)").text().trim();
+                var vendorName = $(this).find("td:eq(4)").text().trim();
+                var vendorRate = $(this).find("td:eq(5)").text().trim();
+                var priceQuote = $(this).find("td:eq(6)").text().trim();
+                var otherBrand = $(this).find("td:eq(7)").text().trim();
+
+                var CountertopMaterial = {};
+
+                CountertopMaterial.material = material;
+                CountertopMaterial.brand = brand;
+                CountertopMaterial.otherBrand = otherBrand;
+                CountertopMaterial.color = color;
+                CountertopMaterial.vendorName = vendorName;
+                CountertopMaterial.vendorRate = vendorRate;
+                CountertopMaterial.priceQuote = priceQuote;
+
+                listOfMaterials.push(CountertopMaterial);
+            });
+            return listOfMaterials;
+        }
+
+        // Function to add row in table
+        function addRow(data) {
+            var brandToDisplay = (data.brand == "" || data.brand == null) ? data.otherBrand : data.brand;
+            var newRow = `
+                            <tr>
+                                <td><b class="item-number"></b></td>
+                                <td>${data.material}</td>
+                                <td>${brandToDisplay}</td>
+                                <td>${data.color}</td>
+                                <td>${data.vendorName}</td>
+                                <td>${data.vendorRate}</td>
+                                <td>${data.priceQuote}</td>
+                                <td class="hidden">${data.otherBrand}</td>
+                                <td style="vertical-align:middle;">
+                                    <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
+                                </td>
+                            </tr>
+                        `;
+
+            $('#materialTable tbody').append(newRow);
+
+            // Update item numbers
+            updateItemNumbers();
+        }
+
+        // Function to update item numbers
+        function updateItemNumbers() {
+            $('.item-number').each(function (index) {
+                $(this).text(index + 1);
+            });
+        }
+
+        // Remove row when the "Delete Item" button is clicked
+        $('#materialTable').on('click', '.delete-row', function () {
+            $(this).closest('tr').remove();
+            updateItemNumbers();
+        });
+    });
+</script>

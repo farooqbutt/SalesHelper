@@ -29,7 +29,7 @@
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" asp-controller="Quotations" asp-action="CreateCabinetQuotation" asp-route-customerId="@customerId">Cabinet Quote</a>
-                        <a class="dropdown-item" href="#">Countertop Quote</a>
+                        <a class="dropdown-item" asp-controller="Quotations" asp-action="CreateCountertopQuotationView" asp-route-customerId="@customerId">Countertop Quote</a>
                         <a class="dropdown-item" href="#">Hardware Quote</a>
                         <a class="dropdown-item" href="#">Other Quote</a>
                     </div>
