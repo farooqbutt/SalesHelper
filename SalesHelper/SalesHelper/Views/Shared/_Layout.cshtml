@@ -32,6 +32,7 @@
     <link rel="stylesheet" type="text/css" href="/vendors/css/tables/datatable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/extensions/toastr.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/forms/selects/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="/vendors/css/file-uploaders/dropzone.min.css">
 
     <link rel="stylesheet" type="text/css" href="/vendors/css/calendars/fullcalendar.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/calendars/daygrid.min.css">
@@ -53,6 +54,7 @@
     <link rel="stylesheet" type="text/css" href="/css/core/colors/palette-climacon.css">
     <link rel="stylesheet" type="text/css" href="/fonts/simple-line-icons/style.min.css">
     <link rel="stylesheet" type="text/css" href="/css/plugins/extensions/toastr.css">
+    <link rel="stylesheet" type="text/css" href="/css/plugins/file-uploaders/dropzone.min.css">
     <!-- link(rel='stylesheet', type='text/css', href=app_assets_path+'/css'+rtl+'/pages/users.css')-->
     <!-- END: Page CSS-->
     <!-- BEGIN: Custom CSS-->
@@ -350,12 +352,12 @@
                         <span class="badge badge badge-primary badge-pill float-right mr-2">2</span>
                     </a>
                     <ul class="menu-content">
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" && 
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "Index" ? "active" : "")">
                             <a class="menu-item"
                                asp-controller="Home" asp-action="Index">Statistics</a>
                         </li>
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" && 
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "AnalyticsView" ? "active" : "")">
                             <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Analytics</a>
                         </li>
@@ -364,7 +366,7 @@
                 <li class=" nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" ? "active open" : "")">
                     <a href="#"><i class="ti-user"></i><span class="menu-title">Customers</span></a>
                     <ul class="menu-content">
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" && 
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "AddCustomers" ? "active" : "")">
                             <a class="menu-item" asp-controller="Customers" asp-action="AddCustomers">Create New Customer</a>
                         </li>
@@ -378,7 +380,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class=" nav-item">
+                <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" ? "active open" : "")">
                     <a href="#"><i class="feather icon-edit"></i><span class="menu-title">Quotes</span></a>
                     <ul class="menu-content">
                         <li class="">
@@ -608,6 +610,7 @@
     <script src="/js/scripts/extensions/toastr.js"></script>
     <script src="/vendors/js/extensions/toastr.min.js"></script>
     <script src="/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="/vendors/js/extensions/dropzone.min.js"></script>
 
     <script src="/vendors/js/extensions/moment.min.js"></script>
     <script src="/vendors/js/extensions/fullcalendar.min.js"></script>

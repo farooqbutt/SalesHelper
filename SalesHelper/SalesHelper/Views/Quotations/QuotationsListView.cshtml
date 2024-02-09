@@ -49,7 +49,10 @@
 <script>
     $(document).ready(function () {
         $('#quotationsList').DataTable({
-            "ordering": false,
+            "pageLength": 50,
+            "columnDefs": [
+                { "orderable": false, "targets": [1,2,3,4,7] }
+            ],
             "ajax": {
                 "url": "/Quotations/QuotationsList",
                 "type": "GET",
@@ -69,7 +72,7 @@
                         } else if (row.quoteType == "Countertop") {
                             return `
                                 <div class="text-center">
-                                    <a href="/Quotations/FullCountertopQuoteView/${row.quotationId.split("-")[1]}"><b>${row.quotationId}</b></a>
+                                        <a href="/Quotations/EditCountertopQuotation/${row.quotationId.split("-")[1]}"><b>${row.quotationId}</b></a>
                                 </div>
                                     `;
                         }
@@ -115,7 +118,6 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        console.log(row.modifiedDate);
                         if(row.modifiedDate != null) {
                             const dateTime = new Date(row.modifiedDate);
                             return `
@@ -152,7 +154,7 @@
                                     <span class="dropdown">
                                         <a id="btnSearchDrop4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></a>
                                         <span aria-labelledby="btnSearchDrop4" class="dropdown-menu mt-1" x-placement="bottom-start">
-                                            <a href="quote-cabinet-edit.html" class="dropdown-item delete"><i class="feather icon-edit-2"></i>Edit Quote</a>
+                                            <a href="/Quotations/EditCountertopQuotation/${row.quotationId.split("-")[1]}"" class="dropdown-item delete"><i class="feather icon-edit-2"></i>Edit Quote</a>
                                             <a href="#" class="dropdown-item delete"><i class="feather icon-plus-circle primary"></i> Convert to sales</a>
                                             <a href="#" class="dropdown-item"><i class="feather icon-plus-circle primary"></i> Send reminder</a>
                                         </span>
@@ -164,5 +166,7 @@
                 },
             ]
         });
+
+        $('#quotationsList').DataTable().order([]).draw();
     });
 </script>

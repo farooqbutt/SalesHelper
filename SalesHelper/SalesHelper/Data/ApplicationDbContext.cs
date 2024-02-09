@@ -25,6 +25,7 @@ namespace SalesHelper.Data
         public DbSet<QuotationDocument> QuotationDocuments { get; set; } = default!;
         public DbSet<CountertopQuotation> CountertopQuotations { get; set; } = default!;
         public DbSet<CountertopMaterial> CountertopMaterials { get; set; } = default!;
+        public DbSet<CountertopBrandsData> CountertopBrandsData { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -39,6 +40,14 @@ namespace SalesHelper.Data
             modelBuilder.Entity<Account>()
                 .Property(a => a.AccountNumber)
                 .UseIdentityColumn(236200, 1);
+
+            modelBuilder.Entity<CabinetQuotation>()
+                .Property(c => c.Id)
+                .UseIdentityColumn(1000, 1);
+
+            modelBuilder.Entity<CountertopQuotation>()
+                .Property(c => c.Id)
+                .UseIdentityColumn(2000, 1);
 
             modelBuilder.Entity<BusinessTypes>()
                 .HasIndex(b => b.TypeName).IsUnique();

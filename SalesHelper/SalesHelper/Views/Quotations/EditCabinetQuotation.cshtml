@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> _signInManager
-@model SalesHelper.Models.CabinetQuotation
+@model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
 @inject SalesHelper.Repository.CustomerRepo _customerService
 @inject SalesHelper.Data.ApplicationDbContext _context
 @{
@@ -23,11 +23,11 @@
         flex: 1 1 auto;
     }
 
-    .input-group > .select2-container--default .select2-selection--single {
-        height: 100%;
-        line-height: inherit;
-        padding: 0.5rem 1rem;
-    }
+        .input-group > .select2-container--default .select2-selection--single {
+            height: 100%;
+            line-height: inherit;
+            padding: 0.5rem 1rem;
+        }
 </style>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -48,7 +48,16 @@
 
                             <div class="hidden">
                                 <input asp-for="Id" />
+                                <input asp-for="AdditionalInformation" />
+                                <input asp-for="CabinetPrice" />
+                                <input asp-for="DeliveryCharge" />
+                                <input asp-for="InstallationFee" />
+                                <input asp-for="Tax" />
+                                <input asp-for="VendorPrice" />
+                                <input asp-for="CommentOnPrice" />
                                 <input asp-for="CreatedDateTime" />
+                                <input asp-for="ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                                <input asp-for="CreatedByUserId" />
                             </div>
 
                             <div class="form-group">
@@ -150,7 +159,7 @@
                                 </div>
                             }
 
-                            @if(Model.UpperWoodSpeciesForMultipleColorDesign != null)
+                            @if (Model.UpperWoodSpeciesForMultipleColorDesign != null)
                             {
                                 <div id="multiColorDesignDiv">
                                     <h4 class="form-section"><i class="fa fa-th-large primary"></i> Multiple Color Design</h4>

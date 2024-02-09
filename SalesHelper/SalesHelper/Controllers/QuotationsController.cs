@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
@@ -106,13 +107,53 @@ namespace SalesHelper.Controllers
         public IActionResult EditCabinetQuotation(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-            cabinetQuotation.CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId);
-            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
-            return View(cabinetQuotation);
+
+            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+            {
+                Id = cabinetQuotation.Id,
+                Name = cabinetQuotation.Name,
+                CustomerId = cabinetQuotation.CustomerId,
+                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
+                VendorId = cabinetQuotation.VendorId,
+                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
+                Construction = cabinetQuotation.Construction,
+                BoxMaterials = cabinetQuotation.BoxMaterials,
+                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
+                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
+                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
+                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                AdditionalInformation = cabinetQuotation.AdditionalInformation,
+                CreatedByUserId = cabinetQuotation.CreatedByUserId,
+                CreatedDateTime = cabinetQuotation.CreatedDateTime,
+                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
+                CabinetPrice = cabinetQuotation.CabinetPrice,
+                DeliveryCharge = cabinetQuotation.DeliveryCharge,
+                InstallationFee = cabinetQuotation.InstallationFee,
+                Tax = cabinetQuotation.Tax,
+                VendorPrice = cabinetQuotation.VendorPrice,
+                CommentOnPrice = cabinetQuotation.CommentOnPrice,
+                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
+                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
+                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
+                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
+                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
+                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
+                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
+                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+            };
+
+            return View(quoteWithAdditionalInfo);
         }
 
         [HttpPost]
-        public IActionResult EditCabinetQuotation(CabinetQuotation cabinetQuotation)
+        public IActionResult EditCabinetQuotation(CabinetQuoteInterface cabinetQuotation)
         {
             var quoteToUpdate = _cabinetQuotationService.Read(cabinetQuotation.Id);
             // updating only fields that are changed in cabinet quotation
@@ -132,10 +173,18 @@ namespace SalesHelper.Controllers
             quoteToUpdate.LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign;
             quoteToUpdate.IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign;
             quoteToUpdate.CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign;
+            // additional information fields
+            quoteToUpdate.AdditionalInformation = cabinetQuotation.AdditionalInformation;
+            // updating price fields
+            quoteToUpdate.CabinetPrice = cabinetQuotation.CabinetPrice;
+            quoteToUpdate.DeliveryCharge = cabinetQuotation.DeliveryCharge;
+            quoteToUpdate.InstallationFee = cabinetQuotation.InstallationFee;
+            quoteToUpdate.Tax = cabinetQuotation.Tax;
+            quoteToUpdate.VendorPrice = cabinetQuotation.VendorPrice;
+            quoteToUpdate.CommentOnPrice = cabinetQuotation.CommentOnPrice;
 
-            _cabinetQuotationService.Update(TimeAndUserUpdate(quoteToUpdate));
-            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
-            return RedirectToAction("CabinetQuotationAdditionalInformation", new { id = cabinetQuotation.Id });
+            _cabinetQuotationService.Update(quoteToUpdate);
+            return RedirectToAction("CabinetQuotationDetailedView", new { id = cabinetQuotation.Id });
         }
 
         [HttpGet]
@@ -146,31 +195,85 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCabinetQuotation(CabinetQuotation cabinetQuotation)
+        public IActionResult CreateCabinetQuotation(CabinetQuoteInterface cabinetQuotation)
         {
-            cabinetQuotation.CreatedDateTime = DateTime.Now;
-            _cabinetQuotationService.Create(TimeAndUserUpdate(cabinetQuotation));
+            // Serializing additional information fields to JSON string
+            var additionalInfo = new
+            {
+                Refrigerator = cabinetQuotation.Refrigerator,
+                StoveAndCooktop = cabinetQuotation.StoveAndCooktop,
+                Dishwasher = cabinetQuotation.Dishwasher,
+                Hood = cabinetQuotation.Hood,
+                BuiltInOven = cabinetQuotation.BuiltInOven,
+                BuiltInDrawerMicrowave = cabinetQuotation.BuiltInDrawerMicrowave,
+                Sink = cabinetQuotation.Sink,
+                Comments = cabinetQuotation.Comments
+            };
+            var jsonData = JsonConvert.SerializeObject(additionalInfo);
+            cabinetQuotation.AdditionalInformation = jsonData;
+
+            _cabinetQuotationService.Create(cabinetQuotation);
             cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
-            return RedirectToAction("CabinetQuotationAdditionalInformation", new { id = cabinetQuotation.Id });
+            return RedirectToAction("CabinetQuotationDetailedView", new { id = cabinetQuotation.Id });
         }
 
         [HttpGet]
-        public IActionResult CabinetQuotationAdditionalInformation(int id)
+        public IActionResult CabinetQuotationDetailedView(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-            cabinetQuotation.CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId);
-            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
+
+            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+            {
+                Id = cabinetQuotation.Id,
+                Name = cabinetQuotation.Name,
+                CustomerId = cabinetQuotation.CustomerId,
+                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
+                VendorId = cabinetQuotation.VendorId,
+                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
+                Construction = cabinetQuotation.Construction,
+                BoxMaterials = cabinetQuotation.BoxMaterials,
+                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
+                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
+                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
+                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                AdditionalInformation = cabinetQuotation.AdditionalInformation,
+                CreatedByUserId = cabinetQuotation.CreatedByUserId,
+                CreatedDateTime = cabinetQuotation.CreatedDateTime,
+                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
+                CabinetPrice = cabinetQuotation.CabinetPrice,
+                DeliveryCharge = cabinetQuotation.DeliveryCharge,
+                InstallationFee = cabinetQuotation.InstallationFee,
+                Tax = cabinetQuotation.Tax,
+                VendorPrice = cabinetQuotation.VendorPrice,
+                CommentOnPrice = cabinetQuotation.CommentOnPrice,
+                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
+                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
+                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
+                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
+                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
+                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
+                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
+                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+            };
+
             var data = new QuotationFullViewInterface
             {
-                CabinetQuotation = cabinetQuotation
+                CabinetQuotation = quoteWithAdditionalInfo,
             };
             return View(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CabinetQuotationAdditionalInformation(QuotationFullViewInterface quoteData)
+        public async Task<IActionResult> CabinetQuotationDetailedView(QuotationFullViewInterface quoteData)
         {
-            _cabinetQuotationService.Update(TimeAndUserUpdate(quoteData.CabinetQuotation));
+            _cabinetQuotationService.Update(quoteData.CabinetQuotation);
             // if document file is not null then upload it
             if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
             {
@@ -192,10 +295,48 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult FullCabinetQuoteView(int id)
         {
-            var fullCabinetQuotation = _cabinetQuotationService.Read(id);
-            fullCabinetQuotation.CustomerIdFk = _customerService.Read(fullCabinetQuotation.CustomerId);
-            fullCabinetQuotation.VendorIdFk = _context.Vendor.Find(fullCabinetQuotation.VendorId)!;
-            return View(fullCabinetQuotation);
+            var cabinetQuotation = _cabinetQuotationService.Read(id);
+            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+            {
+                Id = cabinetQuotation.Id,
+                Name = cabinetQuotation.Name,
+                CustomerId = cabinetQuotation.CustomerId,
+                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
+                VendorId = cabinetQuotation.VendorId,
+                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
+                Construction = cabinetQuotation.Construction,
+                BoxMaterials = cabinetQuotation.BoxMaterials,
+                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
+                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
+                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
+                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                AdditionalInformation = cabinetQuotation.AdditionalInformation,
+                CreatedByUserId = cabinetQuotation.CreatedByUserId,
+                CreatedDateTime = cabinetQuotation.CreatedDateTime,
+                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
+                CabinetPrice = cabinetQuotation.CabinetPrice,
+                DeliveryCharge = cabinetQuotation.DeliveryCharge,
+                InstallationFee = cabinetQuotation.InstallationFee,
+                Tax = cabinetQuotation.Tax,
+                VendorPrice = cabinetQuotation.VendorPrice,
+                CommentOnPrice = cabinetQuotation.CommentOnPrice,
+                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
+                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
+                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
+                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
+                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
+                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
+                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
+                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+            };
+            return View(quoteWithAdditionalInfo);
         }
 
         [HttpGet]
@@ -338,7 +479,7 @@ namespace SalesHelper.Controllers
         }
 
 
-        public IActionResult ShowVendorFile(string filePath)
+        public IActionResult ShowCabinetDcoument(string filePath)
         {
             // Check if the file exists
             if (System.IO.File.Exists(filePath))
@@ -404,12 +545,13 @@ namespace SalesHelper.Controllers
         }
 
         [HttpGet]
-        public IActionResult FullCountertopQuoteView(int id)
+        public IActionResult CountertopPriceInquiry(int QuoteId, int VendorId)
         {
-            var quotation = _countertopQuotationService.Read(id);
+            var quotation = _countertopQuotationService.Read(QuoteId);
             quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
             quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
-            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).ToList();
+            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == QuoteId &&
+                                                                             a.VendorId == VendorId).Include(a => a.VendorIdFk).ToList();
             var data = new CountertopQuotationCreateInterface
             {
                 CountertopQuotation = quotation,
@@ -426,7 +568,7 @@ namespace SalesHelper.Controllers
             var data = new CountertopQuotationCreateInterface
             {
                 CountertopQuotation = quotation,
-                CountertopMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).ToList()
+                CountertopMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).Include(a => a.VendorIdFk).ToList()
             };
             return View(data);
         }
@@ -447,6 +589,14 @@ namespace SalesHelper.Controllers
             }
             _context.SaveChanges();
             return Json(new { message = "success", result = "Quotation Updated Successfully!" });
+        }
+
+
+        [HttpGet]
+        public IActionResult GetColorsForBrand(string brand)
+        {
+            var colors = _context.CountertopBrandsData.Where(a => a.Brand == brand).Select(a => a.ColorName).ToList();
+            return Json(colors);
         }
 
         #endregion COUNTERTOP QUOTATIONS

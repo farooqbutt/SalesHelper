@@ -1,0 +1,275 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@model SalesHelper.Models.InterfaceModels.QuotationFullViewInterface
+
+<div class="content-wrapper">
+    <form asp-controller="Quotations" asp-action="CabinetQuotationDetailedView" method="post" enctype="multipart/form-data">
+        @* hidden fields *@
+        <div class="hidden">
+            <input asp-for="CabinetQuotation.Id" value="@Model.CabinetQuotation.Id" />
+            <input asp-for="CabinetQuotation.CustomerId" value="@Model.CabinetQuotation.CustomerId" />
+            <input asp-for="CabinetQuotation.Name" value="@Model.CabinetQuotation.Name" />
+            <input asp-for="CabinetQuotation.VendorId" value="@Model.CabinetQuotation.VendorId" />
+            <input asp-for="CabinetQuotation.Construction" value="@Model.CabinetQuotation.Construction" />
+            <input asp-for="CabinetQuotation.BoxMaterials" value="@Model.CabinetQuotation.BoxMaterials" />
+            <input asp-for="CabinetQuotation.WoodSpeciesForOneColorDesign" value="@Model.CabinetQuotation.WoodSpeciesForOneColorDesign" />
+            <input asp-for="CabinetQuotation.DoorStyleForOneColorDesign" value="@Model.CabinetQuotation.DoorStyleForOneColorDesign" />
+            <input asp-for="CabinetQuotation.CabinetFinishForOneColorDesign" value="@Model.CabinetQuotation.CabinetFinishForOneColorDesign" />
+            <input asp-for="CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" value="@Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" value="@Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" value="@Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.UpperFinishForMultipleColorDesign" value="@Model.CabinetQuotation.UpperFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.LowerFinishForMultipleColorDesign" value="@Model.CabinetQuotation.LowerFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.IslandFinishForMultipleColorDesign" value="@Model.CabinetQuotation.IslandFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.CommentsOnMultiColorDesign" value="@Model.CabinetQuotation.CommentsOnMultiColorDesign" />
+            <input asp-for="CabinetQuotation.AdditionalInformation" value="@Model.CabinetQuotation.AdditionalInformation" />
+            <input asp-for="CabinetQuotation.CabinetPrice" value="@Model.CabinetQuotation.CabinetPrice" />
+            <input asp-for="CabinetQuotation.DeliveryCharge" value="@Model.CabinetQuotation.DeliveryCharge" />
+            <input asp-for="CabinetQuotation.InstallationFee" value="@Model.CabinetQuotation.InstallationFee" />
+            <input asp-for="CabinetQuotation.Tax" value="@Model.CabinetQuotation.Tax" />
+            <input asp-for="CabinetQuotation.VendorPrice" value="@Model.CabinetQuotation.VendorPrice" />
+            <input asp-for="CabinetQuotation.CommentOnPrice" value="@Model.CabinetQuotation.CommentOnPrice" />
+            <input asp-for="CabinetQuotation.CreatedDateTime" value="@Model.CabinetQuotation.CreatedDateTime?.ToString("yyyy-MM-ddThh:mm")" />
+            <input asp-for="CabinetQuotation.ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+            <input asp-for="CabinetQuotation.CreatedByUserId" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
+        </div>
+
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title mb-0">Cabinet Quotation Details</h3>
+            </div>
+        </div>
+
+        <div class="content-detached content-left">
+            <div class="content-body">
+
+                <div class="row row-cols-1 row-cols-md-2 match-height">
+                    <div class="col">
+                        <div class="card" style="height: 320.5px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.CabinetQuotation.Id</b></span></h2>
+                                    <p class="card-text">
+                                        <b>Customer Name:</b>
+                                        <a class="text-primary" asp-controller="Customers" asp-action="CustomerDetailedView" asp-route-id="@Model.CabinetQuotation.CustomerId">
+                                            @Model.CabinetQuotation.CustomerIdFk.FirstName @Model.CabinetQuotation.CustomerIdFk.LastName
+                                        </a>
+                                    </p>
+                                    <p class="card-text"><b>Quote Name:</b> @Model.CabinetQuotation.Name</p>
+                                    <p class="card-text"><b>Cabinetry:</b> @Model.CabinetQuotation.VendorIdFk.CompanyName </p>
+                                    <p class="card-text"><b>Construction:</b> @Model.CabinetQuotation.Construction </p>
+                                    <p class="card-text"><b>Box Materials:</b> @Model.CabinetQuotation.BoxMaterials </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card" style="height: 320.5px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    @if (Model.CabinetQuotation.WoodSpeciesForOneColorDesign != null && Model.CabinetQuotation.WoodSpeciesForOneColorDesign != "")
+                                    {
+                                        <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (One Color)</span></h2>
+                                        <p class="card-text"><b>Wood Species:</b> @Model.CabinetQuotation.WoodSpeciesForOneColorDesign </p>
+                                        <p class="card-text"><b>Door Style:</b> @Model.CabinetQuotation.DoorStyleForOneColorDesign </p>
+                                        <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetQuotation.CabinetFinishForOneColorDesign </p>
+                                    }
+                                    @if (Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign != null && Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign != "")
+                                    {
+                                        <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
+                                        <p class="card-text"><b>Upper Wood Species:</b> @Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign </p>
+                                        <p class="card-text"><b>Upper Finish:</b> @Model.CabinetQuotation.UpperFinishForMultipleColorDesign </p>
+                                        <p class="card-text"><b>Lower Wood Species:</b> @Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign </p>
+                                        <p class="card-text"><b>Lower Finish:</b> @Model.CabinetQuotation.LowerFinishForMultipleColorDesign </p>
+                                        <p class="card-text"><b>Island Wood Sepcies:</b> @Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign </p>
+                                        <p class="card-text"><b>Island Finish:</b> @Model.CabinetQuotation.IslandFinishForMultipleColorDesign </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col">
+                        <div class="card" style="height: 389.2px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title text-primary mt-0"><span><b>Additional Information</b></span></h2>
+                                    <p class="card-text"><b>Refrigerator:</b> @Html.Raw(Model.CabinetQuotation.Refrigerator) </p>
+                                    <p class="card-text"><b>Stove Or Cooktop:</b> @Html.Raw(Model.CabinetQuotation.StoveAndCooktop) </p>
+                                    <p class="card-text"><b>Dishwasher:</b> @Html.Raw(Model.CabinetQuotation.Dishwasher) </p>
+                                    <p class="card-text"><b>Hood:</b> @Html.Raw(Model.CabinetQuotation.Hood) </p>
+                                    <p class="card-text"><b>Built-in Oven:</b> @Html.Raw(Model.CabinetQuotation.BuiltInOven) </p>
+                                    <p class="card-text"><b>Built-in Drawer Microwave:</b> @Html.Raw(Model.CabinetQuotation.BuiltInDrawerMicrowave) </p>
+                                    <p class="card-text"><b>Sink:</b> @Html.Raw(Model.CabinetQuotation.Sink) </p>
+                                    <p class="card-text"><b>Comments:</b> @Html.Raw(Model.CabinetQuotation.Comments) </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card" style="height: 389.2px;">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <h2 class="card-title text-primary mt-0"><span><b>Attach Documents</b></span></h2>
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <fieldset>
+                                                <div class="input-group input-group-xs">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="feather icon-paperclip"></i></span>
+                                                    </div>
+                                                    <input asp-for="DocumentFiles" type="file" multiple="" class="form-control" id="fileInput" />
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                        <div id="selectedFiles"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions text-center mb-5">
+                    <button class="width-150 btn btn-primary"><i class="feather icon-arrow-left"></i> Previous</button>
+                    <button type="submit" class="width-150 btn btn-primary">Save & Next <i class="feather icon-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="sidebar-detached sidebar-right">
+            <div class="sidebar">
+                <div class="project-sidebar-content">
+                    <div class="card mb-1">
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <h2 class="card-title mt-0 text-primary"><span><b>Quote Price</b></span></h2>
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Cabinet Price</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input asp-for="CabinetQuotation.CabinetPrice" value="@Model.CabinetQuotation.CabinetPrice" type="number" class="form-control" placeholder="Cabinet Price">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Delivery Charges</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input asp-for="CabinetQuotation.DeliveryCharge" value="@Model.CabinetQuotation.DeliveryCharge" type="number" class="form-control" placeholder="Delivery Charges">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Installation Fee</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input asp-for="CabinetQuotation.InstallationFee" value="@Model.CabinetQuotation.InstallationFee" type="number" class="form-control" placeholder="Installation Fee">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tax</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input asp-for="CabinetQuotation.Tax" value="@Model.CabinetQuotation.Tax" type="number" class="form-control" placeholder="Tax">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b>Vendor Price. Internal use only</b></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input asp-for="CabinetQuotation.VendorPrice" value="@Model.CabinetQuotation.VendorPrice" type="number" class="form-control" placeholder="Vendor Price">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Comment on price</label>
+                                        <textarea asp-for="CabinetQuotation.CommentOnPrice" value="@Model.CabinetQuotation.CommentOnPrice" rows="9" class="form-control square" placeholder="Comments on quotation price"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const fileInput = document.getElementById("fileInput");
+    const selectedFilesDiv = document.getElementById("selectedFiles");
+    const uploadButton = document.getElementById("uploadFiles");
+
+    fileInput.addEventListener("change", function (event) {
+        selectedFilesDiv.innerHTML = "";
+        var files = event.target.files;
+
+        if (files.length > 3) {
+            alert("You can only upload 3 files at a time");
+            fileInput.value = "";
+            return;
+        }
+        var filesArray = Array.from(files);
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileNameParagraph = document.createElement("span");
+            // add class to the paragraph
+            fileNameParagraph.classList.add("badge", "badge-primary");
+            fileNameParagraph.textContent = file.name;
+            const removeButton = document.createElement("button");
+            removeButton.classList.add("btn", "btn-danger", "btn-sm", "badge", "mr-2");
+            removeButton.innerHTML = "<i class='feather icon-x'></i>";
+            const brElement = document.createElement("br");
+
+            removeButton.addEventListener("click", function (event) {
+                // Prevent form submission
+                event.preventDefault();
+                // removing file using index
+                filesArray.splice(i, 1);
+
+                fileNameParagraph.remove();
+                removeButton.remove();
+
+                files = [];
+                filesArray.forEach(function (file) {
+                    files.push(file);
+                });
+            });
+            selectedFilesDiv.appendChild(fileNameParagraph);
+            selectedFilesDiv.appendChild(removeButton);
+            selectedFilesDiv.appendChild(brElement);
+        }
+    });
+</script>

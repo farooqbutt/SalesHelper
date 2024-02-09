@@ -211,7 +211,7 @@
                     "data": null,
                     "render": function (data, type, row) {
                         if (data.website != null) {
-                            return `<a href="https://${data.website}" target="_blank">${data.website}</a>`;
+                            return `<a href="${data.website}" target="_blank">${data.website}</a>`;
                         } else {
                             return `N/A`;
                         }

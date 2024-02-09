@@ -1,4 +1,4 @@
-﻿@model SalesHelper.Models.CabinetQuotation
+﻿@model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
 @inject SalesHelper.Data.ApplicationDbContext _context
 @{
     var quoteDocuments = _context.QuotationDocuments.Where(a => a.QuotationId == Model.Id).ToList();
@@ -17,7 +17,7 @@
     <div class="content-detached content-left">
         <div class="content-body">
 
-            <div class="row row-cols-1 row-cols-md-4 match-height">
+            <div class="row row-cols-1 row-cols-md-2 match-height">
                 <div class="col">
                     <div class="card" style="height: 320.5px;">
                         <div class="card-content">
@@ -37,74 +37,29 @@
                         </div>
                     </div>
                 </div>
-                @if (Model.WoodSpeciesForOneColorDesign != "" && Model.WoodSpeciesForOneColorDesign != null)
-                {
-                // it means it is one color design
-                    <div class="col">
-                        <div class="card" style="height: 320.5px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title text-primary mt-0"><span><b>One Color Design</b></span></h2>
-                                    <p class="card-text"><b>Wood Species:</b> @Model.WoodSpeciesForOneColorDesign </p>
-                                    <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForOneColorDesign </p>
-                                    <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetFinishForOneColorDesign </p>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                // it means it is multiple color design
-                    <div class="col">
-                        <div class="card" style="height: 320.5px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title text-primary mt-0"><span><b>Upper Cabinet Details</b></span></h2>
+                <div class="col">
+                    <div class="card" style="height: 320.5px;">
+                        <div class="card-content">
+                            <div class="card-body">
+                                @if (Model.WoodSpeciesForOneColorDesign != null && Model.WoodSpeciesForOneColorDesign != "")
+                                {
+                                    <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (One Color)</span></h2>
+                                    <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForOneColorDesign </p>
+                                    <p class="card-text"><b>Wood Species:</b> @Model.WoodSpeciesForOneColorDesign </p>
+                                    <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetFinishForOneColorDesign </p>
+                                }
+                                @if (Model.UpperWoodSpeciesForMultipleColorDesign != null && Model.UpperWoodSpeciesForMultipleColorDesign != "")
+                                {
+                                    <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
+                                    <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForMultipleColorDesign </p>
                                     <p class="card-text"><b>Upper Wood Species:</b> @Model.UpperWoodSpeciesForMultipleColorDesign </p>
                                     <p class="card-text"><b>Upper Finish:</b> @Model.UpperFinishForMultipleColorDesign </p>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <div class="card" style="height: 320.5px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title text-primary mt-0"><span><b>Lower Cabinet Details</b></span></h2>
                                     <p class="card-text"><b>Lower Wood Species:</b> @Model.LowerWoodSpeciesForMultipleColorDesign </p>
                                     <p class="card-text"><b>Lower Finish:</b> @Model.LowerFinishForMultipleColorDesign </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <div class="card" style="height: 320.5px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title text-primary mt-0"><span><b>Island Cabinet Details</b></span></h2>
                                     <p class="card-text"><b>Island Wood Sepcies:</b> @Model.IslandWoodSpeciesForMultipleColorDesign </p>
                                     <p class="card-text"><b>Island Finish:</b> @Model.IslandFinishForMultipleColorDesign </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                <div class="col">
-                    <div class="card" style="height: 389.2px;">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <h2 class="card-title text-primary mt-0"><span><b>Appliance Information</b></span></h2>
-                                <div class="form-body">
-                                    <div class="form-group">
-                                        @Model.ApplianceInformation
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -114,27 +69,15 @@
                     <div class="card" style="height: 389.2px;">
                         <div class="card-content">
                             <div class="card-body">
-                                <h2 class="card-title text-primary mt-0"><span><b>Hood Information</b></span></h2>
-                                <div class="form-body">
-                                    <div class="form-group">
-                                        @Model.HoodInformation
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card" style="height: 389.2px;">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <h2 class="card-title text-primary mt-0"><span><b>Sink Infomation</b></span></h2>
-                                <div class="form-body">
-                                    <div class="form-group">
-                                        @Model.SinkInformation
-                                    </div>
-                                </div>
+                                <h2 class="card-title text-primary mt-0"><span><b>Additional Information</b></span></h2>
+                                <p class="card-text"><b>Refrigerator:</b> @Html.Raw(Model.Refrigerator) </p>
+                                <p class="card-text"><b>Stove Or Cooktop:</b> @Html.Raw(Model.StoveAndCooktop) </p>
+                                <p class="card-text"><b>Dishwasher:</b> @Html.Raw(Model.Dishwasher) </p>
+                                <p class="card-text"><b>Hood:</b> @Html.Raw(Model.Hood) </p>
+                                <p class="card-text"><b>Built-in Oven:</b> @Html.Raw(Model.BuiltInOven) </p>
+                                <p class="card-text"><b>Built-in Drawer Microwave:</b> @Html.Raw(Model.BuiltInDrawerMicrowave) </p>
+                                <p class="card-text"><b>Sink:</b> @Html.Raw(Model.Sink) </p>
+                                <p class="card-text"><b>Comments:</b> @Html.Raw(Model.Comments) </p>
                             </div>
                         </div>
                     </div>
@@ -151,7 +94,7 @@
                                         @foreach (var item in quoteDocuments)
                                         {
                                             <p style="margin-bottom:1px;">
-                                                <a class="text-warning" href="/Vendors/ShowVendorFile?filePath=@item.FilePath" target="_blank">
+                                                <a class="text-warning" asp-controller="Quotations" asp-action="ShowCabinetDcoument" asp-route-filePath="@item.FilePath" target="_blank">
                                                     @item.DocumentName!.Substring(item.DocumentName.IndexOf("_") + 1)
                                                 </a>
                                             </p>
@@ -189,13 +132,14 @@
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Qty</th>
+                                                        <th>Door Style</th>
                                                         <th>Item</th>
                                                         <th>Description</th>
                                                         <th>Hinge</th>
                                                         <th>Finish</th>
+                                                        <th>Qty</th>
                                                         <th>Price</th>
-                                                        @* <th>Action</th> *@
+                                                        <th>Total</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -203,18 +147,21 @@
                                                     {
                                                         <tr>
                                                             <td>@index</td>
-                                                            <td>@item.Quantity</td>
+                                                            <td>@item.DoorStyleName</td>
                                                             <td>@item.Item</td>
                                                             <td>@item.Description</td>
                                                             <td>@item.Hinge</td>
                                                             <td>@item.Finish</td>
-                                                            <td>@item.Price</td>
-                                                            @* <td>
-                                                                <button onclick="DeleteAttachedItem(@item.Id)" class=" btn btn-sm btn-danger"><i class="feather icon-trash" title="Delete Item"></i></button>
-                                                            </td> *@
+                                                            <td>@item.Quantity</td>
+                                                            <td>$@item.Price</td>
+                                                            <td>$@(item.Quantity * item.Price)</td>
                                                         </tr>
                                                         index++;
                                                     }
+                                                    <tr>
+                                                        <td colspan="8" class="text-right"><b>Total Price:</b></td>
+                                                        <td><b>$@itemsList.Sum(a => a.Price * a.Quantity)</b></td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -248,6 +195,12 @@
                                     <p class="card-text"><b>Delivery Charges:</b> $@Model.DeliveryCharge </p>
                                     <p class="card-text"><b>Installation Fee:</b> $@Model.InstallationFee </p>
                                     <p class="card-text"><b>Tax:</b> $@Model.Tax </p>
+                                    <hr />
+                                    @{
+                                        var totalPrice = Model.CabinetPrice + Model.DeliveryCharge + Model.InstallationFee + Model.Tax;
+                                    }
+                                    <p class="card-text"><b>Total Price:</b> $@totalPrice </p>
+                                    <hr />
                                     <p class="card-text"><b>Comments:</b> @Model.CommentOnPrice</p>
                                 </div>
                             </div>

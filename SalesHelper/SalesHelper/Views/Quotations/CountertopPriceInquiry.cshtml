@@ -1,0 +1,249 @@
+﻿@model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
+
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title">Countertop Quote Details</h3>
+        </div>
+    </div>
+
+    <div class="content-body">
+        <section class="app-invoice-wrapper">
+            <div class="row">
+                <div class="col-xl-9 col-md-8 col-12 printable-content">
+                    <!-- using a bootstrap card -->
+                    <div class="card">
+                        <!-- card body -->
+                        <div class="card-body p-2">
+                            <!-- card-header -->
+                            <div class="card-header px-0">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
+                                        <span class="invoice-id font-weight-bold">Quote #</span>
+                                        <span>@Model.CountertopQuotation.Id</span>
+                                    </div>
+                                    <div class="col-md-12 col-lg-5 col-xl-8">
+                                        <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+                                            <div class="issue-date pr-2">
+                                                <span class="font-weight-bold no-wrap">Quote Date: </span>
+                                                <span>@Convert.ToDateTime(Model.CountertopQuotation.CreatedDateTime).ToShortDateString()</span>
+                                            </div>
+                                            @* <div class="due-date">
+                                            <span class="font-weight-bold no-wrap">Expiration Date: </span>
+                                            <span>@Convert.ToDateTime(Model.CountertopQuotation.ModifiedDateTime).ToShortDateString()</span>
+                                            </div> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- invoice logo and title -->
+                            <div class="invoice-logo-title row py-2">
+                                <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                                    <h2 class="text-primary">@Model.CountertopQuotation.Name</h2>
+                                    <span>Countertop, vanity top or wall surface</span>
+                                </div>
+                                <div class="col-6 d-flex justify-content-end invoice-logo">
+                                    <img src="app-assets/images/logo/pixinvent-logo.png" alt="company-logo" height="46" width="164">
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- customer and quote details -->
+                            <div class="row invoice-adress-info py-2">
+                                <div class="col-4 mt-1 from-info">
+                                    <div class="info-title mb-1">
+                                        <b>Frabricator Details</b>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted">
+                                            @Model.CountertopMaterials.First().VendorIdFk.CompanyName
+                                        </span>
+                                    </div>
+                                    <div class="company-address mb-1">
+                                        <span class="text-muted">
+                                            @Model.CountertopMaterials.First().VendorIdFk.Email
+                                        </span>
+                                    </div>
+                                    <div class="company-phone  mb-1">
+                                        <span class="text-muted">Phone: @Model.CountertopMaterials.First().VendorIdFk.MainPhone</span> <br />
+                                        <span class="text-muted">Fax: @Model.CountertopMaterials.First().VendorIdFk.Fax</span>
+                                    </div>
+                                </div>
+                                <div class="col-4 mt-1 from-info">
+                                    <div class="info-title mb-1">
+                                        <b>Customer Details</b>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted">
+                                            @Model.CountertopQuotation.CustomerIdFk.FirstName
+                                            @Model.CountertopQuotation.CustomerIdFk.LastName
+                                        </span>
+                                    </div>
+                                    <div class="company-address mb-1">
+                                        <span class="text-muted">
+                                            @Model.CountertopQuotation.CustomerIdFk.AddressIdFK.Address1 <br />
+                                            @Model.CountertopQuotation.CustomerIdFk.AddressIdFK.Address2
+                                        </span>
+                                    </div>
+                                    <div class="company-email  mb-1 mb-1">
+                                        <span class="text-muted">@Model.CountertopQuotation.CustomerIdFk.Email</span>
+                                    </div>
+                                    <div class="company-phone  mb-1">
+                                        @* show cell phone if not null or empty *@
+                                        @if (!string.IsNullOrEmpty(Model.CountertopQuotation.CustomerIdFk.CellPhone))
+                                        {
+                                            <span class="text-muted">@Model.CountertopQuotation.CustomerIdFk.CellPhone (Cell Phone)</span> <br />
+                                        }
+                                        @* show work phone if not null or empty *@
+                                        @if (!string.IsNullOrEmpty(Model.CountertopQuotation.CustomerIdFk.WorkPhone))
+                                        {
+                                            <span class="text-muted">@Model.CountertopQuotation.CustomerIdFk.WorkPhone (Work Phone)</span> <br />
+                                        }
+                                        @* show home phone if not null or empty *@
+                                        @if (!string.IsNullOrEmpty(Model.CountertopQuotation.CustomerIdFk.HomePhone))
+                                        {
+                                            <span class="text-muted">@Model.CountertopQuotation.CustomerIdFk.HomePhone (Home Phone)</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-4 mt-1 from-info">
+                                    <div class="info-title mb-1">
+                                        <b>Countertop Details</b>
+                                    </div>
+                                    <div class="mb-1">
+                                        <b>Room Type: </b>
+                                        <span class="text-muted">@Model.CountertopQuotation.RoomType</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <b>Edge Profile: </b>
+                                        <span class="text-muted">@Model.CountertopQuotation.EdgeProfile</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <b>Estimate Square Feet: </b>
+                                        <span class="text-muted">@Model.CountertopQuotation.EstimateSquareFeet</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        @if (Model.CountertopQuotation.MiteredEdge)
+                                        {
+                                            <span class="badge mr-1 mb-1">Mitered Edge</span>
+                                        }
+                                        @if (Model.CountertopQuotation.MiteredEdgeOnIsland)
+                                        {
+                                            <span class="badge mr-1 mb-1">Mitered Edge On Island</span>
+                                        }
+                                        @if (Model.CountertopQuotation.WaterfallOnIsland)
+                                        {
+                                            <span class="badge mr-1 mb-1">Waterfall On Island</span>
+                                        }
+                                        @if (Model.CountertopQuotation.FarmhouseSink)
+                                        {
+                                            <span class="badge mr-1 mb-1">Farmhouse Sink</span>
+                                        }
+                                        @if (Model.CountertopQuotation.IslandPrepSink)
+                                        {
+                                            <span class="badge mr-1 mb-1">Island Prep Sink</span>
+                                        }
+                                        @if (Model.CountertopQuotation.Cooktop)
+                                        {
+                                            <span class="badge mr-1 mb-1">Cooktop</span>
+                                        }
+                                        @if (Model.CountertopQuotation.Rangetop)
+                                        {
+                                            <span class="badge mr-1 mb-1">Rangetop</span>
+                                        }
+                                        @if (Model.CountertopQuotation.FullBacksplash)
+                                        {
+                                            <span class="badge mr-1 mb-1">Full Backsplash</span>
+                                        }
+                                        @if (Model.CountertopQuotation.FourIncBacksplash)
+                                        {
+                                            <span class="badge mr-1 mb-1">4" Backsplash</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--product details table -->
+                            <div class="product-details-table py-2 table-responsive">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left">MATERIAL</th>
+                                            <th>BRAND</th>
+                                            <th>COLOR</th>
+                                            <th>VENDOR</th>
+                                            <th>VENDOR RATE</th>
+                                            <th class="text-right">PRICE QUOTE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.CountertopMaterials)
+                                        {
+                                            <tr>
+                                                <td class="text-left">@item.Material</td>
+                                                <td>@item.Brand</td>
+                                                <td>@item.Color</td>
+                                                <td>@item.VendorIdFk.CompanyName</td>
+                                                <td>$@item.VendorRate</td>
+                                                <td class="font-weight-bold text-right">$@item.PriceQuote</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <hr>
+
+                            <!-- invoice total -->
+                            <div class="invoice-total py-2">
+                                <div class="row">
+                                    <div class="col-4 col-sm-6 mt-75">
+                                        @* <p>Thanks for your business.</p> *@
+                                    </div>
+                                    <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                        <ul class="list-group cost-list">
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Subtotal </span>
+                                                <span class="cost-value font-weight-bold">$ @Model.CountertopMaterials.Sum(a => a.PriceQuote)</span>
+                                            </li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Discount </span>
+                                                <span class="cost-value font-weight-bold">-$ 0.00</span>
+                                            </li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Tax </span>
+                                                <span class="cost-value font-weight-bold">0%</span>
+                                            </li>
+                                            <li class="dropdown-divider"></li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Invoice Total </span>
+                                                <span class="cost-value font-weight-bold">$ @Model.CountertopMaterials.Sum(a => a.PriceQuote)</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- buttons section -->
+                <div class="col-xl-3 col-md-4 col-12 action-btns">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <a href="#" class="btn btn-info btn-block mb-1 print-invoice">
+                                <i class="feather icon-printer mr-25 common-size"></i> Print Quote
+                            </a>
+                            <a asp-controller="Quotations" asp-action="EditCountertopQuotation" asp-route-id="@Model.CountertopQuotation.Id"
+                               class="btn btn-info btn-block mb-1">
+                                <i class="feather icon-edit-2 mr-25 common-size"></i> Edit Quote
+                            </a>
+                            <a href="#" class="btn btn-success btn-block mb-1"><i class="feather icon-mail mr-25 common-size"></i> Price Inquiry</a>
+                            <a href="#" class="btn btn-primary btn-block mb-1"> <i class="feather icon-mail mr-25 common-size"></i> Send to Customer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

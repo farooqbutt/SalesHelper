@@ -6,27 +6,6 @@ namespace SalesHelper.Models
 {
     public class CountertopMaterial
     {
-        public enum Brands
-        {
-            Cambria,
-            Silestone,
-            Caesarstone,
-            [EnumMember(Value = "MSI Quartz")]
-            MSIQuartz,
-            [EnumMember(Value = "LG Viatera")]
-            LGViatera,
-            Compac,
-            Corian,
-            [EnumMember(Value = "Pental Quartz")]
-            PentalQuartz,
-            Wilsonart,
-            [EnumMember(Value = "Q Quartz")]
-            QQuartz,
-            Zodiaq,
-            Vadara,
-            Hanstone,
-        }
-
         public enum Materials
         {
             Quartz,
@@ -46,15 +25,16 @@ namespace SalesHelper.Models
         [MaxLength(100)]
         public string? Brand { get; set; }
         [MaxLength(100)]
-        public string? OtherBrand { get; set; } = string.Empty;
-        [MaxLength(100)]
         public string? Color { get; set; } = string.Empty;
-        [MaxLength(100)]
-        public string? VendorName { get; set; } = string.Empty;
         public decimal? VendorRate { get; set; }
         public decimal? PriceQuote { get; set; }
 
-        // Foreign Key
+        // Foreign Key for Vendor
+        [ForeignKey("VendorIdFk")]
+        public int VendorId { get; set; }
+        public Vendor VendorIdFk { get; set; } = default!;
+
+        // Foreign Key for CountertopQuotation
         [ForeignKey("CountertopQuotationIdFk")]
         public int CountertopQuotationId { get; set; }
         public CountertopQuotation CountertopQuotationIdFk { get; set; } = default!;

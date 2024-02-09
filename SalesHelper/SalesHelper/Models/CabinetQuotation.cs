@@ -31,10 +31,9 @@ namespace SalesHelper.Models
         public string? LowerFinishForMultipleColorDesign { get; set; } = string.Empty;
         public string? IslandFinishForMultipleColorDesign { get; set; } = string.Empty;
         public string? CommentsOnMultiColorDesign { get; set; } = string.Empty;
-        public string? ApplianceInformation { get; set; } = string.Empty;
-        public string? HoodInformation { get; set; } = string.Empty;
-        public string? SinkInformation { get; set; } = string.Empty;
-        public string? CommentsOnDocumentFiles { get; set; } = string.Empty;
+
+        // Additional Information for cabinet
+        public string? AdditionalInformation { get; set; }
 
         // Fields for pricing
         public decimal? CabinetPrice { get; set; }

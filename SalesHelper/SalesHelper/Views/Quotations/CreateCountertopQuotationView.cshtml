@@ -2,6 +2,7 @@
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
 @inject SalesHelper.Repository.CustomerRepo _customerService
+@inject SalesHelper.Data.ApplicationDbContext context
 @{
     var roomTypes = Enum.GetValues(typeof(CountertopQuotation.RoomTypes))
                                 .Cast<CountertopQuotation.RoomTypes>()
@@ -15,18 +16,16 @@
                         .Cast<CountertopMaterial.Materials>()
                         .Select(e => e.GetEnumMemberAttributeValue())
                         .ToList();
-    var brands = Enum.GetValues(typeof(CountertopMaterial.Brands))
-                        .Cast<CountertopMaterial.Brands>()
-                        .Select(e => e.GetEnumMemberAttributeValue())
-                        .ToList();
+
+    var brands = context.CountertopBrandsData.Select(a => a.Brand).Distinct().ToList();
+
+    // getting vendors for the current user with business type 2 (2 = "Stone and Countertops")
+    var vendors = context.Vendor.Where(v => v.BusinessTypeId == 2 && v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber).ToList();
+
     var customerId = TempData["CustomerId"];
     var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
 }
 <style>
-    .select2-container .select2-selection--single .select2-selection__rendered {
-        padding-left: 35px;
-    }
-
     .select2-selection {
         border-radius: 0px !important;
     }
@@ -36,11 +35,10 @@
         flex: 1 1 auto;
     }
 
-        .input-group > .select2-container--default .select2-selection--single {
-            height: 100%;
-            line-height: inherit;
-            padding: 0.5rem 1rem;
-        }
+    .input-group > .select2-container--default .select2-selection--single {
+        height: 100%;
+        line-height: inherit;
+    }
 </style>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -61,11 +59,13 @@
 
                             <div class="form-group">
                                 <label>Customer Name <span class="required">*</span></label>
-                                <div class="input-group has-icon-left">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+									    <span class="input-group-text square">
+                                            <i class="feather icon-user"></i>
+                                        </span>
+								    </div>
                                     <select class="form-control square" asp-for="CountertopQuotation.CustomerId" data-placeholder="Select a Customer" required></select>
-                                    <div class="form-control-position">
-                                        <i class="feather icon-user primary"></i>
-                                    </div>
                                     <div class="input-group-append">
                                         <a class="btn btn-primary" asp-controller="Customers" asp-action="AddCustomers" target="_blank">
                                             Add New Customer
@@ -185,7 +185,7 @@
                                     Material & Price
                                 </h4>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="true" data-target="#AddMaterialModal">
+                                    <button type="button" class="btn btn-primary" id="btnAddMaterial">
                                         <i class="feather icon-plus"></i> Add New Material
                                     </button>
                                 </div>
@@ -226,95 +226,6 @@
 
 </div>
 
-<!-- Modal -->
-<div class="modal fade text-left" id="AddMaterialModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary white">
-                <h4 class="modal-title form-section"><i class="feather icon-box"></i> Add New Material</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <label>Material</label>
-                <div class="form-group position-relative has-icon-left">
-                    <select id="Material" class="form-control square" required>
-                        <option selected disabled>Choose Material</option>
-                        @foreach (var item in materials)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
-                    <div class="form-control-position">
-                        <i class="feather icon-box primary"></i>
-                    </div>
-                </div>
-
-                <label>Major Quartz Brand</label>
-                <div class="form-group position-relative has-icon-left">
-                    <select id="Brand" class="form-control square" required>
-                        <option selected disabled>Choose Brand</option>
-                        @foreach (var item in brands)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                        <option value="">Other</option>
-                    </select>
-                    <div class="form-control-position">
-                        <i class="feather icon-star primary"></i>
-                    </div>
-                </div>
-
-                <label>Other Brand</label>
-                <div class="form-group position-relative has-icon-left">
-                    <input id="OtherBrand" type="text" class="form-control square" placeholder="Other Brand Name" />
-                    <div class="form-control-position">
-                        <i class="feather icon-star primary"></i>
-                    </div>
-                </div>
-
-                <label>Color</label>
-                <div class="form-group position-relative has-icon-left">
-                    <input id="Color" type="text" class="form-control square" placeholder="Color" />
-                    <div class="form-control-position">
-                        <i class="feather icon-droplet primary"></i>
-                    </div>
-                </div>
-
-                <label>Vendor Name</label>
-                <div class="form-group position-relative has-icon-left">
-                    <input id="VendorName" type="text" class="form-control square" placeholder="Vendor Name" />
-                    <div class="form-control-position">
-                        <i class="feather icon-user primary"></i>
-                    </div>
-                </div>
-
-                <label>Vendor Rate</label>
-                <div class="form-group position-relative has-icon-left">
-                    <input id="VendorRate" type="number" class="form-control square" placeholder="Vendor Rate" />
-                    <div class="form-control-position">
-                        <i class="fa fa-money primary"></i>
-                    </div>
-                </div>
-
-                <label>Price Quote</label>
-                <div class="form-group position-relative has-icon-left">
-                    <input id="PriceQuote" type="number" class="form-control square" placeholder="Price Quote" />
-                    <div class="form-control-position">
-                        <i class="fa fa-money primary"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
-                <button id="btnAddtolist" class="btn btn-primary">Add To List</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     $(document).ready(function () {
         // For Customers Select List
@@ -345,11 +256,12 @@
                     countertopQuotationData[this.name.split(".")[1]] = $(this).val();
                 }
             });
-            debugger;
+
             var data = {
                 countertopQuotation: countertopQuotationData,
                 countertopMaterials: GetMaterials()
             };
+
             $.ajax({
                 url: "/Quotations/CreateCountertopQuotation",
                 type: "POST",
@@ -359,7 +271,7 @@
                 success: function (data) {
                     if (data.message == "success") {
                         toastr.success(data.result, "Success", { "progressBar": true });
-                        setTimeout(function(){
+                        setTimeout(function () {
                             window.location.href = "/Quotations/QuotationsListView";
                         }, 4000);
                     } else {
@@ -372,43 +284,26 @@
             });
         });
 
-        $('#btnAddtolist').on('click', function () {
-            var materialData = {
-                material: $('#Material').val(),
-                brand: $('#Brand').val(),
-                otherBrand: $('#OtherBrand').val(),
-                color: $('#Color').val(),
-                vendorName: $('#VendorName').val(),
-                vendorRate: $('#VendorRate').val(),
-                priceQuote: $('#PriceQuote').val()
-            };
-            if (materialData.material != null || materialData.brand != null) {
-                addRow(materialData);
-                // close modal
-                $("#AddMaterialModal").modal("hide");
-            } else {
-                alert("Please Select Material and Brand to continue!");
-            }
+        $('#btnAddMaterial').on('click', function () {
+            addRow();
         });
 
         function GetMaterials() {
             var listOfMaterials = new Array();
             $("#materialTable").find("tr:gt(0)").each(function () {
-                var material = $(this).find("td:eq(1)").text().trim();
-                var brand = $(this).find("td:eq(2)").text().trim();
-                var color = $(this).find("td:eq(3)").text().trim();
-                var vendorName = $(this).find("td:eq(4)").text().trim();
-                var vendorRate = $(this).find("td:eq(5)").text().trim();
-                var priceQuote = $(this).find("td:eq(6)").text().trim();
-                var otherBrand = $(this).find("td:eq(7)").text().trim();
+                var material = $(this).find("td:eq(1)").find("select").val();
+                var brand = $(this).find("td:eq(2)").find("input").val();
+                var color = $(this).find("td:eq(3)").find("input").val();
+                var vendorId = $(this).find("td:eq(4)").find("select").val();
+                var vendorRate = $(this).find("td:eq(5)").find("input").val();
+                var priceQuote = $(this).find("td:eq(6)").find("input").val();
 
                 var CountertopMaterial = {};
 
                 CountertopMaterial.material = material;
                 CountertopMaterial.brand = brand;
-                CountertopMaterial.otherBrand = otherBrand;
                 CountertopMaterial.color = color;
-                CountertopMaterial.vendorName = vendorName;
+                CountertopMaterial.vendorId = vendorId;
                 CountertopMaterial.vendorRate = vendorRate;
                 CountertopMaterial.priceQuote = priceQuote;
 
@@ -417,26 +312,106 @@
             return listOfMaterials;
         }
 
+        // initialing colorDatalistId for dynamic datalist id
+        var colorDatalistId = 0;
+
         // Function to add row in table
-        function addRow(data) {
-            var brandToDisplay = (data.brand == "" || data.brand == null) ? data.otherBrand : data.brand;
+        function addRow() {
+            // increment colorDatalistId
+            colorDatalistId++;
             var newRow = `
                         <tr>
                             <td><b class="item-number"></b></td>
-                            <td>${data.material}</td>
-                            <td>${brandToDisplay}</td>
-                            <td>${data.color}</td>
-                            <td>${data.vendorName}</td>
-                            <td>${data.vendorRate}</td>
-                            <td>${data.priceQuote}</td>
-                            <td class="hidden">${data.otherBrand}</td>
+                            <td>
+                                <select class="form-control square material-select" data-placeholder="Select Material">
+                                    @foreach (var item in materials)
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <input type="search" list="brands" class="form-control square brand-select" placeholder="Brand" />
+                                <datalist id="brands">
+                                    @foreach (var item in brands)
+                                    {
+                                        <option value="@item" />
+                                    }
+                                </datalist>
+                            </td>
+                            <td>
+                                <input type="search" list="colors_${colorDatalistId}" class="form-control square color-input" placeholder="Color" />
+                                <datalist id="colors_${colorDatalistId}" class="color-select">
+                                </datalist>
+                            </td>
+                            <td>
+                                <select class="form-control square vendor-select" data-placeholder="Select Vendor">
+                                    @foreach (var item in vendors)
+                                    {
+                                        <option value="@item.VendorId">@item.CompanyName</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control square" placeholder="Vendor Rate" />
+                            </td>
+                            <td>
+                                <input type="number" class="form-control square" placeholder="Price Quote" />
+                            </td>
                             <td style="vertical-align:middle;">
-                                <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
+                                <button class="btn btn-sm btn-primary duplicate-row"><i class="feather icon-copy" title="Duplicate Item"></i></button>
+                                <button class="btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
                             </td>
                         </tr>
                     `;
 
             $('#materialTable tbody').append(newRow);
+
+            // convert newRow to HTML tr element
+            var addedRow = $('#materialTable tbody tr:last-child');
+
+            // get the brand select element from the added row
+            var materialSelect = addedRow.find('.material-select');
+            var brandSelect = addedRow.find('.brand-select');
+            var colorSelect = addedRow.find('.color-select');
+            var vendorSelect = addedRow.find('.vendor-select');
+
+            materialSelect.select2({
+                placeholder: $(this).data("placeholder"),
+                width: "100%"
+            });
+            materialSelect.val(null).trigger('change');
+
+            vendorSelect.select2({
+                placeholder: $(this).data("placeholder"),
+                width: "100%"
+            });
+            vendorSelect.val(null).trigger('change');
+
+
+            // Event listener for brand select change
+            brandSelect.on('change', function () {
+                // empty the value of color input
+                addedRow.find('.color-input').val('');
+                var selectedBrand = $(this).val();
+                // Make AJAX request to fetch colors based on selected brand
+                $.ajax({
+                    url: '/Quotations/GetColorsForBrand', // Replace with your endpoint to fetch colors
+                    method: 'GET',
+                    data: { brand: selectedBrand },
+                    success: function (colors) {
+                        // clear the color datalist first
+                        colorSelect.empty();
+                        // append the colors to the color datalist
+                        colors.forEach(function (color) {
+                            colorSelect.append(`<option value="${color}" />`);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
 
             // Update item numbers
             updateItemNumbers();
@@ -450,9 +425,60 @@
         }
 
         // Remove row when the "Delete Item" button is clicked
-        $('#materialTable').on('click', '.delete-row', function () {
+        $('#materialTable').on('click', '.delete-row', function (event) {
+            // prevent form submission
+            event.preventDefault();
             $(this).closest('tr').remove();
             updateItemNumbers();
         });
+
+        // Duplicate row when the "Duplicate Item" button is clicked
+        $('#materialTable').on('click', '.duplicate-row', function (event) {
+            // prevent form submission
+            event.preventDefault();
+            var rowToDuplicate = $(this).closest('tr');
+            var clonedRow = rowToDuplicate.clone();
+
+            updateColorDatalistId(clonedRow);
+
+            rowToDuplicate.after(clonedRow);
+            updateItemNumbers();
+        });
+
+        // update id of color datalist
+        function updateColorDatalistId(clonedRow) {
+
+            const itemNumberElement = clonedRow.find('.item-number');
+            const newItemNumber = parseInt(itemNumberElement.text().replace('Item ', '')) + 1;
+
+            const colorDatalist = clonedRow.find('.color-select');
+            const colorInput = clonedRow.find('.color-input');
+            colorDatalist.attr('id', `colors_${newItemNumber}`);
+            colorInput.attr('list', `colors_${newItemNumber}`);
+
+            const brandSelect = clonedRow.find('.brand-select');
+            brandSelect.on('change', function () {
+                // empty the value of color input
+                colorInput.val('');
+                const selectedBrand = $(this).val();
+                // Make AJAX request to fetch colors based on selected brand
+                $.ajax({
+                    url: '/Quotations/GetColorsForBrand',
+                    method: 'GET',
+                    data: { brand: selectedBrand },
+                    success: function (colors) {
+                        // clear the color datalist first
+                        colorDatalist.empty();
+                        // append the colors to the color datalist
+                        colors.forEach(function (color) {
+                            colorDatalist.append(`<option value="${color}" />`);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+        }
     });
 </script>

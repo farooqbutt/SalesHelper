@@ -4,6 +4,6 @@
     {
         public List<IFormFile> DocumentFiles { get; set; } = default!;
         public QuotationDocument QuotationDocument { get; set; } = default!;
-        public CabinetQuotation CabinetQuotation { get; set; } = default!;
+        public CabinetQuoteInterface CabinetQuotation { get; set; } = default!;
     }
 }

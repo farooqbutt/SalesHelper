@@ -1,11 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> _signInManager
-@model SalesHelper.Models.CabinetQuotation
+@model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
 @inject SalesHelper.Repository.CustomerRepo _customerService
 @inject SalesHelper.Data.ApplicationDbContext _context
 @{
     var customerId = TempData["CustomerId"];
     var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+    // getting vendors for cabinetry business type (1 == "Cabinetry")
     var cabinetryVendors = _context.Vendor.Where(v => v.BusinessTypeId == 1).ToList();
 }
 <style>
@@ -43,6 +44,14 @@
             <div class="card-content collapse show">
                 <div class="card-body">
                     <form class="form" asp-controller="Quotations" asp-action="CreateCabinetQuotation">
+
+                        @* some hidden fields here *@
+                        <div class="hidden">
+                            <input asp-for="CreatedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                            <input asp-for="ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                            <input asp-for="CreatedByUserId" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
+                        </div>
+
                         <div class="form-body">
 
                             <div class="form-group">
@@ -277,6 +286,140 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="additionalInformationWrap" role="tablist" aria-multiselectable="true">
+                            <div class="card accordion collapse-icon panel mb-0 box-shadow-0 border-0">
+
+                                <div id="additionalInformationHeading" role="tab" class="card-header card-collapse" data-toggle="collapse" href="#additionalInformationAccordion" aria-expanded="false" aria-controls="additionalInformationAccordion">
+                                    <h4 class="card-title text-primary">
+                                        Additional Information
+                                    </h4>
+                                </div>
+                                <div id="additionalInformationAccordion" role="tabpanel" data-parent="#additionalInformationWrap" aria-labelledby="additionalInformationHeading" class="collapse" aria-expanded="false">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Refrigerator</label>
+                                                <select asp-for="Refrigerator" class="form-control square">
+                                                    <option value='18" Refrigerator'>18" Refrigerator</option>
+                                                    <option value='24" Refrigerator'>24" Refrigerator</option>
+                                                    <option value='30" Refrigerator'>30" Refrigerator</option>
+                                                    <option value='33" Refrigerator'>33" Refrigerator</option>
+                                                    <option value='36" Refrigerator'>36" Refrigerator</option>
+                                                    <option value='42" Refrigerator'>42" Refrigerator</option>
+                                                    <option value='48" Refrigerator'>48" Refrigerator</option>
+                                                    <option value='60" Refrigerator'>60" Refrigerator</option>
+                                                    <option value='18" Panel-Ready Refrigerator'>18" Panel-Ready Refrigerator</option>
+                                                    <option value='24" Panel-Ready Refrigerator'>24" Panel-Ready Refrigerator</option>
+                                                    <option value='30" Panel-Ready Refrigerator'>30" Panel-Ready Refrigerator</option>
+                                                    <option value='33" Panel-Ready Refrigerator'>33" Panel-Ready Refrigerator</option>
+                                                    <option value='36" Panel-Ready Refrigerator'>36" Panel-Ready Refrigerator</option>
+                                                    <option value='42" Panel-Ready Refrigerator'>42" Panel-Ready Refrigerator</option>
+                                                    <option value='48" Panel-Ready Refrigerator'>48" Panel-Ready Refrigerator</option>
+                                                    <option value='60" Panel-Ready Refrigerator'>60" Panel-Ready Refrigerator</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Dishwasher</label>
+                                                <select asp-for="Dishwasher" class="form-control square">
+                                                    <option value="No Dishwasher">No Dishwasher</option>
+                                                    <option value="18&quot; Dishwasher">18" Dishwasher</option>
+                                                    <option value="24&quot; Dishwasher">24" Standard Dishwasher</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Built-in Oven</label>
+                                                <select asp-for="BuiltInOven" class="form-control square">
+                                                    <option value="N/A">N/A</option>
+                                                    <option value="24&quot; Built-in Microwave">24" Built-in Microwave</option>
+                                                    <option value="27&quot; Built-in Single Oven">27" Built-in Single Oven</option>
+                                                    <option value="27&quot; Built-in Double Oven">27" Built-in Double Oven</option>
+                                                    <option value="30&quot; Built-in Microwave">30" Built-in Microwave</option>
+                                                    <option value="30&quot; Built-in Steam Oven">30" Built-in Steam Oven</option>
+                                                    <option value="30&quot; Built-in Single Oven">30" Built-in Single Oven</option>
+                                                    <option value="30&quot; Built-in Double Oven">30" Built-in Double Oven</option>
+                                                    <option value="30&quot; Built-in Microve/Oven Combo">30" Built-in Microve/Oven Combo</option>
+                                                    <option value="30&quot; Built-in Microve Over Oven">30" Built-in Microve Over Oven</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sink</label>
+                                                <select asp-for="Sink" class="form-control square">
+                                                    <option value="N/A">N/A</option>
+                                                    <option value="24~28&quot; Top Mount Sink">24~28" Top Mount Sink</option>
+                                                    <option value="30~32&quot; Top Mount Sink">30~32" Top Mount Sink</option>
+                                                    <option value="33~36&quot; Top Mount Sink">33~36" Top Mount Sink</option>
+                                                    <option value="37+&quot; Top Mount Sink">37+" Top Mount Sink</option>
+                                                    <option value="24~28&quot; Under Mount Sink">24~28" Under Mount Sink</option>
+                                                    <option value="30~32&quot; Under Mount Sink">30~32" Under Mount Sink</option>
+                                                    <option value="33~36&quot; Under Mount Sink">33~36" Under Mount Sink</option>
+                                                    <option value="37+&quot; Under Mount Sink">37+" Under Mount Sink</option>
+                                                    <option value="27&quot; Farmhouse Sink">27" Farmhouse Sink</option>
+                                                    <option value="30&quot; Farmhouse Sink">30" Farmhouse Sink </option>
+                                                    <option value="33&quot; Farmhouse Sink">33" Farmhouse Sink</option>
+                                                    <option value="36&quot; Farmhouse Sink">36" Farmhouse Sink</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Stove or Cooktop</label>
+                                                <select asp-for="StoveAndCooktop" class="form-control square">
+                                                    <option value="18&quot; Stove">18" Stove</option>
+                                                    <option value="24&quot; Stove">24" Stove</option>
+                                                    <option value="30&quot; Stove">30" Stove</option>
+                                                    <option value="36&quot; Stove">36" Stove</option>
+                                                    <option value="42&quot; Stove">42" Stove</option>
+                                                    <option value="48&quot; Stove">48" Stove</option>
+                                                    <option value="60&quot; Stove">60" Stove</option>
+                                                    <option value="18&quot; Cooktop">18" Cooktop</option>
+                                                    <option value="24&quot; Cooktop">24" Cooktop</option>
+                                                    <option value="24&quot; Rangetop">24" Rangetop</option>
+                                                    <option value="30&quot; Cooktop">30" Cooktop</option>
+                                                    <option value="30&quot; Rangetop">30" Rangetop</option>
+                                                    <option value="36&quot; Cooktop">36" Cooktop</option>
+                                                    <option value="36&quot; Rangetop">36" Rangetop</option>
+                                                    <option value="42&quot; Cooktop">42" Cooktop</option>
+                                                    <option value="42&quot; Rangetop">42" Rangetop</option>
+                                                    <option value="48&quot; Cooktop">48" Cooktop</option>
+                                                    <option value="48&quot; Rangetop">48" Rangetop</option>
+                                                    <option value="60&quot; Rangetop">60" Rangetop</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Hood</label>
+                                                <select asp-for="Hood" class="form-control square">
+                                                    <option value="30&quot; Microwave Hood">30" Microwave Hood</option>
+                                                    <option value="30&quot; Decoration Hood">30" Decoration Hood</option>
+                                                    <option value="33&quot; Decoration Hood">33" Decoration Hood</option>
+                                                    <option value="36&quot; Decoration Hood">36" Decoration Hood</option>
+                                                    <option value="42&quot; Decoration Hood">42" Decoration Hood</option>
+                                                    <option value="48&quot; Decoration Hood">48" Decoration Hood</option>
+                                                    <option value="60&quot; Decoration Hood">60" Decoration Hood</option>
+                                                    <option value="30&quot; Under Cabinet Hood">30" Unnder Cabinet Hood</option>
+                                                    <option value="36&quot; Under Cabinet Hood">36" Unnder Cabinet Hood</option>
+                                                    <option value="48&quot; Under Cabinet Hood">48" Unnder Cabinet Hood</option>
+                                                    <option value="Custom Wood Hood">Custom Wood Hood</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Built-in Drawer Microwave</label>
+                                                <select asp-for="BuiltInDrawerMicrowave" class="form-control square">
+                                                    <option value="N/A">N/A</option>
+                                                    <option value="24&quot; Drawer Microwave">24" Drawer Microwave</option>
+                                                    <option value="30&quot; Drawer Microwave">30" Drawer Microwave</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Comments</label>
+                                                <textarea asp-for="Comments" rows="2" class="form-control square" placeholder="Additional Comments"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-actions text-center">
                             <button type="reset" class="width-150 btn btn-warning"><i class="feather icon-x"></i> Cancel</button>
                             <button type="submit" class="width-150 btn btn-primary">Next <i class="feather icon-arrow-right"></i></button>
