@@ -564,7 +564,11 @@
             $("#customerDetailsTable").append("<tr><td>" + label + ":</td><td>" + (value || "N/A") + "</td></tr>");
         }
 
-        appendRow("Customer Name", data.firstName + " " + data.lastName);
+        var fullName = data.firstName;
+        if (data.lastName !== null && data.lastName !== undefined) {
+            fullName += " " + data.lastName;
+        }
+        appendRow("Customer Name", fullName);
         appendRow("Email", data.email);
         appendRow("Cell phone", data.cellPhone);
         appendRow("Home phone", data.homePhone);

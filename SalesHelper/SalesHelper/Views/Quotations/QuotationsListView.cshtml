@@ -85,7 +85,7 @@
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                                    <a href="/Customers/CustomerDetailedView/${row.customer.id}">${row.customer.firstName} ${row.customer.lastName}</a>
+                                <a href="/Customers/CustomerDetailedView/${row.customer.id}">${row.customer.firstName} ${row.customer.lastName ? row.customer.lastName : ''}</a>
                             `;
                     }
                 },

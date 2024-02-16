@@ -82,7 +82,10 @@
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                                <a href="/Customers/CustomerDetailedView/${row.customerObject.id}">${row.customerObject.firstName} ${row.customerObject.lastName}</a>
+                                <a href="/Customers/CustomerDetailedView/${row.customerObject.id}">
+                                    ${row.customerObject.firstName}
+                                    ${row.customerObject.lastName ? row.customerObject.lastName : ''}
+                                </a>
                             `;
                     }
                 },
