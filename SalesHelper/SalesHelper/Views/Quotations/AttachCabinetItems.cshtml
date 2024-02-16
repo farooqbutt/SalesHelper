@@ -106,16 +106,34 @@
                                             <tbody>
                                                 @foreach (var item in itemsList)
                                                 {
-                                                    <tr>
+                                                    <tr id="@item.Id">
                                                         <td>@index</td>
                                                         <td>@item.DoorStyleName</td>
-                                                        <td>@item.Quantity</td>
+                                                        <td class="input-group-sm">
+                                                            <input class="form-control" value="@item.Quantity" type="number" placeholder="Quantity"/>
+                                                        </td>
                                                         <td>@item.Item</td>
-                                                        <td>@item.Description</td>
-                                                        <td>@item.Hinge</td>
-                                                        <td>@item.Finish</td>
+                                                        <td class="input-group-sm">
+                                                            <input class="form-control" value="@item.Description" placeholder="Description" />
+                                                        </td>
+                                                        <td class="input-group-sm">
+                                                            <select class="form-control">
+                                                                <option selected="@(item.Hinge == "N/A")" value="N/A">N/A</option>
+                                                                <option selected="@(item.Hinge == "Left")" value="Left">Left</option>
+                                                                <option selected="@(item.Hinge == "Right")" value="Right">Right</option>
+                                                            </select>
+                                                        </td>
+                                                        <td class="input-group-sm">
+                                                            <select class="form-control">
+                                                                <option selected="@(item.Finish == "N/A")" value="N/A">N/A</option>
+                                                                <option selected="@(item.Finish == "Left")" value="Left">Left</option>
+                                                                <option selected="@(item.Finish == "Right")" value="Right">Right</option>
+                                                                <option selected="@(item.Finish == "Bottom")" value="Bottom">Bottom</option>
+                                                            </select>
+                                                        </td>
                                                         <td>@item.Price</td>
-                                                        <td>
+                                                        <td style="vertical-align:middle;">
+                                                            <button onclick="UpdateItem(@item.Id)" class=" btn btn-sm btn-primary"><i class="fa fa-check-square-o" title="Update Item"></i></button>
                                                             <button onclick="DeleteAttachedItem(@item.Id)" class=" btn btn-sm btn-danger"><i class="feather icon-trash" title="Delete Item"></i></button>
                                                         </td>
                                                     </tr>
@@ -202,11 +220,12 @@
         $("#cabinetryItems").val(null).trigger("change");
 
         // AddRow on changing of cabinetryItems select2
-        $("#cabinetryItems").on("change", function () {
+        $("#cabinetryItems").on("select2:select", function () {
 
             if ($("#doorStylesSelect").val() == null) {
                 // if doorstylesselect is null then show alert
-                alert("Select Door Style First!");
+                alert("Select Door Style First!"); 
+                $(this).val(null).trigger('change.select2');
             } else {
                 $.ajax({
                     url: "/Quotations/GetCabinetItem",
@@ -217,6 +236,7 @@
                     },
                     success: function (data) {
                         addRow(data);
+                        $('#cabinetryItems').val(null).trigger('change.select2');
                         $('#cabinetryItems').select2('open');
                     },
                     error: function (error) {
@@ -327,6 +347,38 @@
             },
             error: function (error) {
                 toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    }
+
+    function UpdateItem(itemid) {
+        debugger;
+        // for updating items quantity, description, hinge, finish values
+        var tr = $("#" + itemid);
+        var quantity = tr.find("td:eq(2)").find("input").val();
+        var description = tr.find("td:eq(4)").find("input").val();
+        var hinge = tr.find("td:eq(5)").find("select").val();
+        var finish = tr.find("td:eq(6)").find("select").val();
+        // send ajax request with just item's id, quantity, description, hinge, finish parameters
+        $.ajax({
+            url: "/Quotations/UpdateCabinetItem",
+            type: "POST",
+            data: {
+                itemid: itemid,
+                quantity: quantity,
+                description: description,
+                hinge: hinge,
+                finish: finish
+            },
+            success: function (data) {
+                if (data.message == "success") {
+                    toastr.success(data.result, "Success", { "progressBar": true });
+                } else {
+                    toastr.info(data.result, "Information", { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(data.result, 'Error!', { "progressBar": true });
             }
         });
     }

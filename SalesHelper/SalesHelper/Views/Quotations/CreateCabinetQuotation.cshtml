@@ -33,6 +33,18 @@
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
             <h3 class="content-header-title mb-0">New Cabinet Quotation</h3>
+            <div class="row breadcrumbs-top">
+                <div class="breadcrumb-wrapper col-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Quotations" asp-action="QuotationsListView">Quotations</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a>Create Cabinet Quote</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
         </div>
     </div>
     <div class="content-body">
@@ -121,7 +133,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" name="colorDesign" id="oneColor" value="oneColor">
+                                            <input asp-for="isOneColorDesign" type="radio" class="custom-control-input" value="true" id="oneColor" />
                                             <label class="custom-control-label" for="oneColor">One Color Design</label>
                                         </div>
                                     </div>
@@ -129,7 +141,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" name="colorDesign" id="multiColor" value="multiColor">
+                                            <input asp-for="isOneColorDesign" type="radio" class="custom-control-input" value="false" id="multiColor" />
                                             <label class="custom-control-label" for="multiColor">Multiple Color Design</label>
                                         </div>
                                     </div>
@@ -305,7 +317,7 @@
                                                     <option value='24" Refrigerator'>24" Refrigerator</option>
                                                     <option value='30" Refrigerator'>30" Refrigerator</option>
                                                     <option value='33" Refrigerator'>33" Refrigerator</option>
-                                                    <option value='36" Refrigerator'>36" Refrigerator</option>
+                                                    <option value='36" Refrigerator' selected>36" Refrigerator</option>
                                                     <option value='42" Refrigerator'>42" Refrigerator</option>
                                                     <option value='48" Refrigerator'>48" Refrigerator</option>
                                                     <option value='60" Refrigerator'>60" Refrigerator</option>
@@ -324,13 +336,13 @@
                                                 <select asp-for="Dishwasher" class="form-control square">
                                                     <option value="No Dishwasher">No Dishwasher</option>
                                                     <option value="18&quot; Dishwasher">18" Dishwasher</option>
-                                                    <option value="24&quot; Dishwasher">24" Standard Dishwasher</option>
+                                                    <option value="24&quot; Dishwasher" selected>24" Standard Dishwasher</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label>Built-in Oven</label>
                                                 <select asp-for="BuiltInOven" class="form-control square">
-                                                    <option value="N/A">N/A</option>
+                                                    <option value="N/A" selected>N/A</option>
                                                     <option value="24&quot; Built-in Microwave">24" Built-in Microwave</option>
                                                     <option value="27&quot; Built-in Single Oven">27" Built-in Single Oven</option>
                                                     <option value="27&quot; Built-in Double Oven">27" Built-in Double Oven</option>
@@ -355,7 +367,7 @@
                                                     <option value="33~36&quot; Under Mount Sink">33~36" Under Mount Sink</option>
                                                     <option value="37+&quot; Under Mount Sink">37+" Under Mount Sink</option>
                                                     <option value="27&quot; Farmhouse Sink">27" Farmhouse Sink</option>
-                                                    <option value="30&quot; Farmhouse Sink">30" Farmhouse Sink </option>
+                                                    <option value="30&quot; Farmhouse Sink" selected>30" Farmhouse Sink </option>
                                                     <option value="33&quot; Farmhouse Sink">33" Farmhouse Sink</option>
                                                     <option value="36&quot; Farmhouse Sink">36" Farmhouse Sink</option>
                                                 </select>
@@ -367,7 +379,7 @@
                                                 <select asp-for="StoveAndCooktop" class="form-control square">
                                                     <option value="18&quot; Stove">18" Stove</option>
                                                     <option value="24&quot; Stove">24" Stove</option>
-                                                    <option value="30&quot; Stove">30" Stove</option>
+                                                    <option value="30&quot; Stove" selected>30" Stove</option>
                                                     <option value="36&quot; Stove">36" Stove</option>
                                                     <option value="42&quot; Stove">42" Stove</option>
                                                     <option value="48&quot; Stove">48" Stove</option>
@@ -390,7 +402,7 @@
                                                 <label>Hood</label>
                                                 <select asp-for="Hood" class="form-control square">
                                                     <option value="30&quot; Microwave Hood">30" Microwave Hood</option>
-                                                    <option value="30&quot; Decoration Hood">30" Decoration Hood</option>
+                                                    <option value="30&quot; Decoration Hood" selected>30" Decoration Hood</option>
                                                     <option value="33&quot; Decoration Hood">33" Decoration Hood</option>
                                                     <option value="36&quot; Decoration Hood">36" Decoration Hood</option>
                                                     <option value="42&quot; Decoration Hood">42" Decoration Hood</option>
@@ -406,7 +418,7 @@
                                                 <label>Built-in Drawer Microwave</label>
                                                 <select asp-for="BuiltInDrawerMicrowave" class="form-control square">
                                                     <option value="N/A">N/A</option>
-                                                    <option value="24&quot; Drawer Microwave">24" Drawer Microwave</option>
+                                                    <option value="24&quot; Drawer Microwave" selected>24" Drawer Microwave</option>
                                                     <option value="30&quot; Drawer Microwave">30" Drawer Microwave</option>
                                                 </select>
                                             </div>
@@ -421,8 +433,8 @@
                         </div>
 
                         <div class="form-actions text-center">
-                            <button type="reset" class="width-150 btn btn-warning"><i class="feather icon-x"></i> Cancel</button>
-                            <button type="submit" class="width-150 btn btn-primary">Next <i class="feather icon-arrow-right"></i></button>
+                            <a asp-controller="Quotations" asp-action="QuotationsListView" type="reset" class="width-150 btn btn-warning"><i class="feather icon-x"></i> Cancel</a>
+                            <button type="submit" class="width-150 btn btn-primary">Save & Next <i class="feather icon-arrow-right"></i></button>
                         </div>
                     </form>
                 </div>
@@ -465,12 +477,12 @@
         $("#VendorId").val(null).trigger("change");
 
         // Show and hide one color or multi color design divs
-        $('input[type=radio][name=colorDesign]').change(function () {
-            if (this.value == 'oneColor') {
+        $('input[type=radio][name=isOneColorDesign]').change(function () {
+            if (this.value == 'true') {
                 $("#oneColorDesignDiv").removeAttr('hidden');
                 $("#multiColorDesignDiv").attr('hidden', true);
             }
-            else if (this.value == 'multiColor') {
+            else if (this.value == 'false') {
                 $("#multiColorDesignDiv").removeAttr('hidden');
                 $("#oneColorDesignDiv").attr('hidden', true);
             }

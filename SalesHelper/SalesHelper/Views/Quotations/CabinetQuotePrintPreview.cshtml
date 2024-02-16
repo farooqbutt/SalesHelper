@@ -1,0 +1,246 @@
+﻿@model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
+@inject SalesHelper.Data.ApplicationDbContext _context
+@inject SalesHelper.Repository.AddressRepo _addressRepo
+@{
+    var itemsList = _context.QuotationItems.Where(a => a.QuotationId == Model.Id).ToList();
+    var index = 1;
+}
+
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mt-1">Cabinet Quote Print Preview</h3>
+        </div>
+    </div>
+
+    <div class="content-body">
+        <section class="app-invoice-wrapper">
+            <div class="row">
+                <div class="col-xl-9 col-md-8 col-12 printable-content">
+                    <!-- using a bootstrap card -->
+                    <div class="card">
+                        <!-- card body -->
+                        <div class="card-body p-2">
+                            <!-- card-header -->
+                            <!-- invoice logo and title -->
+                            <div class="invoice-logo-title row py-2">
+                                <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                                    <h2 class="text-primary">Cabinet Quotation</h2>
+                                </div>
+                                <div class="col-6 d-flex justify-content-end invoice-logo">
+                                    <img src="~/images/logo/SalesHelperLogo.png" alt="company-logo" height="46" width="164">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
+                                    <span class="invoice-id font-weight-bold">Quote #</span>
+                                    <span>@Model.Id</span>
+                                </div>
+                                <div class="col-md-12 col-lg-5 col-xl-8">
+                                    <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+                                        <div class="issue-date pr-2">
+                                            <span class="font-weight-bold no-wrap">Quote Date: </span>
+                                            <span>@Convert.ToDateTime(Model.CreatedDateTime).ToShortDateString()</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- invoice address and contacts -->
+                            <div class="row invoice-adress-info">
+                                <div class="col-6 mt-1 from-info">
+                                    <div class="info-title mb-1">
+                                        <span>Customer</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted no-wrap">
+                                            <i class="feather icon-user"></i> @Model.CustomerIdFk.FirstName @Model.CustomerIdFk.LastName
+                                        </span>
+                                    </div>
+                                    <div class="company-address mb-1">
+                                        <span class="text-muted no-wrap">
+                                            <i class="feather icon-map-pin"></i> @_addressRepo.Read(Model.CustomerIdFk.AddressId).Address1
+                                        </span>
+                                    </div>
+                                    <div class="company-address mb-1">
+                                        <span class="text-muted no-wrap">
+                                            <i class="feather icon-map-pin"></i> @_addressRepo.Read(Model.CustomerIdFk.AddressId).Address2
+                                        </span>
+                                    </div>
+                                    <div class="company-email  mb-1 mb-1">
+                                        <span class="text-muted">
+                                            <i class="feather icon-mail"></i> @Model.CustomerIdFk.Email
+                                        </span>
+                                    </div>
+                                    <div class="company-phone  mb-1">
+                                        <span class="text-muted"><i class="feather icon-phone"></i> @Model.CustomerIdFk.CellPhone</span> (Cell Phone)<br />
+                                        <span class="text-muted"><i class="feather icon-phone"></i> @Model.CustomerIdFk.WorkPhone</span> (Work Phone)<br />
+                                        <span class="text-muted"><i class="feather icon-phone"></i> @Model.CustomerIdFk.HomePhone</span> (Home Phone)<br />
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-1 to-info">
+                                    <div class="info-title mb-1">
+                                        <span>Cabinetry Vendor</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted no-wrap">Cabinetry: @Model.VendorIdFk.CompanyName</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        @if (Model.isOneColorDesign == true)
+                                        {
+                                            <span class="text-muted no-wrap">Door Style: @Model.DoorStyleForOneColorDesign</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted no-wrap">Door Style: @Model.DoorStyleForMultipleColorDesign</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- quote details -->
+                            <div class="row invoice-adress-info py-2">
+                                <div class="col-6 mt-1 from-info">
+                                    @if (Model.isOneColorDesign == true)
+                                    {
+                                        <div class="info-title mb-1">
+                                            <span>Cabinet Details (One Color Design)</span>
+                                        </div>
+                                        <p class="card-text">Wood Species: @Model.WoodSpeciesForOneColorDesign </p>
+                                        <p class="card-text">Cabinet Finish: @Model.CabinetFinishForOneColorDesign</p>
+                                    }
+                                    else
+                                    {
+                                        <div class="info-title mb-1">
+                                            <span>Cabinet Details (Multiple Color Design)</span>
+                                        </div>
+                                        <p class="card-text">Upper Wood Species: @Model.UpperWoodSpeciesForMultipleColorDesign </p>
+                                        <p class="card-text">Upper Finish: @Model.UpperFinishForMultipleColorDesign</p>
+                                        <p class="card-text">Lower Wood Species: @Model.LowerWoodSpeciesForMultipleColorDesign </p>
+                                        <p class="card-text">Lower Finish: @Model.LowerFinishForMultipleColorDesign</p>
+                                        <p class="card-text">Island Wood Species: @Model.IslandWoodSpeciesForMultipleColorDesign</p>
+                                        <p class="card-text">Island Finish: @Model.IslandFinishForMultipleColorDesign</p>
+                                    }
+                                </div>
+                                <div class="col-6 mt-1 to-info">
+                                    <div class="info-title mb-1">
+                                        <span>Aditinoal Information</span>
+                                    </div>
+                                    <p class="card-text">Refrigerator: @Html.Raw(Model.Refrigerator) </p>
+                                    <p class="card-text">Stove or Cooktop: @Html.Raw(Model.StoveAndCooktop)</p>
+                                    <p class="card-text">Dishwasher: @Html.Raw(Model.Dishwasher)</p>
+                                    <p class="card-text">Hood: @Html.Raw(Model.Hood)</p>
+                                    <p class="card-text">Built-in Oven: @Html.Raw(Model.BuiltInOven)</p>
+                                    <p class="card-text">Built-in Drawer Microwave: @Html.Raw(Model.BuiltInDrawerMicrowave)</p>
+                                    <p class="card-text">Sink: @Html.Raw(Model.Sink)</p>
+                                </div>
+                            </div>
+
+                            <!--product details table -->
+                            <div class="product-details-table py-2 table-responsive">
+                                <div class="info-title mb-1">
+                                    <span><strong>Items List</strong></span>
+                                </div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th style="width: 5%">Qty</th>
+                                            <th style="width: 10%">Item</th>
+                                            <th style="width: 40%">Description</th>
+                                            <th style="width: 10%">Hinge</th>
+                                            <th style="width: 10%">Finish</th>
+                                            <th style="width: 10%">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in itemsList)
+                                        {
+                                            <tr>
+                                                <td>@index</td>
+                                                <td>@item.Quantity</td>
+                                                <td>@item.Item</td>
+                                                <td>@item.Description</td>
+                                                <td>@item.Hinge</td>
+                                                <td>@item.Finish</td>
+                                                <td>@item.Price</td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <hr>
+
+                            <!-- invoice total -->
+                            <div class="invoice-total py-2">
+                                <div class="row">
+                                    <div class="col-4 col-sm-6 mt-75">
+                                    </div>
+                                    <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                        <div class="col-4 col-sm-6 mt-75">
+                                            <p><strong>Price Quote</strong></p>
+                                        </div>
+                                        <ul class="list-group cost-list mr-2">
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Cabinet Price </span>
+                                                <span class="cost-value">$ @Model.CabinetPrice</span>
+                                            </li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Delivary Charge </span>
+                                                <span class="cost-value">$ @Model.DeliveryCharge</span>
+                                            </li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Installation Fee </span>
+                                                <span class="cost-value">$ @Model.InstallationFee</span>
+                                            </li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Discount </span>
+                                                <span class="cost-value">-$ 00.00</span>
+                                            </li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Tax </span>
+                                                <span class="cost-value">$ @Model.Tax</span>
+                                            </li>
+                                            <li class="dropdown-divider"></li>
+                                            <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                <span class="cost-title mr-2">Quote Total </span>
+                                                @{
+                                                    var total = Model.CabinetPrice + Model.DeliveryCharge + Model.InstallationFee + Model.Tax;
+                                                }
+                                                <span class="cost-value">$ @total</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- buttons section -->
+                <div class="col-xl-3 col-md-4 col-12 action-btns">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <a href="#" class="btn btn-info btn-block mb-1 print-invoice">
+                                <i class="feather icon-printer mr-25 common-size"></i> Print
+                            </a>
+                            <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.Id" class="btn btn-info btn-block mb-1">
+                                <i class="feather icon-edit-2 mr-25 common-size"></i> Edit Quote
+                            </a>
+                            <a href="#" class="btn btn-success btn-block mb-1">
+                                <i class="feather icon-mail mr-25 common-size"></i> Request Estimate
+                            </a>
+                            <a href="#" class="btn btn-primary btn-block mb-1">
+                                <i class="feather icon-mail mr-25 common-size"></i> Send to Customer
+                            </a>
+                            <a href="javascript:history.back()" class="btn btn-primary btn-block mb-1">
+                                <i class="feather icon-arrow-left mr-25 common-size"></i> Previous
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

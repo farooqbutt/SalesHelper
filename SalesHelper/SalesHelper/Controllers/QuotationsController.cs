@@ -38,7 +38,42 @@ namespace SalesHelper.Controllers
             _addressService = addressService;
         }
 
-        #region COMMON METHODS START
+        #region COMMON METHODS
+
+        public CabinetQuotation TimeAndUserUpdate(CabinetQuotation cabinetQuotation)
+        {
+            cabinetQuotation.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
+            cabinetQuotation.ModifiedDateTime = DateTime.Now;
+            return cabinetQuotation;
+        }
+
+        private string GetViewNameFromUrl(string url)
+        {
+            // Parse the URL
+            Uri uri = new Uri(url);
+            string path = uri.AbsolutePath;
+
+            // Split the path by slashes
+            string[] segments = path.Split('/');
+
+            // Initialize the view name
+            string viewName = string.Empty;
+
+            // Check if the last segment is a number (ID)
+            if (!string.IsNullOrEmpty(segments[segments.Length - 1]) && !int.TryParse(segments[segments.Length - 1], out _))
+            {
+                // If the last segment is not a number, use it as the view name
+                viewName = segments[segments.Length - 1];
+            }
+            else
+            {
+                // If the last segment is a number, use the second-to-last segment as the view name
+                viewName = segments[segments.Length - 2];
+            }
+
+            return viewName;
+        }
+
 
         [HttpGet]
         public IActionResult QuotationsListView()
@@ -92,16 +127,9 @@ namespace SalesHelper.Controllers
             return Json(data);
         }
 
-        #endregion COMMON METHODS END
+        #endregion COMMON METHODS
 
         #region CABINET QUOTATIONS
-
-        public CabinetQuotation TimeAndUserUpdate(CabinetQuotation cabinetQuotation)
-        {
-            cabinetQuotation.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
-            cabinetQuotation.ModifiedDateTime = DateTime.Now;
-            return cabinetQuotation;
-        }
 
         [HttpGet]
         public IActionResult EditCabinetQuotation(int id)
@@ -118,6 +146,7 @@ namespace SalesHelper.Controllers
                 VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
+                isOneColorDesign = cabinetQuotation.isOneColorDesign,
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
@@ -155,6 +184,20 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult EditCabinetQuotation(CabinetQuoteInterface cabinetQuotation)
         {
+            // Serializing additional information fields to JSON string
+            var additionalInfo = new
+            {
+                Refrigerator = cabinetQuotation.Refrigerator,
+                StoveAndCooktop = cabinetQuotation.StoveAndCooktop,
+                Dishwasher = cabinetQuotation.Dishwasher,
+                Hood = cabinetQuotation.Hood,
+                BuiltInOven = cabinetQuotation.BuiltInOven,
+                BuiltInDrawerMicrowave = cabinetQuotation.BuiltInDrawerMicrowave,
+                Sink = cabinetQuotation.Sink,
+                Comments = cabinetQuotation.Comments
+            };
+            var jsonData = JsonConvert.SerializeObject(additionalInfo);
+
             var quoteToUpdate = _cabinetQuotationService.Read(cabinetQuotation.Id);
             // updating only fields that are changed in cabinet quotation
             quoteToUpdate.Name = cabinetQuotation.Name;
@@ -162,6 +205,7 @@ namespace SalesHelper.Controllers
             quoteToUpdate.VendorId = cabinetQuotation.VendorId;
             quoteToUpdate.Construction = cabinetQuotation.Construction;
             quoteToUpdate.BoxMaterials = cabinetQuotation.BoxMaterials;
+            quoteToUpdate.isOneColorDesign = cabinetQuotation.isOneColorDesign;
             quoteToUpdate.WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign;
             quoteToUpdate.DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign;
             quoteToUpdate.CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign;
@@ -172,9 +216,10 @@ namespace SalesHelper.Controllers
             quoteToUpdate.UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign;
             quoteToUpdate.LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign;
             quoteToUpdate.IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign;
+            quoteToUpdate.DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign;
             quoteToUpdate.CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign;
             // additional information fields
-            quoteToUpdate.AdditionalInformation = cabinetQuotation.AdditionalInformation;
+            quoteToUpdate.AdditionalInformation = jsonData;
             // updating price fields
             quoteToUpdate.CabinetPrice = cabinetQuotation.CabinetPrice;
             quoteToUpdate.DeliveryCharge = cabinetQuotation.DeliveryCharge;
@@ -232,6 +277,7 @@ namespace SalesHelper.Controllers
                 VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
+                isOneColorDesign = cabinetQuotation.isOneColorDesign,
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
@@ -271,24 +317,24 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CabinetQuotationDetailedView(QuotationFullViewInterface quoteData)
+        public IActionResult CabinetQuotationDetailedView(QuotationFullViewInterface quoteData)
         {
             _cabinetQuotationService.Update(quoteData.CabinetQuotation);
             // if document file is not null then upload it
-            if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
-            {
-                var data = await UploadQuotationDocuments(quoteData);
-                // get message value from data.value object
-                dynamic obj = data.Value!;
-                if (obj.message != "error")
-                {
-                    return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
-                }
-                else
-                {
-                    return Json(new { status = "error", message = obj.result });
-                }
-            }
+            //if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
+            //{
+            //    var data = await UploadQuotationDocuments(quoteData);
+            //    // get message value from data.value object
+            //    dynamic obj = data.Value!;
+            //    if (obj.message != "error")
+            //    {
+            //        return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
+            //    }
+            //    else
+            //    {
+            //        return Json(new { status = "error", message = obj.result });
+            //    }
+            //}
             return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
         }
 
@@ -306,6 +352,7 @@ namespace SalesHelper.Controllers
                 VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
+                isOneColorDesign = cabinetQuotation.isOneColorDesign,
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
@@ -384,6 +431,31 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
+        public IActionResult UpdateCabinetItem(int itemid, int quantity, string description, string hinge, string finish)
+        {
+            try
+            {
+                var item = _context.QuotationItems.Find(itemid);
+                item!.Quantity = quantity;
+                item.Description = description;
+                item.Hinge = hinge;
+                item.Finish = finish;
+
+                _context.QuotationItems.Update(item);
+                _context.SaveChanges();
+
+                // update modified date time of cabinet quotation
+                _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(item.QuotationId)));
+
+                return Json(new { message = "success", result = "Item Updated Successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = "error", result = ex.InnerException!.Message });
+            }
+        }
+
+        [HttpPost]
         public IActionResult DeleteAttachedItem(int itemid)
         {
             try
@@ -409,115 +481,52 @@ namespace SalesHelper.Controllers
             return Json(cabinetItemData);
         }
 
-
-        // Attaching Quotations Files and Documents
-
-        [HttpPost]
-        public async Task<JsonResult> UploadQuotationDocuments(QuotationFullViewInterface quoteData)
+        [HttpGet]
+        public IActionResult CabinetQuotePrintPreview(int id)
         {
-            try
+            var cabinetQuotation = _cabinetQuotationService.Read(id);
+            var quoteWithAdditionalInfo = new CabinetQuoteInterface
             {
-                if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
-                {
-                    foreach (var file in quoteData.DocumentFiles)
-                    {
-                        // Check the file size
-                        if (file.Length > 1024 * 1024 * 50) // 50MB in size
-                        {
-                            // return error
-                            var err = new { message = "error", result = "The file size should not exceed 1MB." };
-                            return Json(err);
-                        }
-
-                        // Specify the folder where you want to save the uploaded files
-                        string uploadFolder = Path.Combine(_env.WebRootPath, "QuotationDocuments");
-
-                        // Ensure the folder exists, or create it if it doesn't
-                        Directory.CreateDirectory(uploadFolder);
-
-                        // Get the file extension
-                        string fileExtension = Path.GetExtension(file.FileName);
-
-                        // Generate a unique file name to avoid overwriting existing files
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName + fileExtension;
-
-                        // Combine the folder path with the unique file name
-                        string filePath = Path.Combine(uploadFolder, uniqueFileName);
-
-                        var document = new QuotationDocument
-                        {
-                            DocumentName = uniqueFileName,
-                            Description = file.FileName,
-                            FilePath = filePath,
-                            UploadDate = DateTime.Now,
-                            QuotationId = quoteData.CabinetQuotation.Id,
-                            QuotationIdFK = quoteData.CabinetQuotation
-                        };
-
-                        await _context.QuotationDocuments.AddAsync(document);
-                        await _context.SaveChangesAsync();
-
-                        // Save the file to the server
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-                    }
-
-                    return Json(new { message = "success", result = "Files uploaded successfully!" });
-                }
-
-                // return error
-                var data = new { message = "error", result = "No files found for upload!" };
-                return Json(data);
-            }
-            catch (Exception ex)
-            {
-                var data = new { message = "error", result = ex.InnerException?.Message };
-                return Json(data);
-            }
-        }
-
-
-        public IActionResult ShowCabinetDcoument(string filePath)
-        {
-            // Check if the file exists
-            if (System.IO.File.Exists(filePath))
-            {
-                // Set the Content-Disposition header to specify how the browser should handle the file
-                var contentDisposition = new ContentDisposition
-                {
-                    FileName = Path.GetFileName(filePath),
-                    Inline = true // Set to true to display the file in the browser, or false to force download.
-                };
-                Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
-
-                // Serve the file with the appropriate content type
-                var stream = System.IO.File.OpenRead(filePath);
-                return File(stream, GetContentType(Path.GetExtension(filePath))); // Adjust the content type based on the file type.
-            }
-            else
-            {
-                var data = new { message = "error", result = "An Error Occurred" };
-                return Json(data);
-            }
-        }
-
-        private string GetContentType(string fileExtension)
-        {
-            switch (fileExtension.ToLower())
-            {
-                case ".jpg":
-                case ".jpeg":
-                    return "image/jpeg";
-                case ".png":
-                    return "image/png";
-                case ".pdf":
-                    return "application/pdf";
-                // Add more cases for other file types as needed.
-                default:
-                    return "application/octet-stream"; // Default to binary data if the file type is unknown.
-            }
+                Id = cabinetQuotation.Id,
+                Name = cabinetQuotation.Name,
+                CustomerId = cabinetQuotation.CustomerId,
+                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
+                VendorId = cabinetQuotation.VendorId,
+                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
+                Construction = cabinetQuotation.Construction,
+                BoxMaterials = cabinetQuotation.BoxMaterials,
+                isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
+                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
+                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
+                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                AdditionalInformation = cabinetQuotation.AdditionalInformation,
+                CreatedByUserId = cabinetQuotation.CreatedByUserId,
+                CreatedDateTime = cabinetQuotation.CreatedDateTime,
+                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
+                CabinetPrice = cabinetQuotation.CabinetPrice,
+                DeliveryCharge = cabinetQuotation.DeliveryCharge,
+                InstallationFee = cabinetQuotation.InstallationFee,
+                Tax = cabinetQuotation.Tax,
+                VendorPrice = cabinetQuotation.VendorPrice,
+                CommentOnPrice = cabinetQuotation.CommentOnPrice,
+                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
+                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
+                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
+                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
+                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
+                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
+                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
+                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+            };
+            return View(quoteWithAdditionalInfo);
         }
 
         #endregion CABINET QUOTATIONS
@@ -600,5 +609,163 @@ namespace SalesHelper.Controllers
         }
 
         #endregion COUNTERTOP QUOTATIONS
+
+        #region QUOTATION DOCUMENTS UPLOAD AND DELETE METHODS
+
+        [HttpPost]
+        public async Task<IActionResult> UploadQuotationDocuments(CabinetQuoteInterface quoteData)
+        {
+            // get name of view from where this method is being called
+            string refererView = Request.Headers["Referer"].ToString();
+            string viewName = GetViewNameFromUrl(refererView);
+            try
+            {
+                if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
+                {
+                    foreach (var file in quoteData.DocumentFiles)
+                    {
+                        // Check the file size
+                        if (file.Length > 1024 * 1024 * 50) // 50MB in size
+                        {
+                            // return error
+                            var err = new { message = "error", result = "The file size should not exceed 1MB." };
+                            return Json(err);
+                        }
+
+                        // Specify the folder where you want to save the uploaded files
+                        string uploadFolder = Path.Combine(_env.WebRootPath, "QuotationDocuments");
+
+                        // Ensure the folder exists, or create it if it doesn't
+                        Directory.CreateDirectory(uploadFolder);
+
+                        // Get the file extension
+                        string fileExtension = Path.GetExtension(file.FileName);
+
+                        // Generate a unique file name to avoid overwriting existing files
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+
+                        // Combine the folder path with the unique file name
+                        string filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                        var document = new QuotationDocument
+                        {
+                            DocumentName = uniqueFileName,
+                            Description = file.FileName,
+                            FilePath = filePath,
+                            UploadDate = DateTime.Now,
+                            QuotationId = quoteData.Id,
+                            QuotationIdFK = _cabinetQuotationService.Read(quoteData.Id)
+                        };
+
+                        await _context.QuotationDocuments.AddAsync(document);
+                        await _context.SaveChangesAsync();
+
+                        // Save the file to the server
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                    }
+
+                    return RedirectToAction(viewName, new { id = quoteData.Id });
+                }
+
+                // return error
+                var data = new { message = "error", result = "No files found for upload!" };
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                var data = new { message = "error", result = ex.InnerException?.Message };
+                return Json(data);
+            }
+        }
+
+        public IActionResult ShowCabinetDcoument(string filePath)
+        {
+            // Check if the file exists
+            if (System.IO.File.Exists(filePath))
+            {
+                // Set the Content-Disposition header to specify how the browser should handle the file
+                var contentDisposition = new ContentDisposition
+                {
+                    FileName = Path.GetFileName(filePath),
+                    Inline = true // Set to true to display the file in the browser, or false to force download.
+                };
+                Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
+
+                // Serve the file with the appropriate content type
+                var stream = System.IO.File.OpenRead(filePath);
+                return File(stream, GetContentType(Path.GetExtension(filePath))); // Adjust the content type based on the file type.
+            }
+            else
+            {
+                var data = new { message = "error", result = "An Error Occurred" };
+                return Json(data);
+            }
+        }
+
+        public IActionResult DeleteAttachedDocument(int documentId)
+        {
+            // get name of view from where this method is being called
+            string refererView = Request.Headers["Referer"].ToString();
+            string viewName = GetViewNameFromUrl(refererView);
+            // get the id of quotation from document id before deleting it
+            var quotationId = _context.QuotationDocuments.Find(documentId)!.QuotationId;
+            // delete document from folder
+            bool isDeleted = DeleteDocumentFromFolder(_context.QuotationDocuments.Find(documentId)!.FilePath);
+            if (isDeleted)
+            {
+                // delete document record from database
+                _context.QuotationDocuments.Remove(_context.QuotationDocuments.Find(documentId)!);
+                _context.SaveChanges();
+                return RedirectToAction(viewName, new { id = quotationId });
+            }
+            else
+            {
+                return Json(new { message = "error", result = "An Error Occurred" });
+            }
+        }
+
+        public bool DeleteDocumentFromFolder(string filePath)
+        {
+            try
+            {
+                // Check if the file exists
+                if (System.IO.File.Exists(filePath))
+                {
+                    // Delete the file
+                    System.IO.File.Delete(filePath);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private string GetContentType(string fileExtension)
+        {
+            switch (fileExtension.ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return "image/jpeg";
+                case ".png":
+                    return "image/png";
+                case ".pdf":
+                    return "application/pdf";
+                // Add more cases for other file types as needed.
+                default:
+                    return "application/octet-stream"; // Default to binary data if the file type is unknown.
+            }
+        }
+
+        #endregion QUOTATION DOCUMENTS UPLOAD AND DELETE METHODS
     }
 }

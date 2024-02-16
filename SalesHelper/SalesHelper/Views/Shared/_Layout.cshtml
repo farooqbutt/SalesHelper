@@ -32,7 +32,9 @@
     <link rel="stylesheet" type="text/css" href="/vendors/css/tables/datatable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/extensions/toastr.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/forms/selects/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="/vendors/css/file-uploaders/dropzone.min.css">
+    @* <link rel="stylesheet" type="text/css" href="/vendors/css/file-uploaders/dropzone.min.css"> *@
+    <link rel="stylesheet" type="text/css" href="/css/pages/app-contacts.css">
+    <link rel="stylesheet" type="text/css" href="/css/pages/app-invoice.css">
 
     <link rel="stylesheet" type="text/css" href="/vendors/css/calendars/fullcalendar.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/calendars/daygrid.min.css">
@@ -65,264 +67,307 @@
 <!-- END: Head-->
 <body class="vertical-layout vertical-menu 2-columns   fixed-navbar" data-open="click" data-menu="vertical-menu" data-col="2-columns">
     <!-- BEGIN: Header-->
-    <nav class="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-semi-dark navbar-shadow">
-        <div class="navbar-wrapper">
-            <div class="navbar-header">
-                <ul class="nav navbar-nav flex-row">
-                    <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu font-large-1"></i></a></li>
-                    <li class="nav-item">
-                        <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                            <img class="brand-logo" alt="saleshelper" src="/images/logo/SH-28-OL.png" width="40" height="35">
-                            <h2 class="brand-text">SalesHelper</h2>
-                        </a>
-                    </li>
-                    <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="fa fa-ellipsis-v"></i></a></li>
-                </ul>
-            </div>
-            <div class="navbar-container content">
-                <div class="collapse navbar-collapse" id="navbar-mobile">
-                    <ul class="nav navbar-nav mr-auto float-left">
-                        <li class="nav-item d-none d-md-block"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu"></i></a></li>
-                        <li class="dropdown nav-item mega-dropdown d-none d-lg-block">
-                            <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">Mega</a>
-                            <ul class="mega-dropdown-menu dropdown-menu row p-1">
-                                <li class="col-md-4 bg-mega p-2">
-                                    <h3 class="text-white mb-1 font-weight-bold">Mega Menu Sidebar</h3>
-                                    <p class="text-white line-height-2">Candy canes bonbon toffee. Cheesecake dragée gummi bears chupa chups powder bonbon. Apple pie cookie sweet.</p>
-                                    <button class="btn btn-outline-white">Learn More</button>
-                                </li>
-                                <li class="col-md-5 px-2">
-                                    <h6 class="font-weight-bold font-medium-2 ml-1">Apps</h6>
-                                    <ul class="row mt-2">
-                                        <li class="col-6 col-xl-4">
-                                            <a class="text-center mb-2 mb-xl-3" href="app-email.html" target="_blank">
-                                                <i class="feather icon-mail font-large-1 mr-0"></i>
-                                                <p class="font-medium-2 mt-25 mb-0">Email</p>
-                                            </a>
-                                        </li>
-                                        <li class="col-6 col-xl-4">
-                                            <a class="text-center mb-2 mb-xl-3" href="app-chat.html" target="_blank">
-                                                <i class="feather icon-message-square font-large-1 mr-0"></i>
-                                                <p class="font-medium-2 mt-25 mb-0">Chat</p>
-                                            </a>
-                                        </li>
-                                        <li class="col-6 col-xl-4">
-                                            <a class="text-center mb-2 mb-xl-3 mt-75 mt-xl-0" href="app-todo.html" target="_blank">
-                                                <i class="feather icon-check-square font-large-1 mr-0"></i>
-                                                <p class="font-medium-2 mt-25 mb-0">Todo</p>
-                                            </a>
-                                        </li>
-                                        <li class="col-6 col-xl-4">
-                                            <a class="text-center mb-2 mt-75 mt-xl-0" href="app-kanban.html" target="_blank">
-                                                <i class="feather icon-file-plus font-large-1 mr-0"></i>
-                                                <p class="font-medium-2 mt-25 mb-50">Kanban</p>
-                                            </a>
-                                        </li>
-                                        <li class="col-6 col-xl-4">
-                                            <a class="text-center mb-2 mt-75 mt-xl-0" href="app-contacts.html" target="_blank">
-                                                <i class="feather icon-users font-large-1 mr-0"></i>
-                                                <p class="font-medium-2 mt-25 mb-50">Contacts</p>
-                                            </a>
-                                        </li>
-                                        <li class="col-6 col-xl-4">
-                                            <a class="text-center mb-2 mt-75 mt-xl-0" href="invoice-template.html" target="_blank">
-                                                <i class="feather icon-printer font-large-1 mr-0"></i>
-                                                <p class="font-medium-2 mt-25 mb-50">Invoice</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="col-md-3">
-                                    <h6 class="font-weight-bold font-medium-2">Components</h6>
-                                    <ul class="row mt-1 mt-xl-2">
-                                        <li class="col-12 col-xl-6 pl-0">
-                                            <ul class="mega-component-list">
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-alerts.html" target="_blank">Alert</a></li>
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-callout.html" target="_blank">Callout</a></li>
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-buttons-basic.html" target="_blank">Buttons</a></li>
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-carousel.html" target="_blank">Carousel</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="col-12 col-xl-6 pl-0">
-                                            <ul class="mega-component-list">
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-dropdowns.html" target="_blank">Drop Down</a></li>
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-list-group.html" target="_blank">List Group</a></li>
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-modals.html" target="_blank">Modals</a></li>
-                                                <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-pagination.html" target="_blank">Pagination</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <nav class="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-semi-dark navbar-shadow">
+            <div class="navbar-wrapper">
+                <div class="navbar-header">
+                    <ul class="nav navbar-nav flex-row">
+                        <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu font-large-1"></i></a></li>
+                        <li class="nav-item">
+                            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                                <img class="brand-logo mr-1" alt="saleshelper" src="/images/logo/SalesHelperLogo.png" width="32" height="27">
+                                <img class="brand-logo" alt="saleshelper" src="/images/logo/SalesHelperTextLogo-White.png" width="130" height="27">
+                            </a>
                         </li>
-                        <li class="nav-item d-none d-md-block"><a class="nav-link nav-link-expand" href="#"><i class="ficon feather icon-maximize"></i></a></li>
-                        <li class="nav-item nav-search">
-                            <a class="nav-link nav-link-search" href="#"><i class="ficon feather icon-search"></i></a>
-                            <div class="search-input">
-                                <input class="input" type="text" placeholder="Explore Stack..." tabindex="0" data-search="template-search">
-                                <div class="search-input-close"><i class="feather icon-x"></i></div>
-                                <ul class="search-list"></ul>
-                            </div>
-                        </li>
+                        <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="fa fa-ellipsis-v"></i></a></li>
                     </ul>
-                    @if (User.Identity!.IsAuthenticated)
-                    {
-                        <ul class="nav navbar-nav float-right">
-                            <li class="dropdown dropdown-language nav-item">
-                                <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-us"></i><span class="selected-language"></span></a>
-                                <div class="dropdown-menu" aria-labelledby="dropdown-flag"><a class="dropdown-item" href="#" data-language="en"><i class="flag-icon flag-icon-us"></i> English</a><a class="dropdown-item" href="#" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a><a class="dropdown-item" href="#" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a><a class="dropdown-item" href="#" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a></div>
-                            </li>
-                            <li class="dropdown dropdown-notification nav-item">
-                                <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-bell"></i><span class="badge badge-pill badge-danger badge-up">5</span></a>
-                                <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
-                                    <li class="dropdown-menu-header">
-                                        <h6 class="dropdown-header m-0"><span class="grey darken-2">Notifications</span><span class="notification-tag badge badge-danger float-right m-0">5 New</span></h6>
+                </div>
+                <div class="navbar-container content">
+                    <div class="collapse navbar-collapse" id="navbar-mobile">
+                        <ul class="nav navbar-nav mr-auto float-left">
+                            <li class="nav-item d-none d-md-block"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu"></i></a></li>
+                            <li class="dropdown nav-item mega-dropdown d-none d-lg-block">
+                                <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">Mega</a>
+                                <ul class="mega-dropdown-menu dropdown-menu row p-1">
+                                    <li class="col-md-4 bg-mega p-2">
+                                        <h3 class="text-white mb-1 font-weight-bold">Mega Menu Sidebar</h3>
+                                        <p class="text-white line-height-2">Candy canes bonbon toffee. Cheesecake dragée gummi bears chupa chups powder bonbon. Apple pie cookie sweet.</p>
+                                        <button class="btn btn-outline-white">Learn More</button>
                                     </li>
-                                    <li class="scrollable-container media-list">
-                                        <a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left align-self-center"><i class="feather icon-plus-square icon-bg-circle bg-cyan"></i></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">You have new order!</h6>
-                                                    <p class="notification-text font-small-3 text-muted">Lorem ipsum dolor sit amet, consectetuer elit.</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">30 minutes ago</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left align-self-center"><i class="feather icon-download-cloud icon-bg-circle bg-red bg-darken-1"></i></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading red darken-1">99% Server load</h6>
-                                                    <p class="notification-text font-small-3 text-muted">Aliquam tincidunt mauris eu risus.</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Five hour ago</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left align-self-center"><i class="feather icon-alert-triangle icon-bg-circle bg-yellow bg-darken-3"></i></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading yellow darken-3">Warning notifixation</h6>
-                                                    <p class="notification-text font-small-3 text-muted">Vestibulum auctor dapibus neque.</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Today</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left align-self-center"><i class="feather icon-check-circle icon-bg-circle bg-cyan"></i></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">Complete the task</h6><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Last week</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left align-self-center"><i class="feather icon-file icon-bg-circle bg-teal"></i></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">Generate monthly report</h6><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Last month</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a>
+                                    <li class="col-md-5 px-2">
+                                        <h6 class="font-weight-bold font-medium-2 ml-1">Apps</h6>
+                                        <ul class="row mt-2">
+                                            <li class="col-6 col-xl-4">
+                                                <a class="text-center mb-2 mb-xl-3" href="app-email.html" target="_blank">
+                                                    <i class="feather icon-mail font-large-1 mr-0"></i>
+                                                    <p class="font-medium-2 mt-25 mb-0">Email</p>
+                                                </a>
+                                            </li>
+                                            <li class="col-6 col-xl-4">
+                                                <a class="text-center mb-2 mb-xl-3" href="app-chat.html" target="_blank">
+                                                    <i class="feather icon-message-square font-large-1 mr-0"></i>
+                                                    <p class="font-medium-2 mt-25 mb-0">Chat</p>
+                                                </a>
+                                            </li>
+                                            <li class="col-6 col-xl-4">
+                                                <a class="text-center mb-2 mb-xl-3 mt-75 mt-xl-0" href="app-todo.html" target="_blank">
+                                                    <i class="feather icon-check-square font-large-1 mr-0"></i>
+                                                    <p class="font-medium-2 mt-25 mb-0">Todo</p>
+                                                </a>
+                                            </li>
+                                            <li class="col-6 col-xl-4">
+                                                <a class="text-center mb-2 mt-75 mt-xl-0" href="app-kanban.html" target="_blank">
+                                                    <i class="feather icon-file-plus font-large-1 mr-0"></i>
+                                                    <p class="font-medium-2 mt-25 mb-50">Kanban</p>
+                                                </a>
+                                            </li>
+                                            <li class="col-6 col-xl-4">
+                                                <a class="text-center mb-2 mt-75 mt-xl-0" href="app-contacts.html" target="_blank">
+                                                    <i class="feather icon-users font-large-1 mr-0"></i>
+                                                    <p class="font-medium-2 mt-25 mb-50">Contacts</p>
+                                                </a>
+                                            </li>
+                                            <li class="col-6 col-xl-4">
+                                                <a class="text-center mb-2 mt-75 mt-xl-0" href="invoice-template.html" target="_blank">
+                                                    <i class="feather icon-printer font-large-1 mr-0"></i>
+                                                    <p class="font-medium-2 mt-25 mb-50">Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
-                                    <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all notifications</a></li>
+                                    <li class="col-md-3">
+                                        <h6 class="font-weight-bold font-medium-2">Components</h6>
+                                        <ul class="row mt-1 mt-xl-2">
+                                            <li class="col-12 col-xl-6 pl-0">
+                                                <ul class="mega-component-list">
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-alerts.html" target="_blank">Alert</a></li>
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-callout.html" target="_blank">Callout</a></li>
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-buttons-basic.html" target="_blank">Buttons</a></li>
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-carousel.html" target="_blank">Carousel</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="col-12 col-xl-6 pl-0">
+                                                <ul class="mega-component-list">
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-dropdowns.html" target="_blank">Drop Down</a></li>
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-list-group.html" target="_blank">List Group</a></li>
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-modals.html" target="_blank">Modals</a></li>
+                                                    <li class="mega-component-item"><a class="mb-1 mb-xl-2" href="component-pagination.html" target="_blank">Pagination</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
-                            <li class="dropdown dropdown-notification nav-item">
-                                <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-mail"></i><span class="badge badge-pill badge-warning badge-up">3</span></a>
-                                <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
-                                    <li class="dropdown-menu-header">
-                                        <h6 class="dropdown-header m-0"><span class="grey darken-2">Messages</span><span class="notification-tag badge badge-warning float-right m-0">4 New</span></h6>
-                                    </li>
-                                    <li class="scrollable-container media-list">
-                                        <a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <div class="avatar avatar-online avatar-sm rounded-circle"><img src="/images/portrait/small/avatar-s-1.png" alt="avatar"><i></i></div>
-                                                </div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">Margaret Govan</h6>
-                                                    <p class="notification-text font-small-3 text-muted">I like your portfolio, let's start.</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Today</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left"><span class="avatar avatar-sm avatar-busy rounded-circle"><img src="/images/portrait/small/avatar-s-2.png" alt="avatar"><i></i></span></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">Bret Lezama</h6>
-                                                    <p class="notification-text font-small-3 text-muted">I have seen your work, there is</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Tuesday</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <div class="avatar avatar-online avatar-sm rounded-circle"><img src="/images/portrait/small/avatar-s-3.png" alt="avatar"><i></i></div>
-                                                </div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">Carie Berra</h6>
-                                                    <p class="notification-text font-small-3 text-muted">Can we have call in this week ?</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Friday</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a><a href="javascript:void(0)">
-                                            <div class="media">
-                                                <div class="media-left"><span class="avatar avatar-sm avatar-away rounded-circle"><img src="/images/portrait/small/avatar-s-6.png" alt="avatar"><i></i></span></div>
-                                                <div class="media-body">
-                                                    <h6 class="media-heading">Eric Alsobrook</h6>
-                                                    <p class="notification-text font-small-3 text-muted">We have project party this saturday.</p><small>
-                                                        <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">last month</time>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all messages</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown dropdown-user nav-item">
-                                <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
-                                    <div class="avatar avatar-online">
-                                        <img src="/images/portrait/small/avatar-s-1.png" alt="avatar"><i></i>
-                                    </div>
-                                    @{
-                                        var firstName = SignInManager.UserManager.GetUserAsync(User).Result.FirstName;
-                                        var lastName = SignInManager.UserManager.GetUserAsync(User).Result.LastName;
-                                    }
-                                    <span class="user-name">@firstName @lastName</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" asp-controller="AccountSettings" asp-action="ProfileView">
-                                        <i class="fa fa-id-card-o"></i> Profile
-                                    </a>
-                                    <a class="dropdown-item" asp-controller="Vendors" asp-action="ViewMyVendors">
-                                        <i class="feather icon-user-plus"></i> Vendors
-                                    </a>
-                                    <a class="dropdown-item" href="user-cards.html">
-                                        <i class="feather icon-users"></i> Manage Users
-                                    </a>
-                                    <a class="dropdown-item" href="app-chat.html">
-                                        <i class="feather icon-mail"></i> My Inbox
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-
-                                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                        <button type="submit" class="dropdown-item"><i class="feather icon-power"></i> Logout</button>
-                                    </form>
+                            <li class="nav-item d-none d-md-block"><a class="nav-link nav-link-expand" href="#"><i class="ficon feather icon-maximize"></i></a></li>
+                            <li class="nav-item nav-search">
+                                <a class="nav-link nav-link-search" href="#"><i class="ficon feather icon-search"></i></a>
+                                <div class="search-input">
+                                    <input class="input" type="text" placeholder="Explore Stack..." tabindex="0" data-search="template-search">
+                                    <div class="search-input-close"><i class="feather icon-x"></i></div>
+                                    <ul class="search-list"></ul>
                                 </div>
                             </li>
                         </ul>
-                    }
-                    else
-                    {
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <ul class="nav navbar-nav float-right">
+                                <li class="dropdown dropdown-language nav-item">
+                                    <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-us"></i><span class="selected-language"></span></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdown-flag"><a class="dropdown-item" href="#" data-language="en"><i class="flag-icon flag-icon-us"></i> English</a><a class="dropdown-item" href="#" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a><a class="dropdown-item" href="#" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a><a class="dropdown-item" href="#" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a></div>
+                                </li>
+                                <li class="dropdown dropdown-notification nav-item">
+                                    <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-bell"></i><span class="badge badge-pill badge-danger badge-up">5</span></a>
+                                    <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
+                                        <li class="dropdown-menu-header">
+                                            <h6 class="dropdown-header m-0"><span class="grey darken-2">Notifications</span><span class="notification-tag badge badge-danger float-right m-0">5 New</span></h6>
+                                        </li>
+                                        <li class="scrollable-container media-list">
+                                            <a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left align-self-center"><i class="feather icon-plus-square icon-bg-circle bg-cyan"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">You have new order!</h6>
+                                                        <p class="notification-text font-small-3 text-muted">Lorem ipsum dolor sit amet, consectetuer elit.</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">30 minutes ago</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left align-self-center"><i class="feather icon-download-cloud icon-bg-circle bg-red bg-darken-1"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading red darken-1">99% Server load</h6>
+                                                        <p class="notification-text font-small-3 text-muted">Aliquam tincidunt mauris eu risus.</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Five hour ago</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left align-self-center"><i class="feather icon-alert-triangle icon-bg-circle bg-yellow bg-darken-3"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading yellow darken-3">Warning notifixation</h6>
+                                                        <p class="notification-text font-small-3 text-muted">Vestibulum auctor dapibus neque.</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Today</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left align-self-center"><i class="feather icon-check-circle icon-bg-circle bg-cyan"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">Complete the task</h6><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Last week</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left align-self-center"><i class="feather icon-file icon-bg-circle bg-teal"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">Generate monthly report</h6><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Last month</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all notifications</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown dropdown-notification nav-item">
+                                    <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-mail"></i><span class="badge badge-pill badge-warning badge-up">3</span></a>
+                                    <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
+                                        <li class="dropdown-menu-header">
+                                            <h6 class="dropdown-header m-0"><span class="grey darken-2">Messages</span><span class="notification-tag badge badge-warning float-right m-0">4 New</span></h6>
+                                        </li>
+                                        <li class="scrollable-container media-list">
+                                            <a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <div class="avatar avatar-online avatar-sm rounded-circle"><img src="/images/portrait/small/avatar-s-1.png" alt="avatar"><i></i></div>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">Margaret Govan</h6>
+                                                        <p class="notification-text font-small-3 text-muted">I like your portfolio, let's start.</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Today</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left"><span class="avatar avatar-sm avatar-busy rounded-circle"><img src="/images/portrait/small/avatar-s-2.png" alt="avatar"><i></i></span></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">Bret Lezama</h6>
+                                                        <p class="notification-text font-small-3 text-muted">I have seen your work, there is</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Tuesday</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <div class="avatar avatar-online avatar-sm rounded-circle"><img src="/images/portrait/small/avatar-s-3.png" alt="avatar"><i></i></div>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">Carie Berra</h6>
+                                                        <p class="notification-text font-small-3 text-muted">Can we have call in this week ?</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">Friday</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a><a href="javascript:void(0)">
+                                                <div class="media">
+                                                    <div class="media-left"><span class="avatar avatar-sm avatar-away rounded-circle"><img src="/images/portrait/small/avatar-s-6.png" alt="avatar"><i></i></span></div>
+                                                    <div class="media-body">
+                                                        <h6 class="media-heading">Eric Alsobrook</h6>
+                                                        <p class="notification-text font-small-3 text-muted">We have project party this saturday.</p><small>
+                                                            <time class="media-meta text-muted" datetime="2015-06-11T18:29:20+08:00">last month</time>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all messages</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown dropdown-user nav-item">
+                                    <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                                        <div class="avatar avatar-online">
+                                            <img src="/images/portrait/small/avatar-s-1.png" alt="avatar"><i></i>
+                                        </div>
+                                        @{
+                                            var firstName = SignInManager.UserManager.GetUserAsync(User).Result.FirstName;
+                                            var lastName = SignInManager.UserManager.GetUserAsync(User).Result.LastName;
+                                        }
+                                        <span class="user-name">@firstName @lastName</span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item" asp-controller="AccountSettings" asp-action="ProfileView">
+                                            <i class="fa fa-id-card-o"></i> Profile
+                                        </a>
+                                        <a class="dropdown-item" asp-controller="Vendors" asp-action="ViewMyVendors">
+                                            <i class="feather icon-user-plus"></i> Vendors
+                                        </a>
+                                        <a class="dropdown-item" href="user-cards.html">
+                                            <i class="feather icon-users"></i> Manage Users
+                                        </a>
+                                        <a class="dropdown-item" href="app-chat.html">
+                                            <i class="feather icon-mail"></i> My Inbox
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+
+                                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                            <button type="submit" class="dropdown-item"><i class="feather icon-power"></i> Logout</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="nav navbar-nav float-right">
+                                <li class="nav-item">
+                                    <a asp-area="Identity" asp-page="/Account/Login" class="nav-link text-dark">
+                                        <i class="feather icon-log-in"></i> Login
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Identity" asp-page="/Account/Register" class="nav-link text-dark">
+                                        <i class="feather icon-user-plus"></i> Register
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    }
+    else
+    {
+        <nav class="header-navbar navbar-expand-sm navbar navbar-with-menu fixed-top navbar-light navbar-shadow border-grey border-lighten-2">
+            <div class="navbar-wrapper pr-5 pl-5">
+                <div class="navbar-header expanded">
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="nav-item mobile-menu d-md-none float-left">
+                            <button class="nav-link menu-toggle hamburger hamburger--arrow js-hamburger is-active"><span class="hamburger-box"></span><span class="hamburger-inner"></span></button>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                                <img class="brand-logo" alt="stack admin logo" src="/images/logo/SalesHelperLogo.png" width="32" height="27">
+                                <h2 class="brand-text">SalesHelper</h2>
+                            </a>
+                        </li>
+                        <li class="nav-item d-md-none float-right"><a data-toggle="collapse" data-target="#navbar-mobile10" class="nav-link open-navbar-container"><i class="icon-ellipsis pe-2x icon-rotate-right"></i></a></li>
+                    </ul>
+                </div>
+                <div class="navbar-container content">
+                    <div id="navbar-mobile10" class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav mr-auto">
+
+                        </ul>
                         <ul class="nav navbar-nav float-right">
                             <li class="nav-item">
                                 <a asp-area="Identity" asp-page="/Account/Login" class="nav-link text-dark">
@@ -335,261 +380,315 @@
                                 </a>
                             </li>
                         </ul>
-                    }
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    }
+
     <!-- END: Header-->
     <!-- BEGIN: Main Menu-->
-    <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
-        <div class="main-menu-content">
-            <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
+            <div class="main-menu-content">
+                <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
 
-                <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" ? "active open" : "")">
-                    <a href="#">
-                        <i class="feather icon-home"></i><span class="menu-title">Dashboard</span>
-                        <span class="badge badge badge-primary badge-pill float-right mr-2">2</span>
-                    </a>
-                    <ul class="menu-content">
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" &&
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" ? "active open" : "")">
+                        <a href="#">
+                            <i class="feather icon-home"></i><span class="menu-title">Dashboard</span>
+                            <span class="badge badge badge-primary badge-pill float-right mr-2">2</span>
+                        </a>
+                        <ul class="menu-content">
+                            <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "Index" ? "active" : "")">
-                            <a class="menu-item"
-                               asp-controller="Home" asp-action="Index">Statistics</a>
-                        </li>
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" &&
+                                <a class="menu-item"
+                                   asp-controller="Home" asp-action="Index">Statistics</a>
+                            </li>
+                            <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Home" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "AnalyticsView" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Analytics</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" ? "active open" : "")">
-                    <a href="#"><i class="ti-user"></i><span class="menu-title">Customers</span></a>
-                    <ul class="menu-content">
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Analytics</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" ? "active open" : "")">
+                        <a href="#"><i class="ti-user"></i><span class="menu-title">Customers</span></a>
+                        <ul class="menu-content">
+                            <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "AddCustomers" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Customers" asp-action="AddCustomers">Create New Customer</a>
-                        </li>
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
+                                <a class="menu-item" asp-controller="Customers" asp-action="AddCustomers">Create New Customer</a>
+                            </li>
+                            <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
                         ViewContext.RouteData.Values["action"]!.ToString() == "CustomerListView" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">View Customers</a>
-                        </li>
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
-                        ViewContext.RouteData.Values["action"]!.ToString() == "CustomerDetailedView" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">Customer Details View</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" ? "active open" : "")">
-                    <a href="#"><i class="feather icon-edit"></i><span class="menu-title">Quotes</span></a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Quotes</a>
-                            <ul class="menu-content">
-                                <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">View Customers</a>
+                            </li>
+                            <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Customers" &&
+                        ViewContext.RouteData.Values["action"]!.ToString() == "CustomerDetailedView" ? "active" : "hidden")">
+                                <a class="menu-item" asp-controller="Customers" asp-action="CustomerListView">Customer Details View</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" ? "active open" : "")">
+                        <a href="#"><i class="feather icon-edit"></i><span class="menu-title">Quotes</span></a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Quotes</a>
+                                <ul class="menu-content">
+                                    <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
                                        ViewContext.RouteData.Values["action"]!.ToString() == "CreateCabinetQuotation" ? "active" : "")">
-                                    <a class="menu-item"
-                                       asp-controller="Quotations" asp-action="CreateCabinetQuotation">Cabinet Quote</a>
-                                </li>
-                                <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                        <a class="menu-item"
+                                           asp-controller="Quotations" asp-action="CreateCabinetQuotation">Cabinet Quote</a>
+                                    </li>
+                                    <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
                                        ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopQuotationView" ? "active" : "")">
-                                    <a class="menu-item" asp-controller="Quotations" asp-action="CreateCountertopQuotationView">Countertop Quote</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Hardware Quote</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Other Quote</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                        <a class="menu-item" asp-controller="Quotations" asp-action="CreateCountertopQuotationView">Countertop Quote</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Hardware Quote</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Other Quote</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
                                        ViewContext.RouteData.Values["action"]!.ToString() == "QuotationsListView" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Quotations" asp-action="QuotationsListView">View Quotes</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="ti-files"></i><span class="menu-title">Sales</span></a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Sales</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Sales</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="feather icon-shopping-cart"></i><span class="menu-title">Purchase Orders</span></a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Orders</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Purchase Orders</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="ti-receipt"></i><span class="menu-title">Invoices</span></a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Invoices</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Receive Payments</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Invoices</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="feather icon-calendar"></i><span class="menu-title">Schedules</span></a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Make Appointment</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Schedule Payments</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Schedule Deliveries</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Schedule Installations</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Appointments</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Deliveries</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="feather icon-book-open"></i><span class="menu-title">Book Keeping</span></a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="Index">Total Sales</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Purchase Cost</a>
-                        </li>
-                        <li class="">
-                            <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Business Expense</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="feather icon-check-square"></i><span class="menu-title">Todo List</span></a>
-                </li>
-                <li class=" nav-item">
-                    <a href="#">
-                        <i class="feather icon-briefcase"></i><span class="menu-title">Service Pros</span>
-                    </a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a href="#">
-                                <i class="ti-brush"></i><span class="menu-title">Design Service</span>
-                            </a>
-                            <ul class="menu-content">
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="Index">Kitchen Design</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Bathroom Design</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Interior Design</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="feather icon-users"></i><span class="menu-title">Contacts</span></a>
-                </li>
-                <li class=" nav-item">
-                    <a href="#">
-                        <i class="ti-files"></i><span class="menu-title">Form Library</span>
-                    </a>
-                    <ul class="menu-content">
-                        <li class="">
-                            <a href="#">
-                                <i class="feather icon-file-text"></i><span class="menu-title">Order Forms</span>
-                            </a>
-                            <ul class="menu-content">
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="Index">Cabinet Order Forms</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Countertop Order Forms</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Hardware Order Forms</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Plumbing Order Forms</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="">
-                            <a href="#">
-                                <i class="feather icon-users"></i><span class="menu-title">Vendors Catalog</span>
-                            </a>
-                            <ul class="menu-content">
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="Index">Cabinet Catalogs</a>
-                                </li>
-                                <li class="">
-                                    <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Countertop Catalogs</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" ? "active open" : "")">
-                    <a href="#">
-                        <i class="feather icon-user-plus"></i><span class="menu-title">Vendors</span>
-                    </a>
-                    <ul class="menu-content">
-                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" &&
+                                <a class="menu-item" asp-controller="Quotations" asp-action="QuotationsListView">View Quotes</a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "FullCabinetQuoteView" ? "active" : "hidden")">
+                                <a class="menu-item" href="#">Cabinet Quote Details</a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "EditCabinetQuotation" ? "active" : "hidden")">
+                                <a class="menu-item" href="#">Cabinet Quote Details</a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CabinetQuotePrintPreview" ? "active" : "hidden")">
+                                <a class="menu-item" href="#">Quote Print Preview</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="ti-files"></i><span class="menu-title">Sales</span></a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Sales</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Sales</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="feather icon-shopping-cart"></i><span class="menu-title">Purchase Orders</span></a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Orders</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Purchase Orders</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="ti-receipt"></i><span class="menu-title">Invoices</span></a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Invoices</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Receive Payments</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Invoices</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="feather icon-calendar"></i><span class="menu-title">Schedules</span></a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="Index">Make Appointment</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Schedule Payments</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Schedule Deliveries</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Schedule Installations</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Appointments</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Deliveries</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="feather icon-book-open"></i><span class="menu-title">Book Keeping</span></a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="Index">Total Sales</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Purchase Cost</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Business Expense</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="feather icon-check-square"></i><span class="menu-title">Todo List</span></a>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#">
+                            <i class="feather icon-briefcase"></i><span class="menu-title">Service Pros</span>
+                        </a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a href="#">
+                                    <i class="ti-brush"></i><span class="menu-title">Design Service</span>
+                                </a>
+                                <ul class="menu-content">
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="Index">Kitchen Design</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Bathroom Design</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Interior Design</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#"><i class="feather icon-users"></i><span class="menu-title">Contacts</span></a>
+                    </li>
+                    <li class=" nav-item">
+                        <a href="#">
+                            <i class="ti-files"></i><span class="menu-title">Form Library</span>
+                        </a>
+                        <ul class="menu-content">
+                            <li class="">
+                                <a href="#">
+                                    <i class="feather icon-file-text"></i><span class="menu-title">Order Forms</span>
+                                </a>
+                                <ul class="menu-content">
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="Index">Cabinet Order Forms</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Countertop Order Forms</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Hardware Order Forms</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Plumbing Order Forms</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="">
+                                <a href="#">
+                                    <i class="feather icon-users"></i><span class="menu-title">Vendors Catalog</span>
+                                </a>
+                                <ul class="menu-content">
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="Index">Cabinet Catalogs</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">Countertop Catalogs</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" ? "active open" : "")">
+                        <a href="#">
+                            <i class="feather icon-user-plus"></i><span class="menu-title">Vendors</span>
+                        </a>
+                        <ul class="menu-content">
+                            <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" &&
                     ViewContext.RouteData.Values["action"]!.ToString() == "ViewMyVendors" ? "active" : "")">
-                            <a class="menu-item" asp-controller="Vendors" asp-action="ViewMyVendors">
-                                <i class="feather icon-eye"></i>View Venodrs
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+                                <a class="menu-item" asp-controller="Vendors" asp-action="ViewMyVendors">
+                                    <i class="feather icon-eye"></i>View Venodrs
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-    <!-- END: Main Menu-->
-    <!-- BEGIN: Content-->
-    <div class="app-content content">
-        <div class="content-overlay"></div>
-        @RenderBody()
-    </div>
-    <!-- END: Content-->
+    }
+    else
+    {
+       
+    }
+
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- END: Main Menu-->
+        <!-- BEGIN: Content-->
+        <div class="app-content content">
+            <div class="content-overlay"></div>
+            @RenderBody()
+        </div>
+        <!-- END: Content-->
+    }
+    else
+    {
+        <!-- END: Main Menu-->
+        <!-- BEGIN: Content-->
+        <div class="app-content content" style="margin-left:0px;">
+            <div class="content-overlay"></div>
+            @RenderBody()
+        </div>
+        <!-- END: Content-->
+    }
 
 
     <div class="sidenav-overlay"></div>
     <div class="drag-target"></div>
 
-    <!-- BEGIN: Footer-->
-    <footer class="footer footer-static footer-light navbar-border">
-        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
-            <span class="float-md-left d-block d-md-inline-block">
-                Copyright &copy; 2020
-            </span>
-            <span class="float-md-right d-none d-lg-block">
-                Developed by Farooq using <i class="feather icon-heart pink"></i>
-            </span>
-        </p>
-    </footer>
-    <!-- END: Footer-->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- BEGIN: Footer-->
+        <footer class="footer footer-static footer-light navbar-border">
+            <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+                <span class="float-md-left d-block d-md-inline-block">
+                    Copyright &copy; 2020
+                </span>
+                <span class="float-md-right d-none d-lg-block">
+                    Developed by Farooq using <i class="feather icon-heart pink"></i>
+                </span>
+            </p>
+        </footer>
+        <!-- END: Footer-->
+    }
+    else
+    {
+        <!-- BEGIN: Footer-->
+        <footer class="footer footer-static footer-light navbar-border" style="margin-left:0px;">
+            <p class="clearfix blue-grey lighten-2 text-sm-center">
+                <span class="float-md-left d-block d-md-inline-block">
+                    Copyright &copy; 2020
+                </span>
+                <span class="float-md-right d-none d-lg-block">
+                    Developed by Farooq using <i class="feather icon-heart pink"></i>
+                </span>
+            </p>
+        </footer>
+        <!-- END: Footer-->
+    }
+
     <!-- BEGIN: Vendor JS-->
     <script src="/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
@@ -610,7 +709,9 @@
     <script src="/js/scripts/extensions/toastr.js"></script>
     <script src="/vendors/js/extensions/toastr.min.js"></script>
     <script src="/vendors/js/forms/select/select2.full.min.js"></script>
-    <script src="/vendors/js/extensions/dropzone.min.js"></script>
+    @* <script src="/vendors/js/extensions/dropzone.min.js"></script> *@
+    <script src="/js/scripts/pages/app-contacts.js"></script>
+    <script src="/js/scripts/pages/app-invoice.js"></script>
 
     <script src="/vendors/js/extensions/moment.min.js"></script>
     <script src="/vendors/js/extensions/fullcalendar.min.js"></script>

@@ -206,7 +206,7 @@ namespace SalesHelper.Controllers
                         string fileExtension = Path.GetExtension(vendor.VendorFile.FileName);
 
                         // Generate a unique file name to avoid overwriting existing files
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + vendor.VendorDocuments.DocumentName + fileExtension;
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + vendor.VendorDocuments.DocumentName;
 
                         // Combine the folder path with the unique file name
                         string filePath = Path.Combine(uploadFolder, uniqueFileName);

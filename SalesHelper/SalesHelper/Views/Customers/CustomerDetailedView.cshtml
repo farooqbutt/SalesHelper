@@ -558,24 +558,32 @@
     });
 
     function MakeCustomerDetails(data) {
-        $("#customerDetailsTable").append(
-            "<tr><td>Customer Name:</td><td>" + data.firstName + " " + data.lastName + "</td></tr>" +
-            "<tr> <td>Email: </td><td>" + data.email + "</td></tr>" +
-            "<tr><td>Cell phone:</td> <td>" + data.cellPhone + "</td></tr>" +
-            "<tr><td>Home phone:</td><td>" + data.homePhone + "</td></tr>" +
-            "<tr> <td>Work Phone:</td><td>" + data.workPhone + "</td></tr>" +
-            "<tr><td>Company</td><td>" + data.company + "</td></tr>"
-        );
+        $("#customerDetailsTable").empty(); // Clear previous content
+
+        function appendRow(label, value) {
+            $("#customerDetailsTable").append("<tr><td>" + label + ":</td><td>" + (value || "N/A") + "</td></tr>");
+        }
+
+        appendRow("Customer Name", data.firstName + " " + data.lastName);
+        appendRow("Email", data.email);
+        appendRow("Cell phone", data.cellPhone);
+        appendRow("Home phone", data.homePhone);
+        appendRow("Work Phone", data.workPhone);
+        appendRow("Company", data.company);
     }
 
     function MakeCustomerAddressDetails(data) {
-        $("#customerAddressDetails").append(
-            "<tr><td>Address Line 1:</td><td>" + data.address1 + "</td></tr>" +
-            "<tr> <td>Address Line 2: </td><td>" + data.address2 + "</td></tr>" +
-            "<tr><td>City:</td> <td>" + data.city + "</td></tr>" +
-            "<tr><td>State:</td><td>" + data.state + "</td></tr>" +
-            "<tr> <td>Country:</td><td>" + data.country + "</td></tr>" +
-            "<tr><td>Zip/Post Code:</td><td>" + data.postalCode + "</td></tr>"
-        );
+        $("#customerAddressDetails").empty(); // Clear previous content
+
+        function appendRow(label, value) {
+            $("#customerAddressDetails").append("<tr><td>" + label + ":</td><td>" + (value || "N/A") + "</td></tr>");
+        }
+
+        appendRow("Address Line 1", data.address1);
+        appendRow("Address Line 2", data.address2);
+        appendRow("City", data.city);
+        appendRow("State", data.state);
+        appendRow("Country", data.country);
+        appendRow("Zip/Post Code", data.postalCode);
     }
 </script>

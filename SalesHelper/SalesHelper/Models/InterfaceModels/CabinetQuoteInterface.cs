@@ -10,5 +10,9 @@
         public string? BuiltInDrawerMicrowave { get; set; }
         public string? Sink { get; set; }
         public string? Comments { get; set; }
+
+
+        // Quotation Document
+        public List<IFormFile> DocumentFiles { get; set; } = default!;
     }
 }

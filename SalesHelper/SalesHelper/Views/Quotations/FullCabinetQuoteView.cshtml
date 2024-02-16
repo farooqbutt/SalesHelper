@@ -6,6 +6,15 @@
     var index = 1;
 }
 
+<style>
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%; /* Ensure the card content fills the entire card height */
+    }
+</style>
+
 <div class="content-wrapper">
 
     <div class="content-header row">
@@ -42,15 +51,13 @@
                     <div class="card" style="height: 320.5px;">
                         <div class="card-content">
                             <div class="card-body">
-                                @if (Model.WoodSpeciesForOneColorDesign != null && Model.WoodSpeciesForOneColorDesign != "")
-                                {
+                                <div @(Model.isOneColorDesign == true ? "" : "hidden")>
                                     <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (One Color)</span></h2>
                                     <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForOneColorDesign </p>
                                     <p class="card-text"><b>Wood Species:</b> @Model.WoodSpeciesForOneColorDesign </p>
                                     <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetFinishForOneColorDesign </p>
-                                }
-                                @if (Model.UpperWoodSpeciesForMultipleColorDesign != null && Model.UpperWoodSpeciesForMultipleColorDesign != "")
-                                {
+                                </div>
+                                <div @(Model.isOneColorDesign == false ? "" : "hidden")>
                                     <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
                                     <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForMultipleColorDesign </p>
                                     <p class="card-text"><b>Upper Wood Species:</b> @Model.UpperWoodSpeciesForMultipleColorDesign </p>
@@ -59,7 +66,7 @@
                                     <p class="card-text"><b>Lower Finish:</b> @Model.LowerFinishForMultipleColorDesign </p>
                                     <p class="card-text"><b>Island Wood Sepcies:</b> @Model.IslandWoodSpeciesForMultipleColorDesign </p>
                                     <p class="card-text"><b>Island Finish:</b> @Model.IslandFinishForMultipleColorDesign </p>
-                                }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -85,7 +92,7 @@
 
                 <div class="col">
                     <div class="card" style="height: 389.2px;">
-                        <div class="card-content">
+                        <div class="card-content d-flex flex-column">
                             <div class="card-body">
                                 <h2 class="card-title text-primary mt-0"><span><b>Attached Documents</b></span></h2>
                                 <div class="form-body">
@@ -95,8 +102,10 @@
                                         {
                                             <p style="margin-bottom:1px;">
                                                 <a class="text-warning" asp-controller="Quotations" asp-action="ShowCabinetDcoument" asp-route-filePath="@item.FilePath" target="_blank">
+                                                    <i class="feather icon-paperclip"></i>
                                                     @item.DocumentName!.Substring(item.DocumentName.IndexOf("_") + 1)
                                                 </a>
+                                                <i title="Delete Attachment" class='feather icon-x' style="cursor:pointer" onclick="DeleteAttachedDocument(@item.DocumentId)"></i>
                                             </p>
                                         }
                                     }
@@ -106,6 +115,11 @@
                                     }
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-footer mt-auto">
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-backdrop="true" data-target="#UploadQuoteDocuments">
+                                <i class="fa fa-upload"></i> Upload Documents
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -174,8 +188,18 @@
             }
 
             <div class="form-actions text-center mb-5">
-                <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.Id" class="width-150 btn btn-primary"><i class="fa fa-edit"></i> Edit Quote</a>
-                <a asp-controller="Quotations" asp-action="AttachCabinetItems" asp-route-id="@Model.Id" class="width-150 btn btn-primary"><i class="feather icon-paperclip"></i> Attach Items</a>
+                <a asp-controller="Quotations" asp-action="CabinetQuotationDetailedView" asp-route-id="@Model.Id" class="width-150 btn btn-primary">
+                    <i class="feather icon-arrow-left"></i> Previous
+                </a>
+                <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.Id" class="width-150 btn btn-outline-primary">
+                    <i class="fa fa-edit"></i> Edit Quote
+                </a>
+                <a asp-controller="Quotations" asp-action="AttachCabinetItems" asp-route-id="@Model.Id" class="width-200 btn btn-primary">
+                    <i class="feather icon-paperclip"></i> @(itemsList.Count > 0 ? "Edit Attached Items" : "Attach Cabinet Items")
+                </a>
+                <a asp-controller="Quotations" asp-action="CabinetQuotePrintPreview" asp-route-id="@Model.Id" class="width-150 btn btn-outline-primary">
+                    <i class="feather icon-printer"></i> Print Preview
+                </a>
             </div>
         </div>
     </div>
@@ -201,6 +225,8 @@
                                     }
                                     <p class="card-text"><b>Total Price:</b> $@totalPrice </p>
                                     <hr />
+                                    <p class="card-text"><b>Vendor Price:</b> $@Model.VendorPrice (Internal use only)</p>
+                                    <hr />
                                     <p class="card-text"><b>Comments:</b> @Model.CommentOnPrice</p>
                                 </div>
                             </div>
@@ -211,3 +237,39 @@
         </div>
     </div>
 </div>
+
+
+@* Modal for uploading quotation documents *@
+<div class="modal fade text-left" id="UploadQuoteDocuments" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-lg modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Upload Quotation Documents</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Quotations" asp-action="UploadQuotationDocuments" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input hidden asp-for="Id" />
+                    <label>Upload File</label>
+                    <div class="form-group">
+                        <input asp-for="DocumentFiles" type="file" multiple class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function DeleteAttachedDocument(documentId) {
+        if (confirm("Are you sure you want to delete this document?")) {
+            window.location.href = "/Quotations/DeleteAttachedDocument?documentId=" + documentId;
+        }
+    }
+</script>

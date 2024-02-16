@@ -6,32 +6,28 @@
     <form asp-controller="Quotations" asp-action="CabinetQuotationDetailedView" method="post" enctype="multipart/form-data">
         @* hidden fields *@
         <div class="hidden">
-            <input asp-for="CabinetQuotation.Id" value="@Model.CabinetQuotation.Id" />
-            <input asp-for="CabinetQuotation.CustomerId" value="@Model.CabinetQuotation.CustomerId" />
-            <input asp-for="CabinetQuotation.Name" value="@Model.CabinetQuotation.Name" />
-            <input asp-for="CabinetQuotation.VendorId" value="@Model.CabinetQuotation.VendorId" />
-            <input asp-for="CabinetQuotation.Construction" value="@Model.CabinetQuotation.Construction" />
-            <input asp-for="CabinetQuotation.BoxMaterials" value="@Model.CabinetQuotation.BoxMaterials" />
-            <input asp-for="CabinetQuotation.WoodSpeciesForOneColorDesign" value="@Model.CabinetQuotation.WoodSpeciesForOneColorDesign" />
-            <input asp-for="CabinetQuotation.DoorStyleForOneColorDesign" value="@Model.CabinetQuotation.DoorStyleForOneColorDesign" />
-            <input asp-for="CabinetQuotation.CabinetFinishForOneColorDesign" value="@Model.CabinetQuotation.CabinetFinishForOneColorDesign" />
-            <input asp-for="CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" value="@Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" value="@Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" value="@Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.UpperFinishForMultipleColorDesign" value="@Model.CabinetQuotation.UpperFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.LowerFinishForMultipleColorDesign" value="@Model.CabinetQuotation.LowerFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.IslandFinishForMultipleColorDesign" value="@Model.CabinetQuotation.IslandFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.CommentsOnMultiColorDesign" value="@Model.CabinetQuotation.CommentsOnMultiColorDesign" />
-            <input asp-for="CabinetQuotation.AdditionalInformation" value="@Model.CabinetQuotation.AdditionalInformation" />
-            <input asp-for="CabinetQuotation.CabinetPrice" value="@Model.CabinetQuotation.CabinetPrice" />
-            <input asp-for="CabinetQuotation.DeliveryCharge" value="@Model.CabinetQuotation.DeliveryCharge" />
-            <input asp-for="CabinetQuotation.InstallationFee" value="@Model.CabinetQuotation.InstallationFee" />
-            <input asp-for="CabinetQuotation.Tax" value="@Model.CabinetQuotation.Tax" />
-            <input asp-for="CabinetQuotation.VendorPrice" value="@Model.CabinetQuotation.VendorPrice" />
-            <input asp-for="CabinetQuotation.CommentOnPrice" value="@Model.CabinetQuotation.CommentOnPrice" />
-            <input asp-for="CabinetQuotation.CreatedDateTime" value="@Model.CabinetQuotation.CreatedDateTime?.ToString("yyyy-MM-ddThh:mm")" />
+            <input asp-for="CabinetQuotation.Id" />
+            <input asp-for="CabinetQuotation.CustomerId" />
+            <input asp-for="CabinetQuotation.Name" />
+            <input asp-for="CabinetQuotation.VendorId" />
+            <input asp-for="CabinetQuotation.Construction" />
+            <input asp-for="CabinetQuotation.BoxMaterials" />
+            <input asp-for="CabinetQuotation.isOneColorDesign" />
+            <input asp-for="CabinetQuotation.WoodSpeciesForOneColorDesign" />
+            <input asp-for="CabinetQuotation.DoorStyleForOneColorDesign" />
+            <input asp-for="CabinetQuotation.CabinetFinishForOneColorDesign" />
+            <input asp-for="CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.UpperFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.LowerFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.IslandFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.DoorStyleForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.CommentsOnMultiColorDesign" />
+            <input asp-for="CabinetQuotation.AdditionalInformation" />
+            <input asp-for="CabinetQuotation.CreatedDateTime" />
+            <input asp-for="CabinetQuotation.CreatedByUserId" />
             <input asp-for="CabinetQuotation.ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
-            <input asp-for="CabinetQuotation.CreatedByUserId" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
         </div>
 
         <div class="content-header row">
@@ -68,23 +64,23 @@
                         <div class="card" style="height: 320.5px;">
                             <div class="card-content">
                                 <div class="card-body">
-                                    @if (Model.CabinetQuotation.WoodSpeciesForOneColorDesign != null && Model.CabinetQuotation.WoodSpeciesForOneColorDesign != "")
-                                    {
+                                    <div @(Model.CabinetQuotation.isOneColorDesign == true ? "" : "hidden")>
                                         <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (One Color)</span></h2>
-                                        <p class="card-text"><b>Wood Species:</b> @Model.CabinetQuotation.WoodSpeciesForOneColorDesign </p>
                                         <p class="card-text"><b>Door Style:</b> @Model.CabinetQuotation.DoorStyleForOneColorDesign </p>
+                                        <p class="card-text"><b>Wood Species:</b> @Model.CabinetQuotation.WoodSpeciesForOneColorDesign </p>
                                         <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetQuotation.CabinetFinishForOneColorDesign </p>
-                                    }
-                                    @if (Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign != null && Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign != "")
-                                    {
+                                    </div>
+                                    <div @(Model.CabinetQuotation.isOneColorDesign == false ? "" : "hidden")>
                                         <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
+                                        <p class="card-text"><b>Door Style:</b> @Model.CabinetQuotation.DoorStyleForMultipleColorDesign </p>
                                         <p class="card-text"><b>Upper Wood Species:</b> @Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign </p>
                                         <p class="card-text"><b>Upper Finish:</b> @Model.CabinetQuotation.UpperFinishForMultipleColorDesign </p>
                                         <p class="card-text"><b>Lower Wood Species:</b> @Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign </p>
                                         <p class="card-text"><b>Lower Finish:</b> @Model.CabinetQuotation.LowerFinishForMultipleColorDesign </p>
                                         <p class="card-text"><b>Island Wood Sepcies:</b> @Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign </p>
                                         <p class="card-text"><b>Island Finish:</b> @Model.CabinetQuotation.IslandFinishForMultipleColorDesign </p>
-                                    }
+                                        <p class="card-text"><b>Comments:</b> @Model.CabinetQuotation.CommentsOnMultiColorDesign </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +105,7 @@
                         </div>
                     </div>
 
-                    <div class="col">
+                    @* <div class="col">
                         <div class="card" style="height: 389.2px;">
                             <div class="card-content">
                                 <div class="card-body">
@@ -130,13 +126,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> *@
 
                 </div>
 
 
                 <div class="form-actions text-center mb-5">
-                    <button class="width-150 btn btn-primary"><i class="feather icon-arrow-left"></i> Previous</button>
+                    <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.CabinetQuotation.Id" class="width-150 btn btn-primary"><i class="feather icon-arrow-left"></i> Previous</a>
                     <button type="submit" class="width-150 btn btn-primary">Save & Next <i class="feather icon-arrow-right"></i></button>
                 </div>
             </div>
@@ -158,7 +154,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
                                             </div>
-                                            <input asp-for="CabinetQuotation.CabinetPrice" value="@Model.CabinetQuotation.CabinetPrice" type="number" class="form-control" placeholder="Cabinet Price">
+                                            <input asp-for="CabinetQuotation.CabinetPrice" value="@Model.CabinetQuotation.CabinetPrice" type="number" step="0.01" class="form-control" placeholder="Cabinet Price">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">.00</span>
                                             </div>
@@ -170,7 +166,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
                                             </div>
-                                            <input asp-for="CabinetQuotation.DeliveryCharge" value="@Model.CabinetQuotation.DeliveryCharge" type="number" class="form-control" placeholder="Delivery Charges">
+                                            <input asp-for="CabinetQuotation.DeliveryCharge" value="@Model.CabinetQuotation.DeliveryCharge" type="number" step="0.01" class="form-control" placeholder="Delivery Charges">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">.00</span>
                                             </div>
@@ -182,7 +178,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
                                             </div>
-                                            <input asp-for="CabinetQuotation.InstallationFee" value="@Model.CabinetQuotation.InstallationFee" type="number" class="form-control" placeholder="Installation Fee">
+                                            <input asp-for="CabinetQuotation.InstallationFee" value="@Model.CabinetQuotation.InstallationFee" type="number" step="0.01" class="form-control" placeholder="Installation Fee">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">.00</span>
                                             </div>
@@ -194,7 +190,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
                                             </div>
-                                            <input asp-for="CabinetQuotation.Tax" value="@Model.CabinetQuotation.Tax" type="number" class="form-control" placeholder="Tax">
+                                            <input asp-for="CabinetQuotation.Tax" value="@Model.CabinetQuotation.Tax" type="number" step="0.01" class="form-control" placeholder="Tax">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">.00</span>
                                             </div>
@@ -206,7 +202,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
                                             </div>
-                                            <input asp-for="CabinetQuotation.VendorPrice" value="@Model.CabinetQuotation.VendorPrice" type="number" class="form-control" placeholder="Vendor Price">
+                                            <input asp-for="CabinetQuotation.VendorPrice" value="@Model.CabinetQuotation.VendorPrice" type="number" step="0.01" class="form-control" placeholder="Vendor Price">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">.00</span>
                                             </div>

@@ -18,6 +18,8 @@ namespace SalesHelper.Models
 
         public string? Construction { get; set; } = string.Empty;
         public string? BoxMaterials { get; set; } = string.Empty;
+        // is one color design or multiple color design
+        public bool? isOneColorDesign { get; set; } // true for one color design, false for multiple color design
         //feilds for one color design
         public string? WoodSpeciesForOneColorDesign { get; set; } = string.Empty;
         public string? DoorStyleForOneColorDesign { get; set; } = string.Empty;
