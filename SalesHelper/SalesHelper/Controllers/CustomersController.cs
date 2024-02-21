@@ -2,21 +2,21 @@
 using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
-using SalesHelper.Repository;
+using SalesHelper.Services;
 
 namespace SalesHelper.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly CustomerRepo _customerService;
-        private readonly AddressRepo _addressService;
-        private readonly EventRepo _eventService;
+        private readonly CustomerService _customerService;
+        private readonly AddressService _addressService;
+        private readonly EventService _eventService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         public CustomersController(
-            EventRepo eventService,
+            EventService eventService,
             SignInManager<ApplicationUser> signInManager,
-            CustomerRepo customerService,
-            AddressRepo addressService
+            CustomerService customerService,
+            AddressService addressService
             )
         {
             _customerService = customerService;
@@ -25,11 +25,34 @@ namespace SalesHelper.Controllers
             _eventService = eventService;
         }
 
-        public Customer SetAccountNumAndCreatorOfEvent(Customer customer)
+        public Customer SetAccountNumAndCreatorOfCustomer(Customer customer)
         {
             customer.AccountNumber = _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber;
             customer.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
             return customer;
+        }
+
+        // check if customer name is kind of first name or full name
+
+
+        [HttpPost]
+        public IActionResult AddCustomerFromSearchBar(string name, string phone)
+        {
+            string customerFirstName = _customerService.DetermineNameType(name) == ICustomerService.NameType.First ? name : name.Split(" ")[0];
+            string customerLastName = _customerService.DetermineNameType(name) == ICustomerService.NameType.Full ? name.Split(" ")[1] : "";
+            var customer = new Customer
+            {
+                FirstName = customerFirstName,
+                LastName = customerLastName,
+                CellPhone = phone,
+            };
+            SetAccountNumAndCreatorOfCustomer(customer);
+            var address = _addressService.Create(new Address());
+            address.AddressType = "home";
+            _addressService.Update(address);
+            customer.AddressId = address.AddressId;
+            _customerService.Create(customer);
+            return Json(new { data = customer });
         }
 
         [HttpGet]
@@ -41,7 +64,7 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult AddCustomers(AddCustomerInterface customerDetails)
         {
-            SetAccountNumAndCreatorOfEvent(customerDetails.Customer);
+            SetAccountNumAndCreatorOfCustomer(customerDetails.Customer);
             _addressService.Create(customerDetails.Address);
             customerDetails.Customer.AddressId = customerDetails.Address.AddressId;
             _customerService.Create(customerDetails.Customer);
@@ -85,7 +108,7 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult EditCustomer(AddCustomerInterface customerDetails)
         {
-            SetAccountNumAndCreatorOfEvent(customerDetails.Customer);
+            SetAccountNumAndCreatorOfCustomer(customerDetails.Customer);
             _customerService.Update(customerDetails.Customer);
             _addressService.Update(customerDetails.Address);
             return RedirectToAction("CustomerDetailedView", new { id = customerDetails.Customer.Id });

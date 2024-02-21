@@ -25,13 +25,15 @@ namespace SalesHelper.Models
         public string? DoorStyleForOneColorDesign { get; set; } = string.Empty;
         public string? CabinetFinishForOneColorDesign { get; set; } = string.Empty;
         // Fields for multiple color design
-        public string? DoorStyleForMultipleColorDesign { get; set; } = string.Empty;
         public string? UpperWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
-        public string? LowerWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
-        public string? IslandWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
+        public string? UpperDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
         public string? UpperFinishForMultipleColorDesign { get; set; } = string.Empty;
+        public string? LowerWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
+        public string? LowerDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
         public string? LowerFinishForMultipleColorDesign { get; set; } = string.Empty;
+        public string? IslandWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
         public string? IslandFinishForMultipleColorDesign { get; set; } = string.Empty;
+        public string? IslandDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
         public string? CommentsOnMultiColorDesign { get; set; } = string.Empty;
 
         // Additional Information for cabinet

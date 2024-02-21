@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using SalesHelper.Data;
 using SalesHelper.Models;
-using SalesHelper.Repository;
+using SalesHelper.Models.EmailSettings;
+using SalesHelper.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +12,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<CustomerRepo>();
-builder.Services.AddScoped<AddressRepo>();
-builder.Services.AddScoped<EventRepo>();
-builder.Services.AddScoped<CabinetQuotationRepo>();
-builder.Services.AddScoped<CountertopQuotationRepo>();
+builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<CabinetQuotationService>();
+builder.Services.AddScoped<CountertopQuotationService>();
+
+// configure email settings
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 // For uploading larg files to the server
 builder.Services.Configure<KestrelServerOptions>(options =>

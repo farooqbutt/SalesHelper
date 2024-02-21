@@ -1,0 +1,185 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
+@inject SalesHelper.Data.ApplicationDbContext _context
+@inject SalesHelper.Services.AddressService _addressRepo
+@{
+    var itemsList = _context.QuotationItems.Where(a => a.QuotationId == Model.Id).ToList();
+    var index = 1;
+
+    var dealer = _context.Account.Where(a => a.AccountNumber == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber)
+                                 .Include(a => a.BusinessAddress).FirstOrDefault();
+}
+
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mt-1">Cabinet Quote Estimate Request</h3>
+        </div>
+    </div>
+
+    <div class="content-body">
+        <section class="app-invoice-wrapper">
+            <div class="row">
+                <div class="col-xl-9 col-md-8 col-12 printable-content">
+                    <!-- using a bootstrap card -->
+                    <div class="card">
+                        <!-- card body -->
+                        <div class="card-body p-2">
+                            <!-- card-header -->
+                            <!-- invoice logo and title -->
+                            <div class="invoice-logo-title row py-2">
+                                <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                                    <h2 class="text-primary">Estimate Request</h2>
+                                </div>
+                                @* <div class="col-6 d-flex justify-content-end invoice-logo">
+                                <img src="~/images/logo/SalesHelperLogo.png" alt="company-logo" height="46" width="164">
+                                </div> *@
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
+                                    <span class="invoice-id font-weight-bold">Reference #</span>
+                                    <span>@Model.Id</span>
+                                </div>
+                                <div class="col-md-12 col-lg-5 col-xl-8">
+                                    <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+                                        <div class="issue-date pr-2">
+                                            <span class="font-weight-bold no-wrap">Request Date: </span>
+                                            <span>@DateTime.Now.ToShortDateString()</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- invoice address and contacts -->
+                            <div class="row invoice-adress-info">
+                                <div class="col-6 mt-1 from-info">
+                                    <div class="info-title mb-1">
+                                        <span>Dealer</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted no-wrap">
+                                            <i class="feather icon-user"></i> @dealer!.CompanyName
+                                        </span>
+                                    </div>
+                                    <div class="company-address mb-1">
+                                        <span class="text-muted no-wrap">
+                                            <i class="feather icon-map-pin"></i> @dealer.BusinessAddress.Address1 <br />
+                                            <i class="feather icon-map-pin"></i> @dealer.BusinessAddress.Address2
+                                        </span>
+                                    </div>
+                                    <div class="company-email  mb-1 mb-1">
+                                        <span class="text-muted">
+                                            <i class="feather icon-mail"></i> @dealer.Email
+                                        </span>
+                                    </div>
+                                    <div class="company-phone  mb-1">
+                                        <span class="text-muted"><i class="feather icon-phone"></i> @dealer.MainPhone</span> (Main Phone)<br />
+                                        <span class="text-muted"><i class="feather icon-phone"></i> @dealer.Fax</span> (Fax)<br />
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-1 to-info">
+                                    <div class="info-title mb-1">
+                                        <span>Cabinetry</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted no-wrap"><i class="feather icon-user"></i> @Model.VendorIdFk.CompanyName</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        @if (Model.VendorIdFk.BusinessAddressId != null)
+                                        {
+                                            <span class="text-muted no-wrap">
+                                                <i class="feather icon-map-pin"></i> @_addressRepo.Read((int)Model.VendorIdFk.BusinessAddressId!).Address1
+                                            </span> <br />
+                                            <span class="text-muted no-wrap">
+                                                <i class="feather icon-map-pin"></i> @_addressRepo.Read((int)Model.VendorIdFk.BusinessAddressId!).Address2
+                                            </span>
+                                        }
+                                    </div>
+                                    <div class="company-email  mb-1 mb-1">
+                                        <span class="text-muted">
+                                            <i class="feather icon-mail"></i> @Model.VendorIdFk.Email
+                                        </span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        <span class="text-muted no-wrap"><i class="feather icon-phone"></i> @Model.VendorIdFk.Fax (Fax)</span>
+                                    </div>
+                                    <div class="company-name mb-1">
+                                        @if (Model.isOneColorDesign == true)
+                                        {
+                                            <span class="text-muted no-wrap"><b>Door Style</b> @Model.DoorStyleForOneColorDesign</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--product details table -->
+                            <div class="product-details-table py-2 table-responsive">
+                                <div class="info-title mb-1">
+                                    <span><strong>Items List</strong></span>
+                                </div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Qty</th>
+                                            @if (Model.isOneColorDesign == false)
+                                            {
+                                                <th>Door Style</th>
+                                            }
+                                            <th>Item</th>
+                                            <th>Description</th>
+                                            <th>Hinge</th>
+                                            <th>Finish</th>
+                                            <th>Price</th>
+                                            <th>Modification</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in itemsList)
+                                        {
+                                            <tr>
+                                                <td class="font-weight-bold">@index</td>
+                                                <td>@item.Quantity</td>
+                                                @if (Model.isOneColorDesign == false)
+                                                {
+                                                    <td>@item.DoorStyleName</td>
+                                                }
+                                                <td>@item.Item</td>
+                                                <td>@item.Description</td>
+                                                <td>@item.Hinge</td>
+                                                <td>@item.Finish</td>
+                                                <td>
+                                                    @* @item.Price *@
+                                                </td>
+                                                <td>
+                                                    @* @item.Modification *@
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- buttons section -->
+                <div class="col-xl-3 col-md-4 col-12 action-btns">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <a href="#" class="btn btn-success btn-block mb-1">
+                                <i class="feather icon-mail mr-25 common-size"></i> Send Request Estimate
+                            </a>
+                            <a href="javascript:history.back()" class="btn btn-primary btn-block mb-1">
+                                <i class="feather icon-arrow-left mr-25 common-size"></i> Previous
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

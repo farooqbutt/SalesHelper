@@ -1,8 +1,8 @@
 ﻿using SalesHelper.Models;
 
-namespace SalesHelper.Repository
+namespace SalesHelper.Services
 {
-    public interface IEventRepo
+    public interface IEventService
     {
         public void Create(Event eventObj);
         public Event Read(int id);

@@ -169,7 +169,7 @@ namespace SalesHelper.Controllers
                 {
                     _context.Address.Add(item);
                     _context.SaveChanges();
-                    UpdateVendorAddress(vendor.VendorId, item.AddressId, item.AddressType);
+                    UpdateVendorAddress(vendor.VendorId, item.AddressId, item.AddressType!);
                 }
                 else
                 {

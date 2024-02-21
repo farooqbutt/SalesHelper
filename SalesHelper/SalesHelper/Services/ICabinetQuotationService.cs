@@ -1,8 +1,8 @@
 ﻿using SalesHelper.Models;
 
-namespace SalesHelper.Repository
+namespace SalesHelper.Services
 {
-    public interface ICabinetQuotationRepo
+    public interface ICabinetQuotationService
     {
         public void Create(CabinetQuotation cabinetQuotation);
         public CabinetQuotation Read(int id);

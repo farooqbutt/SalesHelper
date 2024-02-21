@@ -5,29 +5,29 @@ using Newtonsoft.Json;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
-using SalesHelper.Repository;
+using SalesHelper.Services;
 using System.Net.Mime;
 
 namespace SalesHelper.Controllers
 {
     public class QuotationsController : Controller
     {
-        private readonly CabinetQuotationRepo _cabinetQuotationService;
-        private readonly CountertopQuotationRepo _countertopQuotationService;
-        private readonly CustomerRepo _customerService;
+        private readonly CabinetQuotationService _cabinetQuotationService;
+        private readonly CountertopQuotationService _countertopQuotationService;
+        private readonly CustomerService _customerService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly AddressRepo _addressService;
+        private readonly AddressService _addressService;
 
         public QuotationsController(
-            CabinetQuotationRepo cabinetQuotationRepo,
-            CountertopQuotationRepo countertopQuotationRepo,
-            CustomerRepo customerRepo,
+            CabinetQuotationService cabinetQuotationRepo,
+            CountertopQuotationService countertopQuotationRepo,
+            CustomerService customerRepo,
             ApplicationDbContext context,
             IWebHostEnvironment env,
             SignInManager<ApplicationUser> signInManager,
-            AddressRepo addressService)
+            AddressService addressService)
         {
             _cabinetQuotationService = cabinetQuotationRepo;
             _countertopQuotationService = countertopQuotationRepo;
@@ -136,7 +136,7 @@ namespace SalesHelper.Controllers
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
 
-            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+            var cabinetQuoteInterface = new CabinetQuoteInterface
             {
                 Id = cabinetQuotation.Id,
                 Name = cabinetQuotation.Name,
@@ -147,17 +147,22 @@ namespace SalesHelper.Controllers
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
                 isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                // one color
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                // multiple color
                 UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
                 UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
                 LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
                 IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
                 CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                // additional information
                 AdditionalInformation = cabinetQuotation.AdditionalInformation,
                 CreatedByUserId = cabinetQuotation.CreatedByUserId,
                 CreatedDateTime = cabinetQuotation.CreatedDateTime,
@@ -178,7 +183,7 @@ namespace SalesHelper.Controllers
                 Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
             };
 
-            return View(quoteWithAdditionalInfo);
+            return View(cabinetQuoteInterface);
         }
 
         [HttpPost]
@@ -206,17 +211,20 @@ namespace SalesHelper.Controllers
             quoteToUpdate.Construction = cabinetQuotation.Construction;
             quoteToUpdate.BoxMaterials = cabinetQuotation.BoxMaterials;
             quoteToUpdate.isOneColorDesign = cabinetQuotation.isOneColorDesign;
+            // one color design fields
             quoteToUpdate.WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign;
             quoteToUpdate.DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign;
             quoteToUpdate.CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign;
-            quoteToUpdate.DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign;
+            // multiple color design fields
             quoteToUpdate.UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign;
-            quoteToUpdate.LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign;
-            quoteToUpdate.IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign;
+            quoteToUpdate.UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign;
             quoteToUpdate.UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign;
+            quoteToUpdate.LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign;
+            quoteToUpdate.LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign;
             quoteToUpdate.LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign;
+            quoteToUpdate.IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign;
+            quoteToUpdate.IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign;
             quoteToUpdate.IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign;
-            quoteToUpdate.DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign;
             quoteToUpdate.CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign;
             // additional information fields
             quoteToUpdate.AdditionalInformation = jsonData;
@@ -267,7 +275,7 @@ namespace SalesHelper.Controllers
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
 
-            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+            var cabinetQuoteInterface = new CabinetQuoteInterface
             {
                 Id = cabinetQuotation.Id,
                 Name = cabinetQuotation.Name,
@@ -278,17 +286,22 @@ namespace SalesHelper.Controllers
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
                 isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                // one color
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                // multiple color
                 UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
                 UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
                 LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
                 IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
                 CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                // additional information
                 AdditionalInformation = cabinetQuotation.AdditionalInformation,
                 CreatedByUserId = cabinetQuotation.CreatedByUserId,
                 CreatedDateTime = cabinetQuotation.CreatedDateTime,
@@ -311,7 +324,7 @@ namespace SalesHelper.Controllers
 
             var data = new QuotationFullViewInterface
             {
-                CabinetQuotation = quoteWithAdditionalInfo,
+                CabinetQuotation = cabinetQuoteInterface,
             };
             return View(data);
         }
@@ -342,7 +355,8 @@ namespace SalesHelper.Controllers
         public IActionResult FullCabinetQuoteView(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+
+            var cabinetQuoteInterface = new CabinetQuoteInterface
             {
                 Id = cabinetQuotation.Id,
                 Name = cabinetQuotation.Name,
@@ -353,17 +367,22 @@ namespace SalesHelper.Controllers
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
                 isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                // one color
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                // multiple color
                 UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
                 UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
                 LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
                 IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
                 CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                // additional information
                 AdditionalInformation = cabinetQuotation.AdditionalInformation,
                 CreatedByUserId = cabinetQuotation.CreatedByUserId,
                 CreatedDateTime = cabinetQuotation.CreatedDateTime,
@@ -383,7 +402,8 @@ namespace SalesHelper.Controllers
                 Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
                 Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
             };
-            return View(quoteWithAdditionalInfo);
+
+            return View(cabinetQuoteInterface);
         }
 
         [HttpGet]
@@ -485,7 +505,8 @@ namespace SalesHelper.Controllers
         public IActionResult CabinetQuotePrintPreview(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-            var quoteWithAdditionalInfo = new CabinetQuoteInterface
+
+            var cabinetQuoteInterface = new CabinetQuoteInterface
             {
                 Id = cabinetQuotation.Id,
                 Name = cabinetQuotation.Name,
@@ -496,17 +517,22 @@ namespace SalesHelper.Controllers
                 Construction = cabinetQuotation.Construction,
                 BoxMaterials = cabinetQuotation.BoxMaterials,
                 isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                // one color
                 WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
                 DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
                 CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                DoorStyleForMultipleColorDesign = cabinetQuotation.DoorStyleForMultipleColorDesign,
+                // multiple color
                 UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
                 UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
                 LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
                 IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
                 CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                // additional information
                 AdditionalInformation = cabinetQuotation.AdditionalInformation,
                 CreatedByUserId = cabinetQuotation.CreatedByUserId,
                 CreatedDateTime = cabinetQuotation.CreatedDateTime,
@@ -526,7 +552,63 @@ namespace SalesHelper.Controllers
                 Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
                 Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
             };
-            return View(quoteWithAdditionalInfo);
+
+            return View(cabinetQuoteInterface);
+        }
+
+        [HttpGet]
+        public IActionResult RequestEstimateView(int id)
+        {
+            var cabinetQuotation = _cabinetQuotationService.Read(id);
+
+            var cabinetQuoteInterface = new CabinetQuoteInterface
+            {
+                Id = cabinetQuotation.Id,
+                Name = cabinetQuotation.Name,
+                CustomerId = cabinetQuotation.CustomerId,
+                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
+                VendorId = cabinetQuotation.VendorId,
+                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
+                Construction = cabinetQuotation.Construction,
+                BoxMaterials = cabinetQuotation.BoxMaterials,
+                isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                // one color
+                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
+                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
+                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
+                // multiple color
+                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
+                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
+                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
+                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
+                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                // additional information
+                AdditionalInformation = cabinetQuotation.AdditionalInformation,
+                CreatedByUserId = cabinetQuotation.CreatedByUserId,
+                CreatedDateTime = cabinetQuotation.CreatedDateTime,
+                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
+                CabinetPrice = cabinetQuotation.CabinetPrice,
+                DeliveryCharge = cabinetQuotation.DeliveryCharge,
+                InstallationFee = cabinetQuotation.InstallationFee,
+                Tax = cabinetQuotation.Tax,
+                VendorPrice = cabinetQuotation.VendorPrice,
+                CommentOnPrice = cabinetQuotation.CommentOnPrice,
+                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
+                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
+                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
+                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
+                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
+                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
+                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
+                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+            };
+
+            return View(cabinetQuoteInterface);
         }
 
         #endregion CABINET QUOTATIONS
@@ -745,7 +827,7 @@ namespace SalesHelper.Controllers
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
-@inject SalesHelper.Repository.CustomerRepo _customerService
+@inject SalesHelper.Services.CustomerService _customerService
 @inject SalesHelper.Data.ApplicationDbContext _context
 @{
     var customerId = TempData["CustomerId"];
@@ -23,11 +23,11 @@
         flex: 1 1 auto;
     }
 
-    .input-group > .select2-container--default .select2-selection--single {
-        height: 100%;
-        line-height: inherit;
-        padding: 0.5rem 1rem;
-    }
+        .input-group > .select2-container--default .select2-selection--single {
+            height: 100%;
+            line-height: inherit;
+            padding: 0.5rem 1rem;
+        }
 </style>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -66,24 +66,24 @@
 
                         <div class="form-body">
 
-                            <div class="form-group">
-                                <label>Customer Name <span class="required">*</span></label>
-                                <div class="input-group has-icon-left">
-                                    <select class="form-control square" asp-for="CustomerId" data-placeholder="Select a Customer" required></select>
-                                    <div class="form-control-position">
-                                        <i class="feather icon-user primary"></i>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <a class="btn btn-primary" asp-controller="Customers" asp-action="AddCustomers" target="_blank">
-                                            Add New Customer
-                                        </a>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Customer Name <span class="required">*</span></label>
+                                        <div class="input-group has-icon-left">
+                                            <select class="form-control square" asp-for="CustomerId" data-placeholder="Select a Customer" required></select>
+                                            <div class="form-control-position">
+                                                <i class="feather icon-user primary"></i>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Quote Name <span class="required">*</span></label>
-                                <input class="form-control square" asp-for="Name" placeholder="Quote Name" required />
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Quote Name <span class="required">*</span></label>
+                                        <input class="form-control square" asp-for="Name" placeholder="Quote Name" required />
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -183,115 +183,107 @@
 
                             <div id="multiColorDesignDiv" hidden>
                                 <h4 class="form-section"><i class="fa fa-th-large primary"></i> Multiple Color Design</h4>
-                                <div class="form-group">
-                                    <label>Door Style</label>
-                                    <input class="form-control square" asp-for="DoorStyleForMultipleColorDesign" placeholder="Door Style" />
-                                </div>
-                                <div class="row mb-1">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Upper Wood Species</span>
-                                            </div>
-                                            <select class="form-control square" asp-for="UpperWoodSpeciesForMultipleColorDesign">
-                                                <option selected disabled>Wood Species</option>
-                                                <option value="Alder">Alder</option>
-                                                <option value="Birch">Birch</option>
-                                                <option value="Cherry">Cherry</option>
-                                                <option value="Hickory">Hickory</option>
-                                                <option value="Maple">Maple</option>
-                                                <option value="MDF">MDF</option>
-                                                <option value="Pine">Pine</option>
-                                                <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                                <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                                <option value="Red Oak">Red Oak</option>
-                                                <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                                <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                                <option value="White Oak">White Oak</option>
-                                                <option value="Walnut">Walnut</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Upper Finish</span>
-                                            </div>
-                                            <input class="form-control square" asp-for="UpperFinishForMultipleColorDesign" placeholder="Upper Cabinet Color" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-1">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Lower Wood Species</span>
-                                            </div>
-                                            <select class="form-control square" asp-for="LowerWoodSpeciesForMultipleColorDesign">
-                                                <option selected disabled>Wood Species</option>
-                                                <option value="Alder">Alder</option>
-                                                <option value="Birch">Birch</option>
-                                                <option value="Cherry">Cherry</option>
-                                                <option value="Hickory">Hickory</option>
-                                                <option value="Maple">Maple</option>
-                                                <option value="MDF">MDF</option>
-                                                <option value="Pine">Pine</option>
-                                                <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                                <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                                <option value="Red Oak">Red Oak</option>
-                                                <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                                <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                                <option value="White Oak">White Oak</option>
-                                                <option value="Walnut">Walnut</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Lower Finish</span>
-                                            </div>
-                                            <input class="form-control square" asp-for="LowerFinishForMultipleColorDesign" placeholder="Lower Cabinet Color" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-1">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Island Wood Species</span>
-                                            </div>
-                                            <select class="form-control square" asp-for="IslandWoodSpeciesForMultipleColorDesign">
-                                                <option selected disabled>Wood Species</option>
-                                                <option value="Alder">Alder</option>
-                                                <option value="Birch">Birch</option>
-                                                <option value="Cherry">Cherry</option>
-                                                <option value="Hickory">Hickory</option>
-                                                <option value="Maple">Maple</option>
-                                                <option value="MDF">MDF</option>
-                                                <option value="Pine">Pine</option>
-                                                <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                                <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                                <option value="Red Oak">Red Oak</option>
-                                                <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                                <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                                <option value="White Oak">White Oak</option>
-                                                <option value="Walnut">Walnut</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Island Finish</span>
-                                            </div>
-                                            <input class="form-control square" asp-for="IslandFinishForMultipleColorDesign" placeholder="Island Cabinet Color" />
-                                        </div>
-                                    </div>
-                                </div>
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Section</th>
+                                            <th>Wood Species</th>
+                                            <th>Door Style</th>
+                                            <th>Finish</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="font-weight-bold">Upper</td>
+                                            <td>
+                                                <select class="form-control square" asp-for="UpperWoodSpeciesForMultipleColorDesign">
+                                                    <option selected disabled>Wood Species</option>
+                                                    <option value="Alder">Alder</option>
+                                                    <option value="Birch">Birch</option>
+                                                    <option value="Cherry">Cherry</option>
+                                                    <option value="Hickory">Hickory</option>
+                                                    <option value="Maple">Maple</option>
+                                                    <option value="MDF">MDF</option>
+                                                    <option value="Pine">Pine</option>
+                                                    <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
+                                                    <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
+                                                    <option value="Red Oak">Red Oak</option>
+                                                    <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
+                                                    <option value="Rift Cut White Oak">Rift Cut White Oak</option>
+                                                    <option value="White Oak">White Oak</option>
+                                                    <option value="Walnut">Walnut</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" asp-for="UpperDoorStyleForMultipleColorDesign" placeholder="Upper Door Style" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" asp-for="UpperFinishForMultipleColorDesign" placeholder="Upper Cabinet Color" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Lower</td>
+                                            <td>
+                                                <select class="form-control square" asp-for="LowerWoodSpeciesForMultipleColorDesign">
+                                                    <option selected disabled>Wood Species</option>
+                                                    <option value="Alder">Alder</option>
+                                                    <option value="Birch">Birch</option>
+                                                    <option value="Cherry">Cherry</option>
+                                                    <option value="Hickory">Hickory</option>
+                                                    <option value="Maple">Maple</option>
+                                                    <option value="MDF">MDF</option>
+                                                    <option value="Pine">Pine</option>
+                                                    <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
+                                                    <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
+                                                    <option value="Red Oak">Red Oak</option>
+                                                    <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
+                                                    <option value="Rift Cut White Oak">Rift Cut White Oak</option>
+                                                    <option value="White Oak">White Oak</option>
+                                                    <option value="Walnut">Walnut</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" asp-for="LowerDoorStyleForMultipleColorDesign" placeholder="Lower Door Style" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" asp-for="LowerFinishForMultipleColorDesign" placeholder="Lower Cabinet Color" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Island</td>
+                                            <td>
+                                                <select class="form-control square" asp-for="IslandWoodSpeciesForMultipleColorDesign">
+                                                    <option selected disabled>Wood Species</option>
+                                                    <option value="Alder">Alder</option>
+                                                    <option value="Birch">Birch</option>
+                                                    <option value="Cherry">Cherry</option>
+                                                    <option value="Hickory">Hickory</option>
+                                                    <option value="Maple">Maple</option>
+                                                    <option value="MDF">MDF</option>
+                                                    <option value="Pine">Pine</option>
+                                                    <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
+                                                    <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
+                                                    <option value="Red Oak">Red Oak</option>
+                                                    <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
+                                                    <option value="Rift Cut White Oak">Rift Cut White Oak</option>
+                                                    <option value="White Oak">White Oak</option>
+                                                    <option value="Walnut">Walnut</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" asp-for="IslandDoorStyleForMultipleColorDesign" placeholder="Island Door Style" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" asp-for="IslandFinishForMultipleColorDesign" placeholder="Island Cabinet Color" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
                                 <div class="form-group">
                                     <label>Comments</label>
                                     <textarea class="form-control square" asp-for="CommentsOnMultiColorDesign" rows="3" placeholder="Comments"></textarea>
@@ -444,13 +436,95 @@
 
 </div>
 
+@* Creating a model pop up for adding customer *@
+<!-- Modal for adding customer -->
+<div class="modal fade text-left" id="AddCustomerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-sm modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Add New Customer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="form" id="AddCustomerForm" method="post">
+                <div class="modal-body">
+                    <label>Customer Name *</label>
+                    <div class="form-group position-relative has-icon-left">
+                        <input id="customerName" type="text" class="form-control" placeholder="Jane Doe" required>
+                        <div class="form-control-position">
+                            <i class="feather icon-user primary"></i>
+                        </div>
+                    </div>
+
+                    <label>Phone *</label>
+                    <div class="form-group position-relative has-icon-left">
+                        <input id="customerPhone" type="text" class="form-control" placeholder="452-365-7845" required>
+                        <div class="form-control-position">
+                            <i class="feather icon-phone primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    // submit AddCustomerForm form
+    $("#AddCustomerForm").submit(function (e) {
+        e.preventDefault();
+        var customerName = $("#customerName").val();
+        var customerPhone = $("#customerPhone").val();
+        $.ajax({
+            type: "POST",
+            url: "/Customers/AddCustomerFromSearchBar",
+            data: { name: customerName, phone: customerPhone },
+            success: function (data) {
+                // close the modal
+                $("#AddCustomerModal").modal("hide");
+                // refresh the customer select list
+                var customerId = data.data.id;
+                var customerName = data.data.firstName + " " + data.data.lastName;
+                debugger
+                var newOption = new Option(customerName, customerId, true, true);
+                $("#CustomerId").append(newOption).trigger("change");
+            }
+        });
+    });
+
+    function ShowCustomer_Canvas() {
+        // get the current text that is inside select2 search input
+        var searchText = $("#CustomerId").data("select2").dropdown.$search.val();
+        // show customer modal pop up
+        $("#AddCustomerModal").modal("show");
+       // set customer name input field equal to searchText
+        $("#customerName").val(searchText);
+        // close select2 list
+        $("#CustomerId").select2("close");
+    }
 
     $(document).ready(function () {
         // For Customers Select List
         var customerList = @Html.Raw(Json.Serialize(customersList));
         $("#CustomerId").select2({
             placeholder: $(this).data("placeholder"),
+            language: {
+                noResults: function () {
+                    return `<button style="width: 100%" type="button"
+                            class="btn btn-primary"
+                            onClick='ShowCustomer_Canvas()'><i class="feather icon-plus"></i> Add New Customer</button>
+                            </li>`;
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             data: customerList.map(function (customer) {
                 return {

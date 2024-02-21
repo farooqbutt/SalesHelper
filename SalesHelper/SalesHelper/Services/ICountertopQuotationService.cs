@@ -1,8 +1,8 @@
 ﻿using SalesHelper.Models;
 
-namespace SalesHelper.Repository
+namespace SalesHelper.Services
 {
-    public interface ICountertopQuotationRepo
+    public interface ICountertopQuotationService
     {
         public void Create(CountertopQuotation address);
         public CountertopQuotation Read(int id);

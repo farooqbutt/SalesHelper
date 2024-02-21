@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Models;
-using SalesHelper.Repository;
+using SalesHelper.Services;
 
 namespace SalesHelper.Controllers
 {
     public class EventsController : Controller
     {
-        private readonly EventRepo _eventService;
-        private readonly CustomerRepo _customerService;
+        private readonly EventService _eventService;
+        private readonly CustomerService _customerService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         public EventsController(
             SignInManager<ApplicationUser> signInManager,
-            EventRepo eventService, 
-            CustomerRepo customerRepo)
+            EventService eventService, 
+            CustomerService customerRepo)
         {
             _eventService = eventService;
             _customerService = customerRepo;

@@ -7,6 +7,10 @@
 }
 
 <style>
+    .table.table-sm td, .table.table-sm th {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
     .card-content {
         display: flex;
         flex-direction: column;
@@ -59,13 +63,39 @@
                                 </div>
                                 <div @(Model.isOneColorDesign == false ? "" : "hidden")>
                                     <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
-                                    <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForMultipleColorDesign </p>
-                                    <p class="card-text"><b>Upper Wood Species:</b> @Model.UpperWoodSpeciesForMultipleColorDesign </p>
-                                    <p class="card-text"><b>Upper Finish:</b> @Model.UpperFinishForMultipleColorDesign </p>
-                                    <p class="card-text"><b>Lower Wood Species:</b> @Model.LowerWoodSpeciesForMultipleColorDesign </p>
-                                    <p class="card-text"><b>Lower Finish:</b> @Model.LowerFinishForMultipleColorDesign </p>
-                                    <p class="card-text"><b>Island Wood Sepcies:</b> @Model.IslandWoodSpeciesForMultipleColorDesign </p>
-                                    <p class="card-text"><b>Island Finish:</b> @Model.IslandFinishForMultipleColorDesign </p>
+
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Section</th>
+                                                <th>Wood Species</th>
+                                                <th>Door Style</th>
+                                                <th>Finish</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="font-weight-bold">Upper</td>
+                                                <td>@Model.UpperWoodSpeciesForMultipleColorDesign</td>
+                                                <td>@Model.UpperDoorStyleForMultipleColorDesign</td>
+                                                <td>@Model.UpperFinishForMultipleColorDesign</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-weight-bold">Lower</td>
+                                                <td>@Model.LowerWoodSpeciesForMultipleColorDesign</td>
+                                                <td>@Model.LowerDoorStyleForMultipleColorDesign</td>
+                                                <td>@Model.LowerFinishForMultipleColorDesign</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-weight-bold">Island</td>
+                                                <td>@Model.IslandWoodSpeciesForMultipleColorDesign</td>
+                                                <td>@Model.IslandDoorStyleForMultipleColorDesign</td>
+                                                <td>@Model.IslandFinishForMultipleColorDesign</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <p class="card-text"><b>Comments:</b> @Model.CommentsOnMultiColorDesign </p>
                                 </div>
                             </div>
                         </div>
@@ -135,6 +165,9 @@
                             <div class="card accordion collapse-icon panel mb-0 box-shadow-0 border-0">
 
                                 <div id="itemListHeading" role="tab" class="card-header card-collapse-border" data-toggle="collapse" href="#itemListAccordion" aria-expanded="false" aria-controls="itemListAccordion">
+                                    <a asp-controller="Quotations" asp-action="AttachCabinetItems" asp-route-id="@Model.Id" class="btn btn-primary btn-sm float-right mr-2">
+                                        <i class="feather icon-paperclip"></i> @(itemsList.Count > 0 ? "Edit Attached Items" : "Attach Cabinet Items")
+                                    </a>
                                     <h4 class="card-title text-primary">
                                         Attached Cabinet Items
                                     </h4>
@@ -194,11 +227,11 @@
                 <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.Id" class="width-150 btn btn-outline-primary">
                     <i class="fa fa-edit"></i> Edit Quote
                 </a>
-                <a asp-controller="Quotations" asp-action="AttachCabinetItems" asp-route-id="@Model.Id" class="width-200 btn btn-primary">
-                    <i class="feather icon-paperclip"></i> @(itemsList.Count > 0 ? "Edit Attached Items" : "Attach Cabinet Items")
+                <a asp-controller="Quotations" asp-action="CabinetQuotePrintPreview" asp-route-id="@Model.Id" class="width-150 btn btn-primary">
+                    <i class="feather icon-file-text"></i> Details View
                 </a>
-                <a asp-controller="Quotations" asp-action="CabinetQuotePrintPreview" asp-route-id="@Model.Id" class="width-150 btn btn-outline-primary">
-                    <i class="feather icon-printer"></i> Print Preview
+                <a asp-controller="Quotations" asp-action="RequestEstimateView" asp-route-id="@Model.Id" class="width-180 btn btn-success">
+                    <i class="feather icon-mail"></i> Request Estimate
                 </a>
             </div>
         </div>

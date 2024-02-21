@@ -110,21 +110,21 @@
                                                         <td>@index</td>
                                                         <td>@item.DoorStyleName</td>
                                                         <td class="input-group-sm">
-                                                            <input class="form-control" value="@item.Quantity" type="number" placeholder="Quantity"/>
+                                                            <input class="form-control" value="@item.Quantity" type="number" placeholder="Quantity" onblur="UpdateItem(@item.Id)" />
                                                         </td>
                                                         <td>@item.Item</td>
                                                         <td class="input-group-sm">
-                                                            <input class="form-control" value="@item.Description" placeholder="Description" />
+                                                            <input class="form-control" value="@item.Description" placeholder="Description" onblur="UpdateItem(@item.Id)" />
                                                         </td>
                                                         <td class="input-group-sm">
-                                                            <select class="form-control">
+                                                            <select class="form-control" onchange="UpdateItem(@item.Id)">
                                                                 <option selected="@(item.Hinge == "N/A")" value="N/A">N/A</option>
                                                                 <option selected="@(item.Hinge == "Left")" value="Left">Left</option>
                                                                 <option selected="@(item.Hinge == "Right")" value="Right">Right</option>
                                                             </select>
                                                         </td>
                                                         <td class="input-group-sm">
-                                                            <select class="form-control">
+                                                            <select class="form-control" onchange="UpdateItem(@item.Id)">
                                                                 <option selected="@(item.Finish == "N/A")" value="N/A">N/A</option>
                                                                 <option selected="@(item.Finish == "Left")" value="Left">Left</option>
                                                                 <option selected="@(item.Finish == "Right")" value="Right">Right</option>
@@ -133,7 +133,6 @@
                                                         </td>
                                                         <td>@item.Price</td>
                                                         <td style="vertical-align:middle;">
-                                                            <button onclick="UpdateItem(@item.Id)" class=" btn btn-sm btn-primary"><i class="fa fa-check-square-o" title="Update Item"></i></button>
                                                             <button onclick="DeleteAttachedItem(@item.Id)" class=" btn btn-sm btn-danger"><i class="feather icon-trash" title="Delete Item"></i></button>
                                                         </td>
                                                     </tr>

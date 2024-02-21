@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
-@inject SalesHelper.Repository.CustomerRepo _customerService
+@inject SalesHelper.Services.CustomerService _customerService
 @inject SalesHelper.Data.ApplicationDbContext context
 @{
     var roomTypes = Enum.GetValues(typeof(CountertopQuotation.RoomTypes))
@@ -55,59 +55,66 @@
             <div class="card-content collapse show">
                 <div class="card-body">
                     <form class="form" id="CountertopQuotationForm">
+
+                        <div class="hidden">
+                            <input asp-for="CountertopQuotation.CreatedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                            <input asp-for="CountertopQuotation.ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                            <input asp-for="CountertopQuotation.CreatedByUserId" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
+                        </div>
+
                         <div class="form-body">
 
-                            <div class="form-group">
-                                <label>Customer Name <span class="required">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-									    <span class="input-group-text square">
-                                            <i class="feather icon-user"></i>
-                                        </span>
-								    </div>
-                                    <select class="form-control square" asp-for="CountertopQuotation.CustomerId" data-placeholder="Select a Customer" required></select>
-                                    <div class="input-group-append">
-                                        <a class="btn btn-primary" asp-controller="Customers" asp-action="AddCustomers" target="_blank">
-                                            Add New Customer
-                                        </a>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Customer Name <span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text square">
+                                                    <i class="feather icon-user"></i>
+                                                </span>
+                                            </div>
+                                            <select class="form-control square" asp-for="CountertopQuotation.CustomerId" data-placeholder="Select a Customer" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Quote Name <span class="required">*</span></label>
+                                        <input class="form-control square" asp-for="CountertopQuotation.Name" placeholder="Quote Name" required />
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="hidden">
-                                <input asp-for="CountertopQuotation.CreatedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
-                                <input asp-for="CountertopQuotation.ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
-                                <input asp-for="CountertopQuotation.CreatedByUserId" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Quote Name <span class="required">*</span></label>
-                                <input class="form-control square" asp-for="CountertopQuotation.Name" placeholder="Quote Name" required />
-                            </div>
-
                             <h4 class="form-section"><i class="feather icon-file-text"></i> Quote Details</h4>
 
-                            <div class="form-group">
-                                <label>Room Type</label>
-                                <select class="form-control square" asp-for="CountertopQuotation.RoomType">
-                                    <option selected disabled>Choose Room Type</option>
-                                    @foreach (var item in roomTypes)
-                                    {
-                                        <option value="@item">@item</option>
-                                    }
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Room Type</label>
+                                        <select class="form-control square" asp-for="CountertopQuotation.RoomType">
+                                            <option selected disabled>Choose Room Type</option>
+                                            @foreach (var item in roomTypes)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Edge Profile</label>
+                                        <select class="form-control square" asp-for="CountertopQuotation.EdgeProfile">
+                                            <option selected disabled>Choose Edge Profile</option>
+                                            @foreach (var item in edgeProfiles)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Edge Profile</label>
-                                <select class="form-control square" asp-for="CountertopQuotation.EdgeProfile">
-                                    <option selected disabled>Choose Edge Profile</option>
-                                    @foreach (var item in edgeProfiles)
-                                    {
-                                        <option value="@item">@item</option>
-                                    }
-                                </select>
-                            </div>
 
                             <div class="row mb-1">
                                 <div class="col-md-3">
@@ -226,12 +233,95 @@
 
 </div>
 
+@* Creating a model pop up for adding customer *@
+<!-- Modal for adding customer -->
+<div class="modal fade text-left" id="AddCustomerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-sm modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Add New Customer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="form" id="AddCustomerForm" method="post">
+                <div class="modal-body">
+                    <label>Customer Name *</label>
+                    <div class="form-group position-relative has-icon-left">
+                        <input id="customerName" type="text" class="form-control" placeholder="Jane Doe" required>
+                        <div class="form-control-position">
+                            <i class="feather icon-user primary"></i>
+                        </div>
+                    </div>
+
+                    <label>Phone *</label>
+                    <div class="form-group position-relative has-icon-left">
+                        <input id="customerPhone" type="text" class="form-control" placeholder="452-365-7845" required>
+                        <div class="form-control-position">
+                            <i class="feather icon-phone primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    // submit AddCustomerForm form
+    $("#AddCustomerForm").submit(function (e) {
+        e.preventDefault();
+        var customerName = $("#customerName").val();
+        var customerPhone = $("#customerPhone").val();
+        $.ajax({
+            type: "POST",
+            url: "/Customers/AddCustomerFromSearchBar",
+            data: { name: customerName, phone: customerPhone },
+            success: function (data) {
+                // close the modal
+                $("#AddCustomerModal").modal("hide");
+                // refresh the customer select list
+                var customerId = data.data.id;
+                var customerName = data.data.firstName + " " + data.data.lastName;
+                debugger
+                var newOption = new Option(customerName, customerId, true, true);
+                $("#CountertopQuotation_CustomerId").append(newOption).trigger("change");
+            }
+        });
+    });
+
+    function ShowCustomer_Canvas() {
+        // get the current text that is inside select2 search input
+        var searchText = $("#CountertopQuotation_CustomerId").data("select2").dropdown.$search.val();
+        // show customer modal pop up
+        $("#AddCustomerModal").modal("show");
+        // set customer name input field equal to searchText
+        $("#customerName").val(searchText);
+        // close select2 list
+        $("#CountertopQuotation_CustomerId").select2("close");
+    }
+
     $(document).ready(function () {
         // For Customers Select List
         var customerList = @Html.Raw(Json.Serialize(customersList));
         $("#CountertopQuotation_CustomerId").select2({
             placeholder: $(this).data("placeholder"),
+            language: {
+                noResults: function () {
+                    return `<button style="width: 100%" type="button"
+                                class="btn btn-primary"
+                                onClick='ShowCustomer_Canvas()'><i class="feather icon-plus"></i> Add New Customer</button>
+                                </li>`;
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             data: customerList.map(function (customer) {
                 return {

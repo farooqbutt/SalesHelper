@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
-@inject SalesHelper.Repository.CustomerRepo _customerService
+@inject SalesHelper.Services.CustomerService _customerService
 @inject SalesHelper.Data.ApplicationDbContext context
 @{
     var roomTypes = Enum.GetValues(typeof(CountertopQuotation.RoomTypes))

@@ -1,12 +1,13 @@
 ﻿using SalesHelper.Data;
 using SalesHelper.Models;
+using static SalesHelper.Services.ICustomerService;
 
-namespace SalesHelper.Repository
+namespace SalesHelper.Services
 {
-    public class CustomerRepo : ICustomerRepo
+    public class CustomerService : ICustomerService
     {
         private readonly ApplicationDbContext _context;
-        public CustomerRepo(ApplicationDbContext context)
+        public CustomerService(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -19,7 +20,7 @@ namespace SalesHelper.Repository
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
@@ -30,9 +31,9 @@ namespace SalesHelper.Repository
                 _context.Customers.Remove(Read(id));
                 _context.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
@@ -42,9 +43,9 @@ namespace SalesHelper.Repository
             {
                 return _context.Customers.Find(id)!;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
@@ -56,7 +57,7 @@ namespace SalesHelper.Repository
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
@@ -69,7 +70,32 @@ namespace SalesHelper.Repository
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
+            }
+        }
+
+        public NameType DetermineNameType(string name)
+        {
+            try
+            {
+                string[] nameParts = name.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (nameParts.Length == 1)
+                {
+                    return NameType.First;
+                }
+                else if (nameParts.Length > 1)
+                {
+                    return NameType.Full;
+                }
+                else
+                {
+                    return NameType.Invalid;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

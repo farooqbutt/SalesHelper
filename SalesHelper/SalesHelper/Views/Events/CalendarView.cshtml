@@ -1,5 +1,5 @@
 ﻿@model SalesHelper.Models.Event
-@inject SalesHelper.Repository.CustomerRepo _customerService
+@inject SalesHelper.Services.CustomerService _customerService
 @{
     var customersList = _customerService.ReadAll();
 }

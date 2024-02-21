@@ -2,6 +2,13 @@
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.QuotationFullViewInterface
 
+<style>
+    .table.table-sm td, .table.table-sm th {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+</style>
+
 <div class="content-wrapper">
     <form asp-controller="Quotations" asp-action="CabinetQuotationDetailedView" method="post" enctype="multipart/form-data">
         @* hidden fields *@
@@ -17,12 +24,14 @@
             <input asp-for="CabinetQuotation.DoorStyleForOneColorDesign" />
             <input asp-for="CabinetQuotation.CabinetFinishForOneColorDesign" />
             <input asp-for="CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.UpperDoorStyleForMultipleColorDesign" />
             <input asp-for="CabinetQuotation.UpperFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.LowerDoorStyleForMultipleColorDesign" />
             <input asp-for="CabinetQuotation.LowerFinishForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" />
+            <input asp-for="CabinetQuotation.IslandDoorStyleForMultipleColorDesign" />
             <input asp-for="CabinetQuotation.IslandFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.DoorStyleForMultipleColorDesign" />
             <input asp-for="CabinetQuotation.CommentsOnMultiColorDesign" />
             <input asp-for="CabinetQuotation.AdditionalInformation" />
             <input asp-for="CabinetQuotation.CreatedDateTime" />
@@ -72,13 +81,36 @@
                                     </div>
                                     <div @(Model.CabinetQuotation.isOneColorDesign == false ? "" : "hidden")>
                                         <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
-                                        <p class="card-text"><b>Door Style:</b> @Model.CabinetQuotation.DoorStyleForMultipleColorDesign </p>
-                                        <p class="card-text"><b>Upper Wood Species:</b> @Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign </p>
-                                        <p class="card-text"><b>Upper Finish:</b> @Model.CabinetQuotation.UpperFinishForMultipleColorDesign </p>
-                                        <p class="card-text"><b>Lower Wood Species:</b> @Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign </p>
-                                        <p class="card-text"><b>Lower Finish:</b> @Model.CabinetQuotation.LowerFinishForMultipleColorDesign </p>
-                                        <p class="card-text"><b>Island Wood Sepcies:</b> @Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign </p>
-                                        <p class="card-text"><b>Island Finish:</b> @Model.CabinetQuotation.IslandFinishForMultipleColorDesign </p>
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Section</th>
+                                                    <th>Wood Species</th>
+                                                    <th>Door Style</th>
+                                                    <th>Finish</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="font-weight-bold">Upper</td>
+                                                    <td>@Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign</td>
+                                                    <td>@Model.CabinetQuotation.UpperDoorStyleForMultipleColorDesign</td>
+                                                    <td>@Model.CabinetQuotation.UpperFinishForMultipleColorDesign</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font-weight-bold">Lower</td>
+                                                    <td>@Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign</td>
+                                                    <td>@Model.CabinetQuotation.LowerDoorStyleForMultipleColorDesign</td>
+                                                    <td>@Model.CabinetQuotation.LowerFinishForMultipleColorDesign</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font-weight-bold">Island</td>
+                                                    <td>@Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign</td>
+                                                    <td>@Model.CabinetQuotation.IslandDoorStyleForMultipleColorDesign</td>
+                                                    <td>@Model.CabinetQuotation.IslandFinishForMultipleColorDesign</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                         <p class="card-text"><b>Comments:</b> @Model.CabinetQuotation.CommentsOnMultiColorDesign </p>
                                     </div>
                                 </div>
@@ -104,30 +136,6 @@
                             </div>
                         </div>
                     </div>
-
-                    @* <div class="col">
-                        <div class="card" style="height: 389.2px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title text-primary mt-0"><span><b>Attach Documents</b></span></h2>
-                                    <div class="form-body">
-                                        <div class="form-group">
-                                            <fieldset>
-                                                <div class="input-group input-group-xs">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="feather icon-paperclip"></i></span>
-                                                    </div>
-                                                    <input asp-for="DocumentFiles" type="file" multiple="" class="form-control" id="fileInput" />
-                                                </div>
-                                            </fieldset>
-                                        </div>
-                                        <div id="selectedFiles"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> *@
-
                 </div>
 
 
@@ -221,51 +229,3 @@
         </div>
     </form>
 </div>
-
-<script>
-    const fileInput = document.getElementById("fileInput");
-    const selectedFilesDiv = document.getElementById("selectedFiles");
-    const uploadButton = document.getElementById("uploadFiles");
-
-    fileInput.addEventListener("change", function (event) {
-        selectedFilesDiv.innerHTML = "";
-        var files = event.target.files;
-
-        if (files.length > 3) {
-            alert("You can only upload 3 files at a time");
-            fileInput.value = "";
-            return;
-        }
-        var filesArray = Array.from(files);
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const fileNameParagraph = document.createElement("span");
-            // add class to the paragraph
-            fileNameParagraph.classList.add("badge", "badge-primary");
-            fileNameParagraph.textContent = file.name;
-            const removeButton = document.createElement("button");
-            removeButton.classList.add("btn", "btn-danger", "btn-sm", "badge", "mr-2");
-            removeButton.innerHTML = "<i class='feather icon-x'></i>";
-            const brElement = document.createElement("br");
-
-            removeButton.addEventListener("click", function (event) {
-                // Prevent form submission
-                event.preventDefault();
-                // removing file using index
-                filesArray.splice(i, 1);
-
-                fileNameParagraph.remove();
-                removeButton.remove();
-
-                files = [];
-                filesArray.forEach(function (file) {
-                    files.push(file);
-                });
-            });
-            selectedFilesDiv.appendChild(fileNameParagraph);
-            selectedFilesDiv.appendChild(removeButton);
-            selectedFilesDiv.appendChild(brElement);
-        }
-    });
-</script>

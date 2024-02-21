@@ -1,6 +1,6 @@
 ﻿@model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
 @inject SalesHelper.Data.ApplicationDbContext _context
-@inject SalesHelper.Repository.AddressRepo _addressRepo
+@inject SalesHelper.Services.AddressService _addressRepo
 @{
     var itemsList = _context.QuotationItems.Where(a => a.QuotationId == Model.Id).ToList();
     var index = 1;
@@ -27,9 +27,9 @@
                                 <div class="col-6 d-flex flex-column justify-content-center align-items-start">
                                     <h2 class="text-primary">Cabinet Quotation</h2>
                                 </div>
-                                <div class="col-6 d-flex justify-content-end invoice-logo">
-                                    <img src="~/images/logo/SalesHelperLogo.png" alt="company-logo" height="46" width="164">
-                                </div>
+                                @* <div class="col-6 d-flex justify-content-end invoice-logo">
+                                <img src="~/images/logo/SalesHelperLogo.png" alt="company-logo" height="46" width="164">
+                                </div> *@
                             </div>
                             <div class="row">
                                 <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
@@ -91,7 +91,7 @@
                                         }
                                         else
                                         {
-                                            <span class="text-muted no-wrap">Door Style: @Model.DoorStyleForMultipleColorDesign</span>
+                                            <span class="text-muted no-wrap">Door Style: @Model.UpperDoorStyleForMultipleColorDesign</span>
                                         }
                                     </div>
                                 </div>
@@ -144,12 +144,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th style="width: 5%">Qty</th>
-                                            <th style="width: 10%">Item</th>
-                                            <th style="width: 40%">Description</th>
-                                            <th style="width: 10%">Hinge</th>
-                                            <th style="width: 10%">Finish</th>
-                                            <th style="width: 10%">Price</th>
+                                            <th>Qty</th>
+                                            <th>Item</th>
+                                            <th>Description</th>
+                                            <th>Hinge</th>
+                                            <th>Finish</th>
+                                            <th>Price</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -227,7 +227,7 @@
                             <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.Id" class="btn btn-info btn-block mb-1">
                                 <i class="feather icon-edit-2 mr-25 common-size"></i> Edit Quote
                             </a>
-                            <a href="#" class="btn btn-success btn-block mb-1">
+                            <a asp-controller="Quotations" asp-action="RequestEstimateView" asp-route-id="@Model.Id" class="btn btn-success btn-block mb-1">
                                 <i class="feather icon-mail mr-25 common-size"></i> Request Estimate
                             </a>
                             <a href="#" class="btn btn-primary btn-block mb-1">

@@ -2,11 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using SalesHelper.Models;
 using SalesHelper.Models.CabinetCatalog;
+using SalesHelper.Models.EmailSettings;
 
 namespace SalesHelper.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        // Model for email settings
+        public DbSet<MailSettings> MailSettings { get; set; } = default!;
+
         public DbSet<Account> Account { get; set; } = default!;
         public DbSet<Address> Address { get; set; } = default!;
         public DbSet<AccountBilling> AccountBilling { get; set; } = default!;

@@ -1,26 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SalesHelper.Data;
+﻿using SalesHelper.Data;
 using SalesHelper.Models;
 
-namespace SalesHelper.Repository
+namespace SalesHelper.Services
 {
-    public class CountertopQuotationRepo : ICountertopQuotationRepo
+    public class AddressService : IAddressService
     {
         private readonly ApplicationDbContext _context;
-        public CountertopQuotationRepo(ApplicationDbContext context)
+        public AddressService(ApplicationDbContext context)
         {
             _context = context;
         }
-        public void Create(CountertopQuotation quotation)
+        public Address Create(Address address)
         {
             try
             {
-                _context.CountertopQuotations.Add(quotation);
+                _context.Address.Add(address);
                 _context.SaveChanges();
+                return address;
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
@@ -28,49 +28,49 @@ namespace SalesHelper.Repository
         {
             try
             {
-                _context.CountertopQuotations.Remove(Read(id));
+                _context.Address.Remove(Read(id));
                 _context.SaveChanges();
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
-        public CountertopQuotation Read(int id)
+        public Address Read(int id)
         {
             try
             {
-                return _context.CountertopQuotations.Find(id)!;
+                return _context.Address.Find(id)!;
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
-        public List<CountertopQuotation> ReadAll()
+        public List<Address> ReadAll()
         {
             try
             {
-                return _context.CountertopQuotations.Include(a => a.CustomerIdFk).ToList();
+                return _context.Address.ToList();
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
-        public void Update(CountertopQuotation quotation)
+        public void Update(Address address)
         {
             try
             {
-                _context.CountertopQuotations.Update(quotation);
+                _context.Address.Update(address);
                 _context.SaveChanges();
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
     }
