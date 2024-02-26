@@ -1,9 +1,11 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using SalesHelper.Data;
 using SalesHelper.Models;
-using SalesHelper.Models.EmailSettings;
 using SalesHelper.Services;
+using SalesHelper.Services.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,14 +14,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<VendorService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<AddressService>();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<CabinetQuotationService>();
 builder.Services.AddScoped<CountertopQuotationService>();
+builder.Services.AddScoped<EmailService>();
 
-// configure email settings
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+// registering DinkToPdf Service
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 // For uploading larg files to the server
 builder.Services.Configure<KestrelServerOptions>(options =>

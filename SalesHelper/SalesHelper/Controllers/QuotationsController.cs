@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SalesHelper.Data;
 using SalesHelper.Models;
+using SalesHelper.Models.EmailSettings;
 using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Services;
+using SalesHelper.Services.EmailService;
 using System.Net.Mime;
 
 namespace SalesHelper.Controllers
@@ -19,6 +23,8 @@ namespace SalesHelper.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly AddressService _addressService;
+        private readonly EmailService _emailService;
+        private readonly IConverter _converter;
 
         public QuotationsController(
             CabinetQuotationService cabinetQuotationRepo,
@@ -27,7 +33,9 @@ namespace SalesHelper.Controllers
             ApplicationDbContext context,
             IWebHostEnvironment env,
             SignInManager<ApplicationUser> signInManager,
-            AddressService addressService)
+            AddressService addressService,
+            EmailService emailService,
+            IConverter converter)
         {
             _cabinetQuotationService = cabinetQuotationRepo;
             _countertopQuotationService = countertopQuotationRepo;
@@ -36,6 +44,8 @@ namespace SalesHelper.Controllers
             _env = env;
             _signInManager = signInManager;
             _addressService = addressService;
+            _emailService = emailService;
+            _converter = converter;
         }
 
         #region COMMON METHODS
@@ -74,6 +84,20 @@ namespace SalesHelper.Controllers
             return viewName;
         }
 
+        [HttpPost]
+        public void SaveMailSettings(MailSettings mailSettings)
+        {
+            try
+            {
+                mailSettings.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
+                _context.MailSettings.Add(mailSettings);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         [HttpGet]
         public IActionResult QuotationsListView()
@@ -426,16 +450,16 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
-        public IActionResult AttachCabinetItems(List<QuotationItem> ItemsList)
+        public IActionResult AttachCabinetItems(List<QuotationItem> itemsList)
         {
             try
             {
-                if (ItemsList.Count() > 0)
+                if (itemsList.Count() > 0)
                 {
                     // update modified date time of cabinet quotation
-                    _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(ItemsList.First().QuotationId)));
+                    _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(itemsList.First().QuotationId)));
                     /////////////////////////////////
-                    _context.QuotationItems.AddRange(ItemsList);
+                    _context.QuotationItems.AddRange(itemsList);
                     _context.SaveChanges();
                     return Json(new { message = "success", result = "Items Saved Successfully!" });
                 }
@@ -611,6 +635,67 @@ namespace SalesHelper.Controllers
             return View(cabinetQuoteInterface);
         }
 
+        [HttpPost]
+        public IActionResult SendEstimateRequest(string to, string subject, string body, string attachmentName, string htmlContent)
+        {
+            try
+            {
+                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName, GeneratePDFBytes(htmlContent));
+                if (task.IsCompletedSuccessfully)
+                {
+                    return Json(new { message = "success", result = "Estimate Request Email Sent Successfully!" });
+                }
+                else
+                {
+                    return Json(new { message = "error", result = "Estimate Request Email Sending Failed!" });
+                }
+            }
+            catch  (Exception ex)
+            {
+                return Json(new { message = "error", result = ex.Message });
+            }
+        }
+
+        public byte[] GeneratePDFBytes(string html)
+        {
+            // Generate PDF Bytes from HTML using DinkToPdf
+            var globalSettings = new GlobalSettings
+            {
+                
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings { Top = 10 },
+            };
+
+            var objectSettings = new ObjectSettings
+            {
+                HtmlContent = @"
+                        <html>
+                            <head>
+                                <link href=""https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i"" rel=""stylesheet"">
+                            </head>
+                            <body>
+                                " + html + @"
+                            </body>
+                        </html>
+                ",
+                WebSettings = { 
+                    DefaultEncoding = "utf-8",
+                    UserStyleSheet = Path.Combine(_env.WebRootPath, "css", "EstimateRequestEmail.css")
+                }
+            };
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = globalSettings,
+                Objects = { objectSettings }
+            };
+
+            var file = _converter.Convert(pdf);
+            return file;
+        }
+
         #endregion CABINET QUOTATIONS
 
         #region COUNTERTOP QUOTATIONS
@@ -636,13 +721,13 @@ namespace SalesHelper.Controllers
         }
 
         [HttpGet]
-        public IActionResult CountertopPriceInquiry(int QuoteId, int VendorId)
+        public IActionResult CountertopPriceInquiry(int quoteId, int vendorId)
         {
-            var quotation = _countertopQuotationService.Read(QuoteId);
+            var quotation = _countertopQuotationService.Read(quoteId);
             quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
             quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
-            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == QuoteId &&
-                                                                             a.VendorId == VendorId).Include(a => a.VendorIdFk).ToList();
+            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == quoteId &&
+                                                                             a.VendorId == vendorId).Include(a => a.VendorIdFk).ToList();
             var data = new CountertopQuotationCreateInterface
             {
                 CountertopQuotation = quotation,
@@ -682,12 +767,16 @@ namespace SalesHelper.Controllers
             return Json(new { message = "success", result = "Quotation Updated Successfully!" });
         }
 
+        [HttpGet]
+        public IActionResult GetBrandsForMaterial(string material)
+        {
+            return Json(_countertopQuotationService.GetBrandsForMaterial(material));
+        }
 
         [HttpGet]
-        public IActionResult GetColorsForBrand(string brand)
+        public IActionResult GetColorsForBrand(string brand, string color)
         {
-            var colors = _context.CountertopBrandsData.Where(a => a.Brand == brand).Select(a => a.ColorName).ToList();
-            return Json(colors);
+            return Json(_countertopQuotationService.GetColorsForBrand(brand, color));
         }
 
         #endregion COUNTERTOP QUOTATIONS

@@ -9,5 +9,7 @@ namespace SalesHelper.Services
         public List<CountertopQuotation> ReadAll();
         public void Update(CountertopQuotation address);
         public void Delete(int id);
+        public List<string> GetBrandsForMaterial(string material);
+        public List<CountertopBrandsData> GetColorsForBrand(string brand, string color);
     }
 }

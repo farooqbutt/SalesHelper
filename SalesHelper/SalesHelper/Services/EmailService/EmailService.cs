@@ -1,7 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using MimeKit.Text;
 using SalesHelper.Data;
 using SalesHelper.Models.EmailSettings;
 using System.Security.Claims;
@@ -12,29 +11,56 @@ namespace SalesHelper.Services.EmailService
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly MailSettings _mailSettings;
         public EmailService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-            _mailSettings = GetMailSettings();
 
+        }
+        public void SaveMailSettings(MailSettings mailSettings)
+        {
+            try
+            {
+                _context.MailSettings.Add(mailSettings);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public MailSettings GetMailSettings()
         {
             var userId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var mailSettings = _context.MailSettings.Where(ms => ms.CreatedByUserId == userId).FirstOrDefault()!;
+            if (mailSettings == null)
+            {
+                throw new Exception("MailSettings_Not_Found");
+            }
             return mailSettings;
         }
-        public Task SendEmailAsync()
+
+        public Task SendEstimateRequestEmail(string to, string subject, string body, string attachmentName, byte[]? htmlContent)
         {
             try
             {
+                var _mailSettings = GetMailSettings();
+
                 var email = new MimeMessage();
                 email.From.Add(MailboxAddress.Parse(_mailSettings.Sender));
-                email.To.Add(MailboxAddress.Parse("To"));
-                email.Subject = "Subject";
-                email.Body = new TextPart(TextFormat.Html) { Text = "Body" };
+                email.To.Add(MailboxAddress.Parse(to));
+                email.Subject = subject;
+
+                var builder = new BodyBuilder();
+                builder.TextBody = body;
+
+                // if attachment is not null, add it to the email using mailkit attachment
+                if (htmlContent != null)
+                {
+                    builder.Attachments.Add(attachmentName, htmlContent);
+                }
+
+                email.Body = builder.ToMessageBody();
 
                 using var smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Server, _mailSettings.Port, SecureSocketOptions.StartTls);

@@ -97,7 +97,7 @@
                     "render": function (data, type, row) {
                         if(row.vendor != null) {
                             return `
-                                    <a href="/Vendors/VendorDetailedView/${row.vendor.vendorId}">${row.vendor.companyName}</a>
+                                    <a href="/Vendors/EditMyVendor?id=${row.vendor.vendorId}">${row.vendor.companyName}</a>
                                 `;
                         }
                         else {

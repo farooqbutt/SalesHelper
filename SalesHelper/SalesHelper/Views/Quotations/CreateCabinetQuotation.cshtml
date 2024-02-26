@@ -10,6 +10,11 @@
     var cabinetryVendors = _context.Vendor.Where(v => v.BusinessTypeId == 1).ToList();
 }
 <style>
+    #additionalInformationHeading{
+        padding-left:0;
+        padding-right:0;
+    }
+
     .select2-container .select2-selection--single .select2-selection__rendered {
         padding-left: 35px;
     }
@@ -23,11 +28,11 @@
         flex: 1 1 auto;
     }
 
-        .input-group > .select2-container--default .select2-selection--single {
-            height: 100%;
-            line-height: inherit;
-            padding: 0.5rem 1rem;
-        }
+    .input-group > .select2-container--default .select2-selection--single {
+        height: 100%;
+        line-height: inherit;
+        padding: 0.5rem 1rem;
+    }
 </style>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -66,24 +71,19 @@
 
                         <div class="form-body">
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Customer Name <span class="required">*</span></label>
-                                        <div class="input-group has-icon-left">
-                                            <select class="form-control square" asp-for="CustomerId" data-placeholder="Select a Customer" required></select>
-                                            <div class="form-control-position">
-                                                <i class="feather icon-user primary"></i>
-                                            </div>
-                                        </div>
+                            <div class="form-group">
+                                <label>Customer Name <span class="required">*</span></label>
+                                <div class="input-group has-icon-left">
+                                    <select class="form-control square" asp-for="CustomerId" data-placeholder="Select a Customer" required></select>
+                                    <div class="form-control-position">
+                                        <i class="feather icon-user primary"></i>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Quote Name <span class="required">*</span></label>
-                                        <input class="form-control square" asp-for="Name" placeholder="Quote Name" required />
-                                    </div>
-                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Quote Name <span class="required">*</span></label>
+                                <input class="form-control square" asp-for="Name" placeholder="Quote Name" required />
                             </div>
 
                             <div class="form-group">
@@ -456,14 +456,6 @@
                             <i class="feather icon-user primary"></i>
                         </div>
                     </div>
-
-                    <label>Phone *</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="customerPhone" type="text" class="form-control" placeholder="452-365-7845" required>
-                        <div class="form-control-position">
-                            <i class="feather icon-phone primary"></i>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
@@ -480,18 +472,16 @@
     $("#AddCustomerForm").submit(function (e) {
         e.preventDefault();
         var customerName = $("#customerName").val();
-        var customerPhone = $("#customerPhone").val();
         $.ajax({
             type: "POST",
             url: "/Customers/AddCustomerFromSearchBar",
-            data: { name: customerName, phone: customerPhone },
+            data: { name: customerName },
             success: function (data) {
                 // close the modal
                 $("#AddCustomerModal").modal("hide");
                 // refresh the customer select list
                 var customerId = data.data.id;
-                var customerName = data.data.firstName + " " + data.data.lastName;
-                debugger
+                var customerName = data.data.firstName + " " + (data.data.lastName != null ? data.data.lastName : "");
                 var newOption = new Option(customerName, customerId, true, true);
                 $("#CustomerId").append(newOption).trigger("change");
             }
@@ -529,7 +519,7 @@
             data: customerList.map(function (customer) {
                 return {
                     id: customer.id,
-                    text: customer.firstName + " " + customer.lastName
+                    text: customer.firstName + " " + (customer.lastName != null ? customer.lastName : "")
                 };
             })
         });

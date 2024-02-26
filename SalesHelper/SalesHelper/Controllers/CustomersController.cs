@@ -36,7 +36,7 @@ namespace SalesHelper.Controllers
 
 
         [HttpPost]
-        public IActionResult AddCustomerFromSearchBar(string name, string phone)
+        public IActionResult AddCustomerFromSearchBar(string name)
         {
             string customerFirstName = _customerService.DetermineNameType(name) == ICustomerService.NameType.First ? name : name.Split(" ")[0];
             string customerLastName = _customerService.DetermineNameType(name) == ICustomerService.NameType.Full ? name.Split(" ")[1] : "";
@@ -44,7 +44,6 @@ namespace SalesHelper.Controllers
             {
                 FirstName = customerFirstName,
                 LastName = customerLastName,
-                CellPhone = phone,
             };
             SetAccountNumAndCreatorOfCustomer(customer);
             var address = _addressService.Create(new Address());
