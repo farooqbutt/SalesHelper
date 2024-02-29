@@ -227,6 +227,12 @@
                 <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.Id" class="width-150 btn btn-outline-primary">
                     <i class="fa fa-edit"></i> Edit Quote
                 </a>
+                @if (itemsList.Count == 0)
+                {
+                    <a asp-controller="Quotations" asp-action="AttachCabinetItems" asp-route-id="@Model.Id" class="width-180 btn btn-primary">
+                        <i class="feather icon-paperclip"></i> Attach Cabinet Items
+                    </a>
+                }
                 <a asp-controller="Quotations" asp-action="CabinetQuotePrintPreview" asp-route-id="@Model.Id" class="width-150 btn btn-primary">
                     <i class="feather icon-file-text"></i> Details View
                 </a>

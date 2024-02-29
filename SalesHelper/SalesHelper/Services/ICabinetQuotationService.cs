@@ -1,4 +1,5 @@
 ﻿using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services
 {
@@ -9,5 +10,8 @@ namespace SalesHelper.Services
         public List<CabinetQuotation> ReadAll();
         public void Update(CabinetQuotation cabinetQuotation);
         public void Delete(int id);
+
+        // Cabinet Quotation Interface Creator
+        public CabinetQuoteInterface CabinetQuoteInterface(CabinetQuotation cabinetQuotation);
     }
 }

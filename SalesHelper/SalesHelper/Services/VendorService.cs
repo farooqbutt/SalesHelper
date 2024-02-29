@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NuGet.Versioning;
 using SalesHelper.Data;
 using SalesHelper.Models;
 
@@ -47,7 +46,7 @@ namespace SalesHelper.Services
                                       .Include(v => v.BillingAddressIdFK)
                                       .Include(v => v.ShippingAddressIdFK)
                                       .Include(v => v.BusinessTypeIdFK)
-                                      .Where(v => v.VendorId == id).FirstOrDefault()!;
+                                      .FirstOrDefault(v => v.VendorId == id)!;
             }
             catch (Exception e)
             {

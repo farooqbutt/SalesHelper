@@ -40,7 +40,7 @@ namespace SalesHelper.Services.EmailService
             return mailSettings;
         }
 
-        public Task SendEstimateRequestEmail(string to, string subject, string body, string attachmentName, byte[]? htmlContent)
+        public Task SendEstimateRequestEmail(string to, string subject, string body, string attachmentName, byte[]? pdfBytes)
         {
             try
             {
@@ -51,16 +51,16 @@ namespace SalesHelper.Services.EmailService
                 email.To.Add(MailboxAddress.Parse(to));
                 email.Subject = subject;
 
-                var builder = new BodyBuilder();
-                builder.TextBody = body;
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.TextBody = body;
 
                 // if attachment is not null, add it to the email using mailkit attachment
-                if (htmlContent != null)
+                if (pdfBytes != null)
                 {
-                    builder.Attachments.Add(attachmentName, htmlContent);
+                    bodyBuilder.Attachments.Add(attachmentName, pdfBytes);
                 }
 
-                email.Body = builder.ToMessageBody();
+                email.Body = bodyBuilder.ToMessageBody();
 
                 using var smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Server, _mailSettings.Port, SecureSocketOptions.StartTls);

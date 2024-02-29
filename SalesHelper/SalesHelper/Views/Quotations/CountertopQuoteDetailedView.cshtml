@@ -1,4 +1,11 @@
 ﻿@model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
+<style>
+@@media print {
+  .btnPriceInquiry {
+    display: none;
+  }
+}
+</style>
 
 <div class="content-wrapper">
     <div class="content-header row">
@@ -51,26 +58,7 @@
 
                             <!-- customer and quote details -->
                             <div class="row invoice-adress-info py-2">
-                                <div class="col-4 mt-1 from-info">
-                                    <div class="info-title mb-1">
-                                        <b>Frabricator Details</b>
-                                    </div>
-                                    <div class="company-name mb-1">
-                                        <span class="text-muted">
-                                            @Model.CountertopMaterials.First().VendorIdFk.CompanyName
-                                        </span>
-                                    </div>
-                                    <div class="company-address mb-1">
-                                        <span class="text-muted">
-                                            @Model.CountertopMaterials.First().VendorIdFk.Email
-                                        </span>
-                                    </div>
-                                    <div class="company-phone  mb-1">
-                                        <span class="text-muted">Phone: @Model.CountertopMaterials.First().VendorIdFk.MainPhone</span> <br />
-                                        <span class="text-muted">Fax: @Model.CountertopMaterials.First().VendorIdFk.Fax</span>
-                                    </div>
-                                </div>
-                                <div class="col-4 mt-1 from-info">
+                                <div class="col-6 mt-1 from-info">
                                     <div class="info-title mb-1">
                                         <b>Customer Details</b>
                                     </div>
@@ -107,7 +95,7 @@
                                         }
                                     </div>
                                 </div>
-                                <div class="col-4 mt-1 from-info">
+                                <div class="col-6 mt-1 from-info">
                                     <div class="info-title mb-1">
                                         <b>Countertop Details</b>
                                     </div>
@@ -175,6 +163,8 @@
                                             <th>VENDOR</th>
                                             <th>VENDOR RATE</th>
                                             <th class="text-right">PRICE QUOTE</th>
+                                            @* dont show this below th in print view *@
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -187,6 +177,11 @@
                                                 <td>@item.VendorIdFk.CompanyName</td>
                                                 <td>$@item.VendorRate</td>
                                                 <td class="font-weight-bold text-right">$@item.PriceQuote</td>
+                                                <td>
+                                                    <a asp-controller="Quotations" asp-action="CountertopPriceInquiry" 
+                                                       asp-route-quoteId="@item.CountertopQuotationId" asp-route-vendorId="@item.VendorId" 
+                                                       class="btn btn-sm btn-success btnPriceInquiry"><i class="feather icon-mail"></i> Price Inquiry</a>
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>
@@ -231,12 +226,14 @@
                 <div class="col-xl-3 col-md-4 col-12 action-btns">
                     <div class="card">
                         <div class="card-body p-2">
-                            <button onclick="SendEstimateRequest()" class="btn btn-success btn-block mb-1">
-                                <i class="feather icon-mail mr-25 common-size"></i> Send Price Inquiry
-                            </button>
-                            <a href="javascript:history.back()" class="btn btn-primary btn-block mb-1">
-                                <i class="feather icon-arrow-left mr-25 common-size"></i> Previous
+                            <a href="#" class="btn btn-info btn-block mb-1 print-invoice">
+                                <i class="feather icon-printer mr-25 common-size"></i> Print Quote
                             </a>
+                            <a asp-controller="Quotations" asp-action="EditCountertopQuotation" asp-route-id="@Model.CountertopQuotation.Id"
+                               class="btn btn-info btn-block mb-1">
+                                <i class="feather icon-edit-2 mr-25 common-size"></i> Edit Quote
+                            </a>
+                            <a href="#" class="btn btn-primary btn-block mb-1"> <i class="feather icon-mail mr-25 common-size"></i> Send to Customer</a>
                         </div>
                     </div>
                 </div>
@@ -244,185 +241,3 @@
         </section>
     </div>
 </div>
-
-@* Estimate Request Modal for sending email *@
-<div class="modal fade text-left" id="EstiamteRequestModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-sm modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary white">
-                <h4 class="modal-title form-section"><i class="feather icon-file-text"></i> Estimate Request Email Detials</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="form" id="EstimateRequestForm" method="post">
-                <div class="modal-body">
-
-                    <label>To</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="to" type="text" class="form-control" placeholder="jane.doe@gmail.com" value="@Model.CountertopMaterials.First().VendorIdFk.Email" readonly />
-                        <div class="form-control-position">
-                            <i class="feather icon-mail primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Subject</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="subject" type="text" class="form-control" placeholder="(e.g) Estimate Request" value="Estimate Request" required />
-                        <div class="form-control-position">
-                            <i class="feather icon-file-text primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Body</label>
-                    <div class="form-group">
-                        <textarea id="body" type="text" class="form-control" placeholder="Type Something here..."
-                                  value="Please provide me an estimate for items in attached PDF file." required></textarea>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal"><i class="feather icon-x"></i> Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="feather icon-send"></i> Send</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-@* Mail Settings Modal for saving email settings for a users *@
-<div class="modal fade text-left" id="MailSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-sm modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary white">
-                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Mail Settings</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="form" id="MailSettingsForm" method="post">
-                <div class="modal-body">
-                    <label>SMTP Server</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="smtp" type="text" class="form-control" placeholder="smtp.gmail.com" />
-                        <div class="form-control-position">
-                            <i class="feather icon-server primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Port</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="port" type="text" class="form-control" placeholder="578" />
-                        <div class="form-control-position">
-                            <i class="feather icon-sliders primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Sender</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="sender" type="email" class="form-control" placeholder="jane.doe@gmail.com" required />
-                        <div class="form-control-position">
-                            <i class="feather icon-mail primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Password</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="password" type="password" class="form-control" placeholder="•••••" required />
-                        <div class="form-control-position">
-                            <i class="feather icon-lock primary"></i>
-                        </div>
-                    </div>
-
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="useSSL" />
-                        <label class="custom-control-label" for="useSSL">Use SSL</label>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal"><i class="feather icon-x"></i> Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="feather icon-save"></i> Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-<script>
-    function SendEstimateRequest() {
-        $('#EstiamteRequestModal').modal('show');
-    }
-
-    // submit EstiamteRequestForm
-    $('#EstimateRequestForm').submit(function (e) {
-        e.preventDefault();
-        var to = $('#to').val();
-        var subject = $('#subject').val();
-        var body = $('#body').val();
-        var attachmentName = "Estimate-Request-" + @Model.CountertopQuotation.Id.ToString() + ".pdf";
-
-        $.ajax({
-            type: "POST",
-            url: "/Quotations/SendCountertopQuoteEstimateRequest",
-            data: {
-                    to: to,
-                    subject: subject,
-                    body: body,
-                    attachmentName: attachmentName,
-                    quoteId: @Model.CountertopQuotation.Id,
-                    vendorId: @Model.CountertopMaterials.First().VendorIdFk.VendorId
-            },
-            success: function (response) {
-                $('#EstiamteRequestModal').modal('hide');
-                if (response.message == "success") {
-                    toastr.success(response.result, 'Success!', { "progressBar": true });
-                }
-                else {
-                    if (response.result == "MailSettings_Not_Found") {
-                        toastr.info("Mail Settings not found! Please add your mail settings first.", 'Information!', { "progressBar": true });
-                        $('#MailSettingsModal').modal('show');
-                    } else {
-                        toastr.info(response.result, 'Information!', { "progressBar": true });
-                    }
-                }
-            },
-            error: function (error) {
-                toastr.error(error, 'Error!', { "progressBar": true });
-            }
-        });
-    });
-
-    // submit MailSettingsForm
-    $('#MailSettingsForm').submit(function (e) {
-        e.preventDefault();
-        var smtp = $('#smtp').val();
-        var port = $('#port').val();
-        var sender = $('#sender').val();
-        var password = $('#password').val();
-        var useSSL = $('#useSSL').is(':checked');
-
-        var data = {
-            server: smtp,
-            port: port,
-            sender: sender,
-            password: password,
-            useSSL: useSSL
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/Quotations/SaveMailSettings",
-            data: data,
-            success: function (response) {
-                $('#MailSettingsModal').modal('hide');
-                toastr.success("Mail Settings saved successfully!", 'Success!', { "progressBar": true });
-            },
-            error: function (error) {
-                toastr.error(error, 'Error!', { "progressBar": true });
-            }
-        });
-    });
-</script>

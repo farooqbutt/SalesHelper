@@ -1,6 +1,4 @@
-﻿using DinkToPdf;
-using DinkToPdf.Contracts;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -11,6 +9,10 @@ using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Services;
 using SalesHelper.Services.EmailService;
 using System.Net.Mime;
+using QuestPDF.Infrastructure;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using SalesHelper.Services.QuestPDF;
 
 namespace SalesHelper.Controllers
 {
@@ -24,7 +26,8 @@ namespace SalesHelper.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly AddressService _addressService;
         private readonly EmailService _emailService;
-        private readonly IConverter _converter;
+        private readonly VendorService _vendorService;
+        private readonly GeneratePDFService _generatePDFService;
 
         public QuotationsController(
             CabinetQuotationService cabinetQuotationRepo,
@@ -35,7 +38,8 @@ namespace SalesHelper.Controllers
             SignInManager<ApplicationUser> signInManager,
             AddressService addressService,
             EmailService emailService,
-            IConverter converter)
+            VendorService vendorService,
+            GeneratePDFService generatePDFService)
         {
             _cabinetQuotationService = cabinetQuotationRepo;
             _countertopQuotationService = countertopQuotationRepo;
@@ -45,7 +49,8 @@ namespace SalesHelper.Controllers
             _signInManager = signInManager;
             _addressService = addressService;
             _emailService = emailService;
-            _converter = converter;
+            _vendorService = vendorService;
+            _generatePDFService = generatePDFService;
         }
 
         #region COMMON METHODS
@@ -159,55 +164,7 @@ namespace SalesHelper.Controllers
         public IActionResult EditCabinetQuotation(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-
-            var cabinetQuoteInterface = new CabinetQuoteInterface
-            {
-                Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
-                CustomerId = cabinetQuotation.CustomerId,
-                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
-                // additional information
-                AdditionalInformation = cabinetQuotation.AdditionalInformation,
-                CreatedByUserId = cabinetQuotation.CreatedByUserId,
-                CreatedDateTime = cabinetQuotation.CreatedDateTime,
-                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
-                CabinetPrice = cabinetQuotation.CabinetPrice,
-                DeliveryCharge = cabinetQuotation.DeliveryCharge,
-                InstallationFee = cabinetQuotation.InstallationFee,
-                Tax = cabinetQuotation.Tax,
-                VendorPrice = cabinetQuotation.VendorPrice,
-                CommentOnPrice = cabinetQuotation.CommentOnPrice,
-                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
-                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
-                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
-                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
-                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
-                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
-                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
-            };
-
-            return View(cabinetQuoteInterface);
+            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpPost]
@@ -298,57 +255,9 @@ namespace SalesHelper.Controllers
         public IActionResult CabinetQuotationDetailedView(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-
-            var cabinetQuoteInterface = new CabinetQuoteInterface
-            {
-                Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
-                CustomerId = cabinetQuotation.CustomerId,
-                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
-                // additional information
-                AdditionalInformation = cabinetQuotation.AdditionalInformation,
-                CreatedByUserId = cabinetQuotation.CreatedByUserId,
-                CreatedDateTime = cabinetQuotation.CreatedDateTime,
-                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
-                CabinetPrice = cabinetQuotation.CabinetPrice,
-                DeliveryCharge = cabinetQuotation.DeliveryCharge,
-                InstallationFee = cabinetQuotation.InstallationFee,
-                Tax = cabinetQuotation.Tax,
-                VendorPrice = cabinetQuotation.VendorPrice,
-                CommentOnPrice = cabinetQuotation.CommentOnPrice,
-                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
-                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
-                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
-                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
-                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
-                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
-                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
-            };
-
             var data = new QuotationFullViewInterface
             {
-                CabinetQuotation = cabinetQuoteInterface,
+                CabinetQuotation = _cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation),
             };
             return View(data);
         }
@@ -357,21 +266,6 @@ namespace SalesHelper.Controllers
         public IActionResult CabinetQuotationDetailedView(QuotationFullViewInterface quoteData)
         {
             _cabinetQuotationService.Update(quoteData.CabinetQuotation);
-            // if document file is not null then upload it
-            //if (quoteData.DocumentFiles != null && quoteData.DocumentFiles.Count > 0)
-            //{
-            //    var data = await UploadQuotationDocuments(quoteData);
-            //    // get message value from data.value object
-            //    dynamic obj = data.Value!;
-            //    if (obj.message != "error")
-            //    {
-            //        return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
-            //    }
-            //    else
-            //    {
-            //        return Json(new { status = "error", message = obj.result });
-            //    }
-            //}
             return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
         }
 
@@ -379,55 +273,7 @@ namespace SalesHelper.Controllers
         public IActionResult FullCabinetQuoteView(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-
-            var cabinetQuoteInterface = new CabinetQuoteInterface
-            {
-                Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
-                CustomerId = cabinetQuotation.CustomerId,
-                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
-                // additional information
-                AdditionalInformation = cabinetQuotation.AdditionalInformation,
-                CreatedByUserId = cabinetQuotation.CreatedByUserId,
-                CreatedDateTime = cabinetQuotation.CreatedDateTime,
-                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
-                CabinetPrice = cabinetQuotation.CabinetPrice,
-                DeliveryCharge = cabinetQuotation.DeliveryCharge,
-                InstallationFee = cabinetQuotation.InstallationFee,
-                Tax = cabinetQuotation.Tax,
-                VendorPrice = cabinetQuotation.VendorPrice,
-                CommentOnPrice = cabinetQuotation.CommentOnPrice,
-                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
-                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
-                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
-                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
-                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
-                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
-                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
-            };
-
-            return View(cabinetQuoteInterface);
+            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpGet]
@@ -529,118 +375,23 @@ namespace SalesHelper.Controllers
         public IActionResult CabinetQuotePrintPreview(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-
-            var cabinetQuoteInterface = new CabinetQuoteInterface
-            {
-                Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
-                CustomerId = cabinetQuotation.CustomerId,
-                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
-                // additional information
-                AdditionalInformation = cabinetQuotation.AdditionalInformation,
-                CreatedByUserId = cabinetQuotation.CreatedByUserId,
-                CreatedDateTime = cabinetQuotation.CreatedDateTime,
-                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
-                CabinetPrice = cabinetQuotation.CabinetPrice,
-                DeliveryCharge = cabinetQuotation.DeliveryCharge,
-                InstallationFee = cabinetQuotation.InstallationFee,
-                Tax = cabinetQuotation.Tax,
-                VendorPrice = cabinetQuotation.VendorPrice,
-                CommentOnPrice = cabinetQuotation.CommentOnPrice,
-                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
-                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
-                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
-                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
-                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
-                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
-                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
-            };
-
-            return View(cabinetQuoteInterface);
+            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpGet]
         public IActionResult RequestEstimateView(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-
-            var cabinetQuoteInterface = new CabinetQuoteInterface
-            {
-                Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
-                CustomerId = cabinetQuotation.CustomerId,
-                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
-                // additional information
-                AdditionalInformation = cabinetQuotation.AdditionalInformation,
-                CreatedByUserId = cabinetQuotation.CreatedByUserId,
-                CreatedDateTime = cabinetQuotation.CreatedDateTime,
-                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
-                CabinetPrice = cabinetQuotation.CabinetPrice,
-                DeliveryCharge = cabinetQuotation.DeliveryCharge,
-                InstallationFee = cabinetQuotation.InstallationFee,
-                Tax = cabinetQuotation.Tax,
-                VendorPrice = cabinetQuotation.VendorPrice,
-                CommentOnPrice = cabinetQuotation.CommentOnPrice,
-                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
-                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
-                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
-                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
-                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
-                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
-                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
-            };
-
-            return View(cabinetQuoteInterface);
+            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpPost]
-        public IActionResult SendEstimateRequest(string to, string subject, string body, string attachmentName, string htmlContent)
+        public IActionResult SendCabinetQuoteEstimateRequest(string to, string subject, string body, string attachmentName, int quoteId)
         {
             try
             {
-                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName, GeneratePDFBytes(htmlContent));
+                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName, 
+                           _generatePDFService.GenerateCabinetQuoteEstimateRequestPDF(quoteId, User));
                 if (task.IsCompletedSuccessfully)
                 {
                     return Json(new { message = "success", result = "Estimate Request Email Sent Successfully!" });
@@ -650,50 +401,10 @@ namespace SalesHelper.Controllers
                     return Json(new { message = "error", result = "Estimate Request Email Sending Failed!" });
                 }
             }
-            catch  (Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { message = "error", result = ex.Message });
             }
-        }
-
-        public byte[] GeneratePDFBytes(string html)
-        {
-            // Generate PDF Bytes from HTML using DinkToPdf
-            var globalSettings = new GlobalSettings
-            {
-                
-                ColorMode = ColorMode.Color,
-                Orientation = Orientation.Portrait,
-                PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 10 },
-            };
-
-            var objectSettings = new ObjectSettings
-            {
-                HtmlContent = @"
-                        <html>
-                            <head>
-                                <link href=""https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i"" rel=""stylesheet"">
-                            </head>
-                            <body>
-                                " + html + @"
-                            </body>
-                        </html>
-                ",
-                WebSettings = { 
-                    DefaultEncoding = "utf-8",
-                    UserStyleSheet = Path.Combine(_env.WebRootPath, "css", "EstimateRequestEmail.css")
-                }
-            };
-
-            var pdf = new HtmlToPdfDocument()
-            {
-                GlobalSettings = globalSettings,
-                Objects = { objectSettings }
-            };
-
-            var file = _converter.Convert(pdf);
-            return file;
         }
 
         #endregion CABINET QUOTATIONS
@@ -718,22 +429,6 @@ namespace SalesHelper.Controllers
             }
             _context.SaveChanges();
             return Json(new { message = "success", result = "Quotation Created Successfully!" });
-        }
-
-        [HttpGet]
-        public IActionResult CountertopPriceInquiry(int quoteId, int vendorId)
-        {
-            var quotation = _countertopQuotationService.Read(quoteId);
-            quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
-            quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
-            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == quoteId &&
-                                                                             a.VendorId == vendorId).Include(a => a.VendorIdFk).ToList();
-            var data = new CountertopQuotationCreateInterface
-            {
-                CountertopQuotation = quotation,
-                CountertopMaterials = quotationMaterials
-            };
-            return View(data);
         }
 
         [HttpGet]
@@ -765,6 +460,59 @@ namespace SalesHelper.Controllers
             }
             _context.SaveChanges();
             return Json(new { message = "success", result = "Quotation Updated Successfully!" });
+        }
+
+        [HttpGet]
+        public IActionResult CountertopQuoteDetailedView(int id)
+        {
+            var quotation = _countertopQuotationService.Read(id);
+            quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
+            quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
+            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).Include(a => a.VendorIdFk).ToList();
+            var data = new CountertopQuotationCreateInterface
+            {
+                CountertopQuotation = quotation,
+                CountertopMaterials = quotationMaterials
+            };
+            return View(data);
+        }
+
+        [HttpGet]
+        public IActionResult CountertopPriceInquiry(int quoteId, int vendorId)
+        {
+            var quotation = _countertopQuotationService.Read(quoteId);
+            quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
+            quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
+            var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == quoteId &&
+                                                                             a.VendorId == vendorId).Include(a => a.VendorIdFk).ToList();
+            var data = new CountertopQuotationCreateInterface
+            {
+                CountertopQuotation = quotation,
+                CountertopMaterials = quotationMaterials
+            };
+            return View(data);
+        }
+
+        [HttpPost]
+        public IActionResult SendCountertopQuoteEstimateRequest(string to, string subject, string body, string attachmentName, int quoteId, int vendorId)
+        {
+            try
+            {
+                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName,
+                           _generatePDFService.GenerateCountertopQuoteEstimateRequestPDF(quoteId, vendorId, User));
+                if (task.IsCompletedSuccessfully)
+                {
+                    return Json(new { message = "success", result = "Estimate Request Email Sent Successfully!" });
+                }
+                else
+                {
+                    return Json(new { message = "error", result = "Estimate Request Email Sending Failed!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = "error", result = ex.Message });
+            }
         }
 
         [HttpGet]

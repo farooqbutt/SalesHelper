@@ -1,11 +1,12 @@
-using DinkToPdf;
-using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Services;
 using SalesHelper.Services.EmailService;
+using SalesHelper.Services.QuestPDF;
+
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +22,7 @@ builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<CabinetQuotationService>();
 builder.Services.AddScoped<CountertopQuotationService>();
 builder.Services.AddScoped<EmailService>();
-
-// registering DinkToPdf Service
-builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddScoped<GeneratePDFService>();
 
 // For uploading larg files to the server
 builder.Services.Configure<KestrelServerOptions>(options =>

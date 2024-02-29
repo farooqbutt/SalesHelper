@@ -196,13 +196,6 @@
             </div>
             <form class="form" id="EstimateRequestForm" method="post">
                 <div class="modal-body">
-                    <label>From</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="from" type="email" class="form-control" placeholder="david.warner@gmail.com" value="@dealer.Email" readonly />
-                        <div class="form-control-position">
-                            <i class="feather icon-mail primary"></i>
-                        </div>
-                    </div>
 
                     <label>To</label>
                     <div class="form-group position-relative has-icon-left">
@@ -308,17 +301,16 @@
         var subject = $('#subject').val();
         var body = $('#body').val();
         var attachmentName = "Estimate-Request-" + @Model.Id.ToString() + ".pdf";
-        var html = $(".app-invoice-wrapper").html();
 
         $.ajax({
             type: "POST",
-            url: "/Quotations/SendEstimateRequest",
+            url: "/Quotations/SendCabinetQuoteEstimateRequest",
             data: {
                 to: to,
                 subject: subject,
                 body: body,
                 attachmentName: attachmentName,
-                htmlContent: html
+                quoteId: @Model.Id
             },
             success: function (response) {
                 $('#EstiamteRequestModal').modal('hide');
