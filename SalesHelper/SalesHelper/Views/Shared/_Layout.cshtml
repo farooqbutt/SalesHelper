@@ -23,18 +23,15 @@
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="/vendors/css/forms/quill/quill.snow.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/charts/jquery-jvectormap-2.0.3.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/charts/morris.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/extensions/unslider.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/weather-icons/climacons.min.css">
-    @*<link rel="stylesheet" type="text/css" href="/vendors/css/forms/icheck/icheck.css">*@
     <link rel="stylesheet" type="text/css" href="/vendors/css/forms/icheck/custom.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/tables/datatable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/extensions/toastr.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/forms/selects/select2.min.css">
-    @* <link rel="stylesheet" type="text/css" href="/vendors/css/file-uploaders/dropzone.min.css"> *@
-    @* <link rel="stylesheet" type="text/css" href="/css/pages/app-contacts.css"> *@
-    <link rel="stylesheet" type="text/css" href="/css/pages/app-invoice.css">
 
     <link rel="stylesheet" type="text/css" href="/vendors/css/calendars/fullcalendar.min.css">
     <link rel="stylesheet" type="text/css" href="/vendors/css/calendars/daygrid.min.css">
@@ -52,12 +49,11 @@
     <link rel="stylesheet" type="text/css" href="/css/core/colors/palette-gradient.css">
     <link rel="stylesheet" type="text/css" href="/fonts/simple-line-icons/style.css">
     <link rel="stylesheet" type="text/css" href="/css/pages/timeline.css">
-    @*<link rel="stylesheet" type="text/css" href="/css/plugins/forms/checkboxes-radios.css">*@
     <link rel="stylesheet" type="text/css" href="/css/core/colors/palette-climacon.css">
     <link rel="stylesheet" type="text/css" href="/fonts/simple-line-icons/style.min.css">
     <link rel="stylesheet" type="text/css" href="/css/plugins/extensions/toastr.css">
-    <link rel="stylesheet" type="text/css" href="/css/plugins/file-uploaders/dropzone.min.css">
-    <!-- link(rel='stylesheet', type='text/css', href=app_assets_path+'/css'+rtl+'/pages/users.css')-->
+    <link rel="stylesheet" type="text/css" href="/css/pages/app-invoice.css">
+    <link rel="stylesheet" type="text/css" href="/css/pages/app-email.css">
     <!-- END: Page CSS-->
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
@@ -65,7 +61,13 @@
     <script src="/js/core/libraries/jquery.min.js"></script>
 </head>
 <!-- END: Head-->
-<body class="vertical-layout vertical-menu 2-columns fixed-navbar" data-open="click" data-menu="vertical-menu" data-col="2-columns">
+
+<!-- BEGIN: Body-->
+<body class="vertical-layout vertical-menu @(ViewContext.RouteData.Values["action"]!.ToString() != "QuoteEmailsView" ? "2-columns" : "content-left-sidebar email-application") fixed-navbar" 
+      data-open="click" 
+      data-menu="vertical-menu" 
+      data-col="@(ViewContext.RouteData.Values["action"]!.ToString() != "QuoteEmailsView" ? "2-columns" : "content-left-sidebar")">
+
     <!-- BEGIN: Header-->
     @if (User.Identity!.IsAuthenticated)
     {
@@ -631,14 +633,13 @@
     {
        
     }
+    <!-- END: Main Menu-->
 
 
     @if (User.Identity.IsAuthenticated)
     {
-        <!-- END: Main Menu-->
         <!-- BEGIN: Content-->
         <div class="app-content content">
-            <div class="content-overlay"></div>
             @RenderBody()
         </div>
         <!-- END: Content-->
@@ -692,6 +693,7 @@
     <!-- BEGIN: Vendor JS-->
     <script src="/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
+
     <!-- BEGIN: Page Vendor JS-->
     <script src="/vendors/js/extensions/jquery.knob.min.js"></script>
     <script src="/js/scripts/extensions/knob.js"></script>
@@ -709,26 +711,25 @@
     <script src="/js/scripts/extensions/toastr.js"></script>
     <script src="/vendors/js/extensions/toastr.min.js"></script>
     <script src="/vendors/js/forms/select/select2.full.min.js"></script>
-    @* <script src="/vendors/js/extensions/dropzone.min.js"></script> *@
-    @* <script src="/js/scripts/pages/app-contacts.js"></script> *@
-    <script src="/js/scripts/pages/app-invoice.js"></script>
-
     <script src="/vendors/js/extensions/moment.min.js"></script>
     <script src="/vendors/js/extensions/fullcalendar.min.js"></script>
     <script src="/vendors/js/extensions/daygrid.min.js"></script>
     <script src="/vendors/js/extensions/timegrid.min.js"></script>
     <script src="/vendors/js/extensions/interactions.min.js"></script>
     <script src="/js/scripts/tooltip/tooltip.min.js"></script>
-    @*<script src="/js/scripts/forms/checkbox-radio.js"></script>*@
-    @*<script src="/vendors/js/forms/icheck/icheck.min.js"></script>*@
+    <script src="/vendors/js/forms/quill/quill.js"></script>
     <!-- END: Page Vendor JS-->
+
     <!-- BEGIN: Theme JS-->
     <script src="/js/core/app-menu.js"></script>
     <script src="/js/core/app.js"></script>
     <!-- END: Theme JS-->
-    @*Server Side Scripts*@
-    @*<script src="/ServerSideScripts/AccountSettingsScripts.js"></script>*@
+    <!-- BEGIN: Page JS-->
+    <script src="/js/scripts/pages/app-invoice.js"></script>
+    <script src="/js/scripts/pages/app-email.js"></script>
+    <!-- END: Page JS-->
 
+    @*Server Side Scripts*@
     <!-- Conditional loading of scripts -->
     <script>
         // Get the current URL

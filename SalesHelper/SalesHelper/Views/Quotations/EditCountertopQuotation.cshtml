@@ -45,6 +45,8 @@
         vertical-align: middle;
     }
 </style>
+
+<div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -240,6 +242,7 @@
                                                             <select class="form-control square vendor-select" data-placeholder="Select Vendor">
                                                                 @foreach (var vendor in vendors)
                                                                 {
+                                                                    <option value=""></option>
                                                                     if(vendor.VendorId == item.VendorId)
                                                                     {
                                                                         <option value="@vendor.VendorId" selected>@vendor.CompanyName</option>
@@ -398,25 +401,35 @@
             return data.html;
         }
 
-        $(".vendor-select").select2({
-            placeholder: $(this).data("placeholder"),
-            width: "100%",
-            language: {
-                "noResults": function () {
-                    return "No Vendor Found!";
+        // get all select elements with .vendor-select class and iterate through loop for select2 initialization and make sure if select has already a selected option, retain that option
+        $(".vendor-select").each(function () {
+            var selectedVendor = $(this).val();
+            $(this).select2({
+                placeholder: $(this).data("placeholder"),
+                width: "100%",
+                language: {
+                    "noResults": function () {
+                        return "No Vendor Found!";
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
                 }
-            },
-            escapeMarkup: function (markup) {
-                return markup;
+            });
+            if (selectedVendor != null) {
+                $(this).val(selectedVendor).trigger('change');
+            } else {
+                $(this).val(null).trigger('change');
             }
         });
+
 
         var selectedColor = null;
         // on change event of color select
         $("#colorSelect").on('change', function (event) {
             const colorImage = $(this).select2("data")[0].imageUrl;
             const colorName = $(this).select2("data")[0].text;
-            $("#colorImage").attr("src", colorImage);
+            $("#colorImage").attr("src", colorImage != null ? colorImage : "/images/LoadingColorImg.gif");
             selectedColor = colorName;
         });
 

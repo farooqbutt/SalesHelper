@@ -11,6 +11,7 @@
         padding-left: 5px;
         padding-right: 5px;
     }
+
     .card-content {
         display: flex;
         flex-direction: column;
@@ -19,6 +20,7 @@
     }
 </style>
 
+<div class="content-overlay"></div>
 <div class="content-wrapper">
 
     <div class="content-header row">
@@ -236,8 +238,11 @@
                 <a asp-controller="Quotations" asp-action="CabinetQuotePrintPreview" asp-route-id="@Model.Id" class="width-150 btn btn-primary">
                     <i class="feather icon-file-text"></i> Details View
                 </a>
+                <a asp-controller="Quotations" asp-action="QuoteEmailsView" asp-route-quoteId="@Model.Id" asp-route-folderName="Inbox" class="btn btn-warning">
+                    <i class="feather icon-mail"></i> View Emails
+                </a>
                 <a asp-controller="Quotations" asp-action="RequestEstimateView" asp-route-id="@Model.Id" class="width-180 btn btn-success">
-                    <i class="feather icon-mail"></i> Request Estimate
+                    Request Estimate <i class="feather icon-arrow-right"></i>
                 </a>
             </div>
         </div>

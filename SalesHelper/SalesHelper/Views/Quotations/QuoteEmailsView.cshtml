@@ -1,0 +1,789 @@
+﻿@model SalesHelper.Models.InterfaceModels.QuoteEmailsInterface
+<div class="sidebar-left">
+    <div class="sidebar">
+        <div class="sidebar-content email-app-sidebar d-flex">
+            <!-- sidebar close icon -->
+            <span class="sidebar-close-icon">
+                <i class="feather icon-x"></i>
+            </span>
+            <!-- sidebar close icon -->
+            <div class="email-app-menu">
+                <div class="form-group form-group-compose">
+                    <!-- compose button  -->
+                    <button type="button" class="btn btn-danger btn-glow btn-block my-2 compose-btn">
+                        <i class="feather icon-plus mr-25"></i>
+                        Compose
+                    </button>
+                </div>
+                <div class="sidebar-menu-list">
+                    <!-- sidebar menu  -->
+                    <div class="list-group list-group-messages">
+                        <a asp-controller="Quotations" asp-action="QuoteEmailsView" asp-route-quoteId="@Model.QuoteId"
+                           asp-route-folderName="Inbox" class="list-group-item @(Model.FolderName == "Inbox" ? "active" : "")" id="inbox-menu">
+                            <div class="d-inline mr-25">
+                                <i class="feather icon-mail"></i>
+                            </div>
+                            Inbox
+                            @if (Model.InboxUnReadCount > 0)
+                            {
+                                <span class="badge badge-success badge-pill badge-round float-right">@Model.InboxUnReadCount</span>
+                            }
+                        </a>
+                        <a asp-controller="Quotations" asp-action="QuoteEmailsView" asp-route-quoteId="@Model.QuoteId"
+                           asp-route-folderName="Sent" class="list-group-item @(Model.FolderName == "Sent" ? "active" : "")">
+                            <div class="d-inline mr-25">
+                                <i class="feather icon-play"></i>
+                            </div>
+                            Sent
+                        </a>
+                        @* <a href="#" class="list-group-item">
+                        <div class="d-inline mr-25">
+                        <i class="feather icon-edit-1"></i>
+                        </div> Draft
+                        </a>
+                        <a href="#" class="list-group-item">
+                        <div class="d-inline mr-25">
+                        <i class="feather icon-star"></i>
+                        </div>
+                        Starred
+                        </a>
+                        <a href="#" class="list-group-item">
+                        <div class="d-inline mr-25">
+                        <i class="feather icon-info"></i>
+                        </div>
+                        Spam
+                        <span class="badge badge-warning badge-pill badge-round float-right">3</span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                        <div class="d-inline mr-25">
+                        <i class="feather icon-trash-2"></i>
+                        </div>
+                        Trash
+                        </a> *@
+                    </div>
+                    <!-- sidebar menu  end-->
+                    <!-- sidebar label start -->
+                    @* <label class="sidebar-label">Labels</label>
+                    <div class="list-group list-group-labels ">
+                    <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+                    Product
+                    <span class="bullet bullet-success bullet-sm"></span>
+                    </a>
+                    <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+                    Work
+                    <span class="bullet bullet-primary bullet-sm"></span>
+                    </a>
+                    <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+                    Misc
+                    <span class="bullet bullet-warning bullet-sm"></span>
+                    </a>
+                    <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+                    Family
+                    <span class="bullet bullet-danger bullet-sm"></span>
+                    </a>
+                    <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+                    Design
+                    <span class="bullet bullet-info bullet-sm"></span>
+                    </a>
+                    </div> *@
+                    <!-- sidebar label end -->
+                </div>
+            </div>
+        </div>
+        <!-- User new mail right area -->
+        <div class="compose-new-mail-sidebar">
+            <div class="card mb-0 shadow-none quill-wrapper p-0">
+                <div class="card-header">
+                    <h3 class="card-title" id="emailCompose">New Message</h3>
+                    <button type="button" class="close close-icon">
+                        <i class="feather icon-x"></i>
+                    </button>
+                </div>
+                <!-- form start -->
+                <form id="composeEmailForm" method="post" enctype="multipart/form-data">
+                    <div class="card-content">
+                        <div class="card-body pt-0">
+                            @* <div class="form-group pb-50">
+                            <label for="emailfrom">from</label>
+                            <input type="text" id="emailfrom" class="form-control" placeholder="" disabled>
+                            </div> *@
+                            <div class="form-label-group mb-1">
+                                <input type="email" id="newEmailTo" class="form-control" placeholder="To" required>
+                            </div>
+                            <div class="form-label-group mb-1">
+                                <input type="text" id="newEmailSubject" class="form-control" placeholder="Subject">
+                            </div>
+                            @* <div class="form-label-group mb-1">
+                            <input type="text" id="emailCC" class="form-control" placeholder="CC">
+                            </div>
+                            <div class="form-label-group mb-1">
+                            <input type="text" id="emailBCC" class="form-control" placeholder="BCC">
+                            </div> *@
+                            <!-- Compose mail Quill editor -->
+                            <div class="snow-container border rounded p-50 ">
+                                <div class="compose-editor mx-75"></div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="compose-quill-toolbar pb-0">
+                                        <span class="ql-formats mr-0">
+                                            <button class="ql-bold"></button>
+                                            <button class="ql-italic"></button>
+                                            <button class="ql-underline"></button>
+                                            <button class="ql-link"></button>
+                                            @* <button class="ql-image"></button> *@
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="emailAttachment" onchange="updateLabel(this)">
+                                    <label class="custom-file-label" for="emailAttachment">Attach File</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer border-0 d-flex justify-content-end pt-0">
+                        <button type="reset" class="btn btn-secondary cancel-btn mr-1">
+                            <i class='feather icon-x mr-25'></i>
+                            <span class="d-sm-inline d-none">Cancel</span>
+                        </button>
+                        <button type="submit" class="btn-send btn btn-danger btn-glow">
+                            <i class='feather icon-play mr-25'></i> <span class="d-sm-inline d-none">Send</span>
+                        </button>
+                    </div>
+                </form>
+                <!-- form start end-->
+            </div>
+        </div>
+        <!--/ User Chat profile right area -->
+    </div>
+</div>
+<div class="content-right">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+        </div>
+        <div class="content-body">
+            <!-- email app overlay -->
+            <div class="app-content-overlay"></div>
+            <div class="email-app-area">
+                <!-- Email list Area -->
+                <div class="email-app-list-wrapper">
+                    <div class="email-app-list">
+                        <div class="email-action">
+
+                            <h3 class="content-header-title text-primary mb-0">Quotation @Model.QuoteId Emails</h3>
+
+                            <!-- action left start here -->
+                            @* <div class="action-left d-flex align-items-center">
+                            <!-- select All checkbox -->
+                            <div class="custom-control custom-checkbox selectAll mr-50">
+                            <input type="checkbox" class="custom-control-input" id="checkboxsmall">
+                            <label class="custom-control-label" for="checkboxsmall"></label>
+                            </div>
+                            <!-- delete unread dropdown -->
+                            <ul class="list-inline m-0 d-flex">
+                            <li class="list-inline-item mail-delete">
+                            <button type="button" class="btn btn-icon action-icon">
+                            <i class="feather icon-trash-2"></i>
+                            </button>
+                            </li>
+                            <li class="list-inline-item mail-unread">
+                            <button type="button" class="btn btn-icon action-icon">
+                            <i class="feather icon-mail"></i>
+                            </button>
+                            </li>
+                            <li class="list-inline-item">
+                            <div class="dropdown">
+                            <button type="button" class="dropdown-toggle btn btn-icon action-icon" id="folder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="feather icon-folder mr-0"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="folder">
+                            <a class="dropdown-item" href="#"><i class="feather icon-edit"></i> Draft</a>
+                            <a class="dropdown-item" href="#"><i class="feather icon-info"></i>Spam</a>
+                            <a class="dropdown-item" href="#"><i class="feather icon-trash-2"></i>Trash</a>
+                            </div>
+                            </div>
+                            </li>
+                            <li class="list-inline-item">
+                            <div class="dropdown">
+                            <button type="button" class="btn btn-icon dropdown-toggle action-icon" id="tag" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="feather icon-tag mr-0"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="tag">
+                            <a href="#" class="dropdown-item align-items-center">
+                            <span class="bullet bullet-success bullet-sm"></span>
+                            <span>Product</span>
+                            </a>
+                            <a href="#" class="dropdown-item align-items-center">
+                            <span class="bullet bullet-primary bullet-sm"></span>
+                            <span>Work</span>
+                            </a>
+                            <a href="#" class="dropdown-item align-items-center">
+                            <span class="bullet bullet-warning bullet-sm"></span>
+                            <span>Misc</span>
+                            </a>
+                            <a href="#" class="dropdown-item align-items-center">
+                            <span class="bullet bullet-danger bullet-sm"></span>
+                            <span>Family</span>
+                            </a>
+                            <a href="#" class="dropdown-item align-items-center">
+                            <span class="bullet bullet-info bullet-sm"></span>
+                            <span> Design</span>
+                            </a>
+                            </div>
+                            </div>
+                            </li>
+                            </ul>
+                            </div> *@
+                            <!-- action left end here -->
+                            <!-- action right start here -->
+                            @* <div class="action-right d-flex flex-grow-1 align-items-center justify-content-around">
+                            <!-- search bar  -->
+                            <div class="email-fixed-search flex-grow-1">
+                            <div class="sidebar-toggle d-block d-lg-none">
+                            <i class="feather icon-menu"></i>
+                            </div>
+                            <fieldset class="form-group position-relative has-icon-left m-0">
+                            <input type="text" class="form-control" id="email-search" placeholder="Search email">
+                            <div class="form-control-position">
+                            <i class="feather icon-search"></i>
+                            </div>
+                            </fieldset>
+                            </div>
+                            <!-- pagination and page count -->
+                            <span class="d-none d-sm-block">1-10 of 653</span>
+                            <button class="btn btn-icon email-pagination-prev d-none d-sm-block">
+                            <i class="feather icon-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-icon email-pagination-next d-none d-sm-block">
+                            <i class="feather icon-chevron-right"></i>
+                            </button>
+                            </div> *@
+                        </div>
+                        <!-- / action right -->
+                        <!-- email user list start -->
+                        <div class="email-user-list list-group">
+                            @if (Model.Emails.Count() > 0)
+                            {
+                                <ul class="users-list-wrapper media-list">
+                                    @foreach (var email in Model.Emails)
+                                    {
+                                        <li class="media @(email.IsRead != true ? "mail-read" : "")" onclick="GetEmailDetails('@email.MessageId')">
+                                            <div class="user-action">
+                                                <div class="checkbox-con">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="mailCheckbox_@email.MessageId">
+                                                        <label class="custom-control-label" for="mailCheckbox_@email.MessageId"></label>
+                                                    </div>
+                                                </div>
+                                                @if (email.IsStarred)
+                                                {
+                                                    <span class="favorite warning">
+                                                        <i class="feather icon-star"></i>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="favorite">
+                                                        <i class="feather icon-star bx-star"></i>
+                                                    </span>
+                                                }
+                                            </div>
+                                            <div class="pr-50">
+                                                <div class="avatar">
+                                                    <img src="/images/portrait/small/avatar-s-20.png" alt="avtar img holder">
+                                                </div>
+                                            </div>
+                                            <div class="media-body">
+                                                <div class="user-details">
+                                                    <div class="mail-items">
+                                                        <span class="list-group-item-text text-truncate">@email.Subject</span>
+                                                    </div>
+                                                    <div class="mail-meta-item">
+                                                        <span class="float-right">
+                                                            <span class="mail-date">@email.Date</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="mail-message">
+                                                    <p class="list-group-item-text truncate mb-0 bodyText">
+                                                        @email.Body
+                                                    </p>
+                                                    <div class="mail-meta-item">
+                                                        <span class="float-right">
+                                                            @if (email.HasAttachments)
+                                                            {
+                                                                <i class="feather icon-paperclip"></i>
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <!-- email user list end -->
+                            }
+                            else
+                            {
+                                <!-- no result when nothing to show on list -->
+                                <div class="no-results">
+                                    <i class="feather icon-info font-large-2"></i>
+                                    <h5>No Mails Found!</h5>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!--/ Email list Area -->
+                <!-- Detailed Email View -->
+                <div class="email-app-details">
+                    <!-- email detail view header -->
+                    <div class="email-detail-header">
+                        <div class="email-header-left d-flex align-items-center mb-1">
+                            <span class="go-back mr-50">
+                                <i class="feather icon-chevron-left font-medium-4 align-middle"></i>
+                            </span>
+                            <h5 class="email-detail-title font-weight-normal mb-0" id="emailSubject">
+                                @* Advertising Internet Online *@
+                                @* <span class="badge badge-light-danger badge-pill ml-1">PRODUCT</span> *@
+                            </h5>
+                        </div>
+                        @* <div class="email-header-right mb-1 ml-2 pl-1">
+                        <ul class="list-inline m-0">
+                        <li class="list-inline-item">
+                        <button class="btn btn-icon action-icon">
+                        <i class="feather icon-trash-2"></i>
+                        </button>
+                        </li>
+                        <li class="list-inline-item">
+                        <button class="btn btn-icon action-icon">
+                        <i class="feather icon-mail"></i>
+                        </button>
+                        </li>
+                        <li class="list-inline-item">
+                        <div class="dropdown">
+                        <button class="btn btn-icon dropdown-toggle action-icon" id="open-mail-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="feather icon-folder mr-0"></i>
+
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="open-mail-menu">
+                        <a class="dropdown-item" href="#"><i class="feather icon-edit"></i> Draft</a>
+                        <a class="dropdown-item" href="#"><i class="feather icon-info"></i> Spam</a>
+                        <a class="dropdown-item" href="#"><i class="feather icon-trash-2"></i> Trash</a>
+                        </div>
+                        </div>
+                        </li>
+                        <li class="list-inline-item">
+                        <div class="dropdown">
+                        <button class="btn btn-icon dropdown-toggle action-icon" id="open-mail-tag" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="feather icon-tag mr-0"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="open-mail-tag">
+                        <a href="#" class="dropdown-item align-items-center">
+                        <span class="bullet bullet-success bullet-sm"></span>
+                        Product
+                        </a>
+                        <a href="#" class="dropdown-item align-items-center">
+                        <span class="bullet bullet-primary bullet-sm"></span>
+                        Work
+                        </a>
+                        <a href="#" class="dropdown-item align-items-center">
+                        <span class="bullet bullet-warning bullet-sm"></span>
+                        Misc
+                        </a>
+                        <a href="#" class="dropdown-item align-items-center">
+                        <span class="bullet bullet-danger bullet-sm"></span>
+                        Family
+                        </a>
+                        <a href="#" class="dropdown-item align-items-center">
+                        <span class="bullet bullet-info bullet-sm"></span>
+                        Design
+                        </a>
+                        </div>
+                        </div>
+                        </li>
+                        <li class="list-inline-item">
+                        <span class="no-of-list d-none d-sm-block ml-1">1-10 of 653</span>
+                        </li>
+                        <li class="list-inline-item">
+                        <button class="btn btn-icon email-pagination-prev action-icon">
+                        <i class='feather icon-chevron-left'></i>
+                        </button>
+                        </li>
+                        <li class="list-inline-item">
+                        <button class="btn btn-icon email-pagination-next action-icon">
+                        <i class='feather icon-chevron-right'></i>
+                        </button>
+                        </li>
+                        </ul>
+                        </div> *@
+                    </div>
+                    <!-- email detail view header end-->
+                    <div class="email-scroll-area">
+                        <!-- email details  -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="collapsible email-detail-head">
+                                    <div class="card collapse-header" role="tablist">
+                                        <div id="headingCollapse5" class="card-header d-flex justify-content-between align-items-center" data-toggle="collapse" role="tab" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                                            <div class="collapse-title media">
+                                                <div class="pr-1">
+                                                    <div class="avatar mr-75">
+                                                        <img src="/images/portrait/small/avatar-s-18.png" alt="avtar img holder" width="30" height="30">
+                                                    </div>
+                                                </div>
+                                                <div class="media-body mt-25">
+                                                    <span class="text-primary" id="emailFromFullName">Elnora Reese</span>
+                                                    <span class="d-sm-inline d-none" id="emailFromEmail"> &lt;elnora@gmail.com&gt;</span>
+                                                    <small class="text-muted d-block">
+                                                        <p id="emailTo"></p>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="information d-sm-flex d-none align-items-center">
+                                                <small class="text-muted mr-50" id="emailDateTime">15 Jul 2019, 10:30</small>
+                                                <span class="favorite">
+                                                    <i class="feather icon-star mr-25"></i>
+                                                </span>
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" id="fisrt-open-submenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class='feather icon-more-vertical mr-0'></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fisrt-open-submenu">
+                                                        <a href="#" class="dropdown-item mail-reply">
+                                                            <i class='feather icon-share-2'></i>
+                                                            Reply
+                                                        </a>
+                                                        <a href="#" class="dropdown-item">
+                                                            <i class='feather icon-corner-up-right'></i>
+                                                            Forward
+                                                        </a>
+                                                        <a href="#" class="dropdown-item">
+                                                            <i class='feather icon-info'></i>
+                                                            Report Spam
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="collapse5" role="tabpanel" aria-labelledby="headingCollapse5" class="collapse show">
+                                            <div class="card-content">
+                                                <div class="card-body py-1" id="emailBody">
+                                                    <p class="text-bold-500">Greetings!</p>
+                                                    <p>
+                                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                                                        the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of
+                                                        type and scrambled it to make a type specimen book.
+                                                    </p>
+                                                    <p>
+                                                        It has survived not only five centuries, but also the leap into electronic typesetting, remaining
+                                                        essentially unchanged.
+                                                    </p>
+                                                    <p class="mb-0">Sincerely yours,</p>
+                                                    <p class="text-bold-500">Envato Design Team</p>
+                                                </div>
+                                                <div class="card-footer pt-0 border-top" id="emailAttachments" hidden>
+                                                    <label class="sidebar-label">Attached Files</label>
+                                                    <ul class="list-unstyled mb-0">
+                                                        @* <li class="cursor-pointer pb-25">
+                                                        <img src="/images/icons/psd.png" height="30" alt="psd.png">
+                                                        <small class="text-muted ml-1 attchement-text">uikit-design.psd</small>
+                                                        </li>
+                                                        <li class="cursor-pointer">
+                                                        <img src="/images/icons/sketch.png" height="30" alt="sketch.png">
+                                                        <small class="text-muted ml-1 attchement-text">uikit-design.sketch</small>
+                                                        </li> *@
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- email details  end-->
+                        <div class="row px-2 mb-4">
+                            <!-- quill editor for reply message -->
+                            <div class="col-12 px-0">
+                                <div class="card shadow-none border rounded">
+                                    <div class="card-body quill-wrapper">
+                                        <span id="quillReplyTo">Reply to Lois Jimenez</span>
+                                        <div class="snow-container" id="detail-view-quill">
+                                            <div class="detail-view-editor"></div>
+                                            <div class="d-flex justify-content-end">
+                                                <div class="detail-quill-toolbar">
+                                                    <span class="ql-formats mr-50">
+                                                        <button class="ql-bold"></button>
+                                                        <button class="ql-italic"></button>
+                                                        <button class="ql-underline"></button>
+                                                        <button class="ql-link"></button>
+                                                        <button class="ql-image"></button>
+                                                    </span>
+                                                </div>
+                                                <button class="btn btn-primary send-btn">
+                                                    <i class='feather icon-play mr-25'></i>
+                                                    <span class="d-none d-sm-inline"> Send</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/ Detailed Email View -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var composeMailEditor = null;
+    $(document).ready(function () {
+        // initializing quill editor for compose email
+        composeMailEditor = new Quill('.snow-container .compose-editor', {
+            modules: {
+                toolbar: '.compose-quill-toolbar'
+            },
+            placeholder: 'Type something..... ',
+            theme: 'snow'
+        });
+
+        $('.mail-date').each(function () {
+            var date = new Date($(this).text());
+            $(this).text(formatDate(date));
+        });
+
+        $('.bodyText').each(function () {
+            var emailSnippet = extractEmailSnippet($(this).text());
+            $(this).text(emailSnippet);
+        });
+    });
+
+    // Send New Email
+    $('#composeEmailForm').submit(function (e) {
+        // stop propagation
+        e.preventDefault();
+
+        var formData = new FormData();
+        formData.append('to', $('#newEmailTo').val());
+        formData.append('subject', $('#newEmailSubject').val());
+        formData.append('body', composeMailEditor.root.innerHTML);
+        formData.append('attachment', $('#emailAttachment')[0].files[0]);
+        formData.append('quoteId', '@Model.QuoteId');
+        formData.append('quoteType', '@Model.QuoteType');
+
+        $.ajax({
+            type: "POST",
+            url: "/Quotations/SendSimpleEmail",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $('.app-content-overlay').removeClass('show');
+                if (response.message == "success") {
+                    toastr.success(response.result, 'Success!', { "progressBar": true });
+                }
+                else {
+                    toastr.info(response.result, 'Information!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    });
+
+    function GetEmailDetails(messageId) {
+        if ('@Model.FolderName' == 'Inbox') {
+            $.ajax({
+                url: '/Quotations/EmailMessageDetails',
+                type: 'GET',
+                data: { messageId: messageId, folderName: '@Model.FolderName' },
+                success: function (response) {
+
+                    $('#emailSubject').text(response.subject);
+                    $('#emailFromFullName').text(GetFullName(response.from));
+                    $('#emailFromEmail').text(GetEmail(response.from));
+                    $('#emailTo').text('to: ' + response.to);
+                    $('#emailDateTime').text(formatDateForOneMessage(response.date));
+                    $('#emailBody').html(response.body);
+                    if (response.attachments.length > 0) {
+                        // Show the attachments section by removing hidden attribute
+                        $('#emailAttachments').removeAttr('hidden');
+                        // Clear the attachments list
+                        $('#emailAttachments ul').empty();
+                        // Append each attachment name to the attachments list and configure downloadFile function on click of li element
+                        $.each(response.attachments, function (index, attachment) {
+                            $('#emailAttachments ul').append(`
+                                <li class="cursor-pointer pb-25" data-attachment='${JSON.stringify(attachment)}'>
+                                    <i class="feather icon-paperclip"></i>
+                                    <small class="text-muted ml-1 attchement-text">${attachment.fileName}</small>
+                                </li>
+                            `);
+                        });
+
+                        // Add click event listener to each attachment li element
+                        $('#emailAttachments ul li').on('click', function () {
+                            const attachmentData = JSON.parse($(this).attr('data-attachment'));
+                            downloadFile(attachmentData);
+                        });
+                    }
+                    $('#quillReplyTo').text('Reply to ' + GetFullName(response.from));
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        }
+        if ('@Model.FolderName' == 'Sent') {
+            $.ajax({
+                url: '/Quotations/EmailMessageDetails',
+                type: 'GET',
+                data: { messageId: messageId, folderName: '@Model.FolderName' },
+                success: function (response) {
+                    console.log(response);
+                    $('#emailSubject').text(response.subject);
+                    $('#emailFromFullName').text(response.from);
+                    $('#emailFromEmail').text('');
+                    $('#emailTo').text('to: ' + response.to);
+                    $('#emailDateTime').text(formatDateForOneMessage(response.date));
+                    $('#emailBody').html(response.body);
+                    if (response.attachments.length > 0) {
+                        // Show the attachments section by removing hidden attribute
+                        $('#emailAttachments').removeAttr('hidden');
+                        // Clear the attachments list
+                        $('#emailAttachments ul').empty();
+                        // Append each attachment name to the attachments list and configure downloadFile function on click of li element
+                        $.each(response.attachments, function (index, attachment) {
+                            $('#emailAttachments ul').append(`
+                                    <li class="cursor-pointer pb-25" data-attachment='${JSON.stringify(attachment)}'>
+                                        <i class="feather icon-paperclip"></i>
+                                        <small class="text-muted ml-1 attchement-text">${attachment.fileName}</small>
+                                    </li>
+                                `);
+                        });
+
+                        // Add click event listener to each attachment li element
+                        $('#emailAttachments ul li').on('click', function () {
+                            const attachmentData = JSON.parse($(this).attr('data-attachment'));
+                            downloadFile(attachmentData);
+                        });
+                    }
+                    $('#quillReplyTo').text('Reply to ' + GetFullName(response.to));
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+
+    function GetFullName(string) {
+        // remove double quotes from this string
+        string = string.replace(/"/g, '');
+        // split the string by the angle brackets
+        var parts = string.split('<');
+        // if the string was split into two parts, return the first part
+        return parts[0];
+    }
+    function GetEmail(string) {
+        // split the string by the angle brackets
+        var parts = string.split('<');
+        //remove > from parts[1]
+        parts[1] = parts[1].replace(/>/g, '');
+        // if the string was split into two parts, return the second part
+        return parts[1];
+    }
+
+    function formatDateForOneMessage(date) {
+        // Parse the date string and create a valid Date object
+        var dateObj = new Date(Date.parse(date));
+
+        // If the parsing was successful, format the date
+        if (!isNaN(dateObj)) {
+            var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+            return new Intl.DateTimeFormat('en-US', options).format(dateObj);
+        } else {
+            // Return an error message if the parsing was not successful
+            return "Invalid date value: " + date;
+        }
+    }
+
+    function formatDate(date) {
+        var diff = new Date() - date;
+        var duration = moment.duration(diff);
+        if (duration.asMinutes() < 1) {
+            return 'just now';
+        } else if (duration.asHours() < 1) {
+            return Math.floor(duration.asMinutes()) + ' minutes ago';
+        } else if (duration.asDays() < 1) {
+            return Math.floor(duration.asHours()) + ' hours ago';
+        } else if (duration.asDays() < 2) {
+            return 'yesterday';
+        } else if (duration.asDays() < 30) {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        } else if (duration.asDays() < 365) {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+        } else {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+        }
+    }
+
+    function extractEmailSnippet(body) {
+        // Replace HTML tags with whitespace
+        body = body.replace(/<[^>]*>?/gm, ' ');
+        // Split the text into lines
+        var lines = body.split('\n');
+        // Extract the first few lines
+        var snippet = lines.slice(0, 3).join(' ') + '...';
+        // Limit the snippet length to 200 characters
+        snippet = snippet.length > 200 ? snippet.substring(0, 200) + '...' : snippet;
+        return snippet;
+    }
+    function downloadFile(data) {
+        const contentType = data.contentType;
+        const fileName = data.fileName;
+        const base64Data = data.base64Data;
+
+        // Convert base64 data to a Blob object
+        const byteNumbers = atob(base64Data.replace(/^.*,/, ''));
+        const byteArray = new Array(byteNumbers.length);
+        for (let i = 0; i < byteNumbers.length; i++) {
+            byteArray[i] = byteNumbers.charCodeAt(i);
+        }
+        const blob = new Blob([new Uint8Array(byteArray)], { type: contentType });
+
+        // Check the content type and open in a new tab or download based on the type
+        if (contentType.startsWith('application/pdf') || contentType.startsWith('image/')) {
+            // Open in a new tab
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.target = '_blank';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            // Download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function updateLabel(input) {
+        if (input.files && input.files[0]) {
+            const fileName = input.files[0].name;
+            const label = input.nextElementSibling;
+            label.textContent = fileName;
+        }
+    }
+</script>

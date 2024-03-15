@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Services;
+using SalesHelper.Models.EmailModels;
 using SalesHelper.Services.EmailService;
 using SalesHelper.Services.QuestPDF;
+using SalesHelper.Services.UserServices;
 
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
@@ -23,6 +25,7 @@ builder.Services.AddScoped<CabinetQuotationService>();
 builder.Services.AddScoped<CountertopQuotationService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<GeneratePDFService>();
+builder.Services.AddScoped<ProfileCheckService>();
 
 // For uploading larg files to the server
 builder.Services.Configure<KestrelServerOptions>(options =>
@@ -34,6 +37,9 @@ builder.Services.Configure<IISServerOptions>(options =>
 {
     options.MaxRequestBodySize = int.MaxValue;
 });
+
+// configure email settings
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

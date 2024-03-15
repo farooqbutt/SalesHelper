@@ -1,12 +1,13 @@
 ﻿@model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
 <style>
-@@media print {
-  .btnPriceInquiry {
-    display: none;
-  }
-}
+    @@media print {
+        .btnPriceInquiry {
+            display: none;
+        }
+    }
 </style>
 
+<div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -174,13 +175,23 @@
                                                 <td class="text-left">@item.Material</td>
                                                 <td>@item.Brand</td>
                                                 <td>@item.Color</td>
-                                                <td>@item.VendorIdFk.CompanyName</td>
+                                                @if (item.VendorIdFk != null)
+                                                {
+                                                    <td>@item.VendorIdFk.CompanyName</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
                                                 <td>$@item.VendorRate</td>
                                                 <td class="font-weight-bold text-right">$@item.PriceQuote</td>
                                                 <td>
-                                                    <a asp-controller="Quotations" asp-action="CountertopPriceInquiry" 
-                                                       asp-route-quoteId="@item.CountertopQuotationId" asp-route-vendorId="@item.VendorId" 
-                                                       class="btn btn-sm btn-success btnPriceInquiry"><i class="feather icon-mail"></i> Price Inquiry</a>
+                                                    @if(item.VendorIdFk != null)
+                                                    {
+                                                         <a asp-controller="Quotations" asp-action="CountertopPriceInquiry"
+                                                           asp-route-quoteId="@item.CountertopQuotationId" asp-route-vendorId="@item.VendorId"
+                                                           class="btn btn-sm btn-success btnPriceInquiry"><i class="feather icon-mail"></i> Price Inquiry</a>
+                                                    }
                                                 </td>
                                             </tr>
                                         }

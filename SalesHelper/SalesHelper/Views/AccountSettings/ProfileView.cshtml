@@ -1,4 +1,8 @@
-﻿<style>
+﻿@{
+    var message = TempData["Message"];
+}
+
+<style>
     tr td:first-child {
         font-weight: bold;
         width: 40%;
@@ -8,6 +12,8 @@
         height: 368.4px;
     }
 </style>
+
+<div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -23,6 +29,17 @@
             </div>
         </div>
     </div>
+
+    @if (message != null)
+    {
+        <div class="alert alert-warning alert-dismissible mb-2" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <strong>Warning!</strong> @message
+        </div>
+    }
+
     <div class="content-body">
         <div class="row">
             <!-- /# column -->

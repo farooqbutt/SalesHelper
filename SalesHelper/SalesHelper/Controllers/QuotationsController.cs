@@ -4,15 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SalesHelper.Data;
 using SalesHelper.Models;
-using SalesHelper.Models.EmailSettings;
 using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Services;
 using SalesHelper.Services.EmailService;
 using System.Net.Mime;
-using QuestPDF.Infrastructure;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using SalesHelper.Services.QuestPDF;
+using SalesHelper.Services.UserServices;
 
 namespace SalesHelper.Controllers
 {
@@ -28,6 +25,7 @@ namespace SalesHelper.Controllers
         private readonly EmailService _emailService;
         private readonly VendorService _vendorService;
         private readonly GeneratePDFService _generatePDFService;
+        private readonly ProfileCheckService _profileCheckService;
 
         public QuotationsController(
             CabinetQuotationService cabinetQuotationRepo,
@@ -39,7 +37,8 @@ namespace SalesHelper.Controllers
             AddressService addressService,
             EmailService emailService,
             VendorService vendorService,
-            GeneratePDFService generatePDFService)
+            GeneratePDFService generatePDFService,
+            ProfileCheckService profileCheckService)
         {
             _cabinetQuotationService = cabinetQuotationRepo;
             _countertopQuotationService = countertopQuotationRepo;
@@ -51,6 +50,7 @@ namespace SalesHelper.Controllers
             _emailService = emailService;
             _vendorService = vendorService;
             _generatePDFService = generatePDFService;
+            _profileCheckService = profileCheckService;
         }
 
         #region COMMON METHODS
@@ -87,21 +87,6 @@ namespace SalesHelper.Controllers
             }
 
             return viewName;
-        }
-
-        [HttpPost]
-        public void SaveMailSettings(MailSettings mailSettings)
-        {
-            try
-            {
-                mailSettings.CreatedByUserId = _signInManager.UserManager.GetUserAsync(User).Result.Id;
-                _context.MailSettings.Add(mailSettings);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
         }
 
         [HttpGet]
@@ -154,6 +139,71 @@ namespace SalesHelper.Controllers
             var data = new { data = quotationsList.OrderByDescending(a => a.ModifiedDate) };
 
             return Json(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> QuoteEmailsView(int quoteId, string folderName)
+        {
+            if (folderName == "Inbox")
+            {
+                var emails = await _emailService.GetQuoteInboxEmails(quoteId);
+                return View(emails);
+            }
+            else if (folderName == "Sent")
+            {
+                var emails = await _emailService.GetQuoteSentEmails(quoteId);
+                return View(emails);
+            }
+            else
+            {
+                return View(new QuoteEmailsInterface());
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EmailMessageDetails(string messageId, string folderName)
+        {
+            if (folderName == "Inbox")
+            {
+                var message = await _emailService.GetInboxEmailMessageDetails(messageId);
+                return Json(message);
+            }
+            else if (folderName == "Sent")
+            {
+                var message = await _emailService.GetSentEmailMessageDetails(messageId);
+                return Json(message);
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult SendSimpleEmail(string to, string subject, string body, IFormFile attachment, int quoteId, string quoteType)
+        {
+            try
+            {
+                var task = _emailService.SendSimpleEmail(to, subject, body, attachment,
+                    new QuotationEmails
+                    {
+                        QuotationId = quoteId,
+                        QuoteType = quoteType,
+                        UserId = _signInManager.UserManager.GetUserAsync(User).Result.Id
+                    });
+                if (task.IsCompletedSuccessfully)
+                {
+                    return Json(new { message = "success", result = "Email Sent Successfully!" });
+                }
+                else
+                {
+                    return Json(new { message = "error", result = "Email Sending Failed!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = "error", result = ex.Message });
+            }
         }
 
         #endregion COMMON METHODS
@@ -300,7 +350,7 @@ namespace SalesHelper.Controllers
         {
             try
             {
-                if (itemsList.Count() > 0)
+                if (itemsList.Count > 0)
                 {
                     // update modified date time of cabinet quotation
                     _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(itemsList.First().QuotationId)));
@@ -381,17 +431,27 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult RequestEstimateView(int id)
         {
+            if (!_profileCheckService.IsProfileComplete(_signInManager.UserManager.GetUserAsync(User).Result.AccountNumber))
+            {
+                TempData["Message"] = "Please Complete Your Profile First!";
+                return RedirectToAction("ProfileView", "AccountSettings");
+            }
             var cabinetQuotation = _cabinetQuotationService.Read(id);
             return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpPost]
-        public IActionResult SendCabinetQuoteEstimateRequest(string to, string subject, string body, string attachmentName, int quoteId)
+        public IActionResult SendCabinetQuoteEstimateRequest(string to, string subject, string body, string attachmentName, int quoteId, IFormFile attachment)
         {
             try
             {
-                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName, 
-                           _generatePDFService.GenerateCabinetQuoteEstimateRequestPDF(quoteId, User));
+                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName,
+                           _generatePDFService.GenerateCabinetQuoteEstimateRequestPDF(quoteId, User), attachment, new QuotationEmails
+                           {
+                               QuotationId = quoteId,
+                               QuoteType = "Cabinet Quote",
+                               UserId = _signInManager.UserManager.GetUserAsync(User).Result.Id
+                           });
                 if (task.IsCompletedSuccessfully)
                 {
                     return Json(new { message = "success", result = "Estimate Request Email Sent Successfully!" });
@@ -480,6 +540,12 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult CountertopPriceInquiry(int quoteId, int vendorId)
         {
+            if (!_profileCheckService.IsProfileComplete(_signInManager.UserManager.GetUserAsync(User).Result.AccountNumber))
+            {
+                TempData["Message"] = "Please Complete Your Profile First!";
+                return RedirectToAction("ProfileView", "AccountSettings");
+            }
+
             var quotation = _countertopQuotationService.Read(quoteId);
             quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
             quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
@@ -494,12 +560,17 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendCountertopQuoteEstimateRequest(string to, string subject, string body, string attachmentName, int quoteId, int vendorId)
+        public IActionResult SendCountertopQuoteEstimateRequest(string to, string subject, string body, string attachmentName, int quoteId, int vendorId, IFormFile attachment)
         {
             try
             {
                 var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName,
-                           _generatePDFService.GenerateCountertopQuoteEstimateRequestPDF(quoteId, vendorId, User));
+                           _generatePDFService.GenerateCountertopQuoteEstimateRequestPDF(quoteId, vendorId, User), attachment, new QuotationEmails
+                           {
+                               QuotationId = quoteId,
+                               QuoteType = "Countertop Quote",
+                               UserId = _signInManager.UserManager.GetUserAsync(User).Result.Id,
+                           });
                 if (task.IsCompletedSuccessfully)
                 {
                     return Json(new { message = "success", result = "Estimate Request Email Sent Successfully!" });
@@ -580,10 +651,8 @@ namespace SalesHelper.Controllers
                         await _context.SaveChangesAsync();
 
                         // Save the file to the server
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
+                        using var fileStream = new FileStream(filePath, FileMode.Create);
+                        await file.CopyToAsync(fileStream);
                     }
 
                     return RedirectToAction(viewName, new { id = quoteData.Id });
@@ -668,7 +737,7 @@ namespace SalesHelper.Controllers
             }
         }
 
-        private string GetContentType(string fileExtension)
+        private static string GetContentType(string fileExtension)
         {
             switch (fileExtension.ToLower())
             {

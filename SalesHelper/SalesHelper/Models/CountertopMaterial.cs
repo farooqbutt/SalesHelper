@@ -31,8 +31,8 @@ namespace SalesHelper.Models
 
         // Foreign Key for Vendor
         [ForeignKey("VendorIdFk")]
-        public int VendorId { get; set; }
-        public Vendor VendorIdFk { get; set; } = default!;
+        public int? VendorId { get; set; }
+        public Vendor? VendorIdFk { get; set; } = default!;
 
         // Foreign Key for CountertopQuotation
         [ForeignKey("CountertopQuotationIdFk")]

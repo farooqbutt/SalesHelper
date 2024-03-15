@@ -1,5 +1,6 @@
 ﻿@model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
 
+<div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -260,7 +261,7 @@
 
                     <label>To</label>
                     <div class="form-group position-relative has-icon-left">
-                        <input id="to" type="text" class="form-control" placeholder="jane.doe@gmail.com" value="@Model.CountertopMaterials.First().VendorIdFk.Email" readonly />
+                        <input id="to" type="text" class="form-control" placeholder="jane.doe@gmail.com" value="@Model.CountertopMaterials.First().VendorIdFk!.Email" readonly />
                         <div class="form-control-position">
                             <i class="feather icon-mail primary"></i>
                         </div>
@@ -280,70 +281,18 @@
                                   value="Please provide me an estimate for items in attached PDF file." required></textarea>
                     </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal"><i class="feather icon-x"></i> Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="feather icon-send"></i> Send</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-@* Mail Settings Modal for saving email settings for a users *@
-<div class="modal fade text-left" id="MailSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-sm modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary white">
-                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Mail Settings</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="form" id="MailSettingsForm" method="post">
-                <div class="modal-body">
-                    <label>SMTP Server</label>
+                    <label>Attachment</label>
                     <div class="form-group position-relative has-icon-left">
-                        <input id="smtp" type="text" class="form-control" placeholder="smtp.gmail.com" />
+                        <input type="file" id="attachment" class="form-control" />
                         <div class="form-control-position">
-                            <i class="feather icon-server primary"></i>
+                            <i class="feather icon-paperclip primary"></i>
                         </div>
-                    </div>
-
-                    <label>Port</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="port" type="text" class="form-control" placeholder="578" />
-                        <div class="form-control-position">
-                            <i class="feather icon-sliders primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Sender</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="sender" type="email" class="form-control" placeholder="jane.doe@gmail.com" required />
-                        <div class="form-control-position">
-                            <i class="feather icon-mail primary"></i>
-                        </div>
-                    </div>
-
-                    <label>Password</label>
-                    <div class="form-group position-relative has-icon-left">
-                        <input id="password" type="password" class="form-control" placeholder="•••••" required />
-                        <div class="form-control-position">
-                            <i class="feather icon-lock primary"></i>
-                        </div>
-                    </div>
-
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="useSSL" />
-                        <label class="custom-control-label" for="useSSL">Use SSL</label>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal"><i class="feather icon-x"></i> Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="feather icon-save"></i> Save</button>
+                    <button type="submit" class="btn btn-primary"><i class="feather icon-send"></i> Send</button>
                 </div>
             </form>
         </div>
@@ -359,22 +308,22 @@
     // submit EstiamteRequestForm
     $('#EstimateRequestForm').submit(function (e) {
         e.preventDefault();
-        var to = $('#to').val();
-        var subject = $('#subject').val();
-        var body = $('#body').val();
-        var attachmentName = "Estimate-Request-" + @Model.CountertopQuotation.Id.ToString() + ".pdf";
+        var formData = new FormData();
+        formData.append('to', $('#to').val());
+        formData.append('subject', $('#subject').val());
+        formData.append('body', $('#body').val());
+        formData.append('quoteId', @Model.CountertopQuotation.Id);
+        formData.append('attachmentName', "Estimate-Request-" + @Model.CountertopQuotation.Id + ".pdf");
+
+        var fileInput = $('#attachment')[0].files[0];
+        formData.append('attachment', fileInput);
 
         $.ajax({
             type: "POST",
             url: "/Quotations/SendCountertopQuoteEstimateRequest",
-            data: {
-                    to: to,
-                    subject: subject,
-                    body: body,
-                    attachmentName: attachmentName,
-                    quoteId: @Model.CountertopQuotation.Id,
-                    vendorId: @Model.CountertopMaterials.First().VendorIdFk.VendorId
-            },
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function (response) {
                 $('#EstiamteRequestModal').modal('hide');
                 if (response.message == "success") {
@@ -395,34 +344,4 @@
         });
     });
 
-    // submit MailSettingsForm
-    $('#MailSettingsForm').submit(function (e) {
-        e.preventDefault();
-        var smtp = $('#smtp').val();
-        var port = $('#port').val();
-        var sender = $('#sender').val();
-        var password = $('#password').val();
-        var useSSL = $('#useSSL').is(':checked');
-
-        var data = {
-            server: smtp,
-            port: port,
-            sender: sender,
-            password: password,
-            useSSL: useSSL
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/Quotations/SaveMailSettings",
-            data: data,
-            success: function (response) {
-                $('#MailSettingsModal').modal('hide');
-                toastr.success("Mail Settings saved successfully!", 'Success!', { "progressBar": true });
-            },
-            error: function (error) {
-                toastr.error(error, 'Error!', { "progressBar": true });
-            }
-        });
-    });
 </script>

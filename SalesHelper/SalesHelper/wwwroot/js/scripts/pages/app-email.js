@@ -71,14 +71,14 @@ $(function () {
 	  theme: 'snow'
 	});
   
-	//email new compose message compose field
-	var composeMailEditor = new Quill('.snow-container .compose-editor', {
-	  modules: {
-		toolbar: '.compose-quill-toolbar'
-	  },
-	  placeholder: 'Type something..... ',
-	  theme: 'snow'
-	});
+	////email new compose message compose field
+	//var composeMailEditor = new Quill('.snow-container .compose-editor', {
+	//  modules: {
+	//	toolbar: '.compose-quill-toolbar'
+	//  },
+	//  placeholder: 'Type something..... ',
+	//  theme: 'snow'
+	//});
   
 	// Quill get focus when click on reply
 	$('.mail-reply').on('click', function () {
