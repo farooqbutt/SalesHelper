@@ -136,7 +136,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // Creating an Account in hMailServer
-                    if (HMailCreateAccount(Input.FirstName + " " + Input.LastName, Input.Password))
+                    if (HMailCreateAccount(Input.FirstName + "." + Input.LastName, Input.Password))
                     {
                         _logger.LogInformation("Account created in hMailServer.");
                     }
@@ -214,7 +214,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             if (myDomain != null)
             {
                 hMailServer.Account account = myDomain.Accounts.Add();
-                account.Address = firstLastName + "@" + myDomain.Name;
+                account.Address = firstLastName.ToLower() + "@" + myDomain.Name;
                 account.Password = password;
                 account.Active = true;
                 account.MaxSize = 500;
