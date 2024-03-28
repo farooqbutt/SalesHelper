@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using SalesHelper.Data;
 using SalesHelper.Models;
+using hMailServer;
 
 namespace SalesHelper.Areas.Identity.Pages.Account
 {
@@ -134,6 +135,16 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    // Creating an Account in hMailServer
+                    if (HMailCreateAccount(Input.FirstName + " " + Input.LastName, Input.Password))
+                    {
+                        _logger.LogInformation("Account created in hMailServer.");
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Account not created in hMailServer.");
+                    }
+
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -187,6 +198,33 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
+        }
+
+        private static Application HMailAuthenticate()
+        {
+            Application app = new();
+            _ = app.Authenticate("Administrator", "FatMail975!a?#");
+            return app;
+        }
+
+        private static bool HMailCreateAccount(string firstLastName, string password)
+        {
+            Application hMailApp = HMailAuthenticate();
+            Domain myDomain = hMailApp.Domains.ItemByName["saleshelper.com"];
+            if (myDomain != null)
+            {
+                hMailServer.Account account = myDomain.Accounts.Add();
+                account.Address = firstLastName + "@" + myDomain.Name;
+                account.Password = password;
+                account.Active = true;
+                account.MaxSize = 500;
+                account.Save();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
