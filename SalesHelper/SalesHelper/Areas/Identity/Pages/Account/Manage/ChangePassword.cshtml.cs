@@ -2,14 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using SalesHelper.Models;
+using hMailServer;
 
 namespace SalesHelper.Areas.Identity.Pages.Account.Manage
 {
@@ -18,14 +16,17 @@ namespace SalesHelper.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly IConfiguration _config;
 
         public ChangePasswordModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            IConfiguration config,
             ILogger<ChangePasswordModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _config = config;
             _logger = logger;
         }
 
@@ -109,6 +110,10 @@ namespace SalesHelper.Areas.Identity.Pages.Account.Manage
             }
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+
+            // change password in hMailServer
+            HMailChangePassword(Input.NewPassword);
+
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
@@ -123,6 +128,26 @@ namespace SalesHelper.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your password has been changed.";
 
             return RedirectToPage();
+        }
+
+        private Application HMailAuthenticate()
+        {
+            Application app = new();
+            _ = app.Authenticate(
+                _config.GetValue<string>("HMailServerSettings:UserName"),
+                _config.GetValue<string>("HMailServerSettings:Password")
+                );
+            return app;
+        }
+
+        private void HMailChangePassword(string newPassword)
+        {
+            Application hMailApp = HMailAuthenticate();
+            Domain myDomain = hMailApp.Domains.ItemByName[
+                _config.GetValue<string>("HMailServerSettings:Domain")];
+            hMailServer.Account account = myDomain.Accounts.ItemByAddress["accountAddress"];
+            account.Password = newPassword;
+            account.Save();
         }
     }
 }

@@ -26,6 +26,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _config;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +34,8 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             ApplicationDbContext context,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IConfiguration config)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -42,6 +44,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _config = config;
         }
 
         /// <summary>
@@ -76,6 +79,10 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
+
+            [Required]
+            [Display(Name = "SalesHelper Username")]
+            public string SalesHelperUsername { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -129,21 +136,24 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 user.AccountNumber = account.AccountNumber; // assigning account here
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
+                user.SalesHelperUsername = Input.SalesHelperUsername; // creating hMail account and assigning it here
+
+                // Creating hMail account
+                if (!IsSaleshelperUsernameExist(Input.SalesHelperUsername))
+                {
+                    HMailCreateAccount(Input.SalesHelperUsername, Input.Password);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "SalesHelper Username already exists.");
+                    return Page();
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
-                    // Creating an Account in hMailServer
-                    if (HMailCreateAccount(Input.FirstName + "." + Input.LastName, Input.Password))
-                    {
-                        _logger.LogInformation("Account created in hMailServer.");
-                    }
-                    else
-                    {
-                        _logger.LogInformation("Account not created in hMailServer.");
-                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -200,30 +210,54 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
 
-        private static Application HMailAuthenticate()
+        private Application HMailAuthenticate()
         {
-            Application app = new();
-            _ = app.Authenticate("Administrator", "FatMail975!a?#");
-            return app;
+            try
+            {
+                Application app = new();
+                _ = app.Authenticate(
+                    _config.GetValue<string>("HMailServerSettings:UserName"),
+                    _config.GetValue<string>("HMailServerSettings:Password")
+                    );
+                return app;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while authenticating hMailServer: " + ex.Message);
+            }
         }
 
-        private static bool HMailCreateAccount(string firstLastName, string password)
+        private void HMailCreateAccount(string saleshelperUsername, string password)
         {
-            Application hMailApp = HMailAuthenticate();
-            Domain myDomain = hMailApp.Domains.ItemByName["saleshelper.com"];
-            if (myDomain != null)
+            try
             {
+                Application hMailApp = HMailAuthenticate();
+                Domain myDomain = hMailApp.Domains.ItemByName[_config.GetValue<string>("HMailServerSettings:Domain")];
                 hMailServer.Account account = myDomain.Accounts.Add();
-                account.Address = firstLastName.ToLower() + "@" + myDomain.Name;
+                account.Address = saleshelperUsername.ToLower() + "@" + myDomain.Name;
                 account.Password = password;
                 account.Active = true;
-                account.MaxSize = 500;
+                account.MaxSize = 500; // 500MB
                 account.Save();
-                return true;
+                // Creating trash folder for this account
+                _ = account.IMAPFolders.Add("Trash");
             }
-            else
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("Error while creating hMail account: " + ex.Message);
+            }
+        }
+
+        private bool IsSaleshelperUsernameExist(string saleshelperUsername)
+        {
+            try
+            {
+                var user = _context.Users.Where(a => a.SalesHelperUsername == saleshelperUsername).FirstOrDefault();
+                return user != null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while checking hMail account: " + ex.Message);
             }
         }
     }
