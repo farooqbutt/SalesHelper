@@ -239,8 +239,8 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 account.Active = true;
                 account.MaxSize = 500; // 500MB
                 account.Save();
-                // Creating trash folder for this account
-                _ = account.IMAPFolders.Add("Trash");
+                _ = account.IMAPFolders.Add("Trash"); // creating Trash folder
+                account.IMAPFolders.ItemByName["Trash"].Subscribed = true; // Subscribing Trash folder
             }
             catch (Exception ex)
             {
