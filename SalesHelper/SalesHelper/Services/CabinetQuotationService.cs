@@ -144,8 +144,8 @@ namespace SalesHelper.Services
             {
                 using var _imapClient = new ImapClient();
                 await _imapClient.ConnectAsync("mail.saleshelper.com", 143, false);
-                await _imapClient.AuthenticateAsync(user.AccountNumberFK.SaleshelperMailingAddress,
-                                                    _encdecService.Decrypt(user.AccountNumberFK.EncryptedSaleshelperEmailPassword!));
+                await _imapClient.AuthenticateAsync(_context.Account.Find(user.AccountNumber)!.SaleshelperMailingAddress,
+                                                    _encdecService.Decrypt(_context.Account.Find(user.AccountNumber)!.EncryptedSaleshelperEmailPassword!));
 
                 List<MimeMessage> inboxMessages = await ReadInboxEmails(_imapClient, quoteId);
                 List<MimeMessage> sentMessages = await ReadSentEmails(_imapClient, quoteId);

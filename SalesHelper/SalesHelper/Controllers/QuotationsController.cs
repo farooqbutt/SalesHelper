@@ -259,7 +259,7 @@ namespace SalesHelper.Controllers
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
             var finalCabinetQuotation = _cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation);
-            //finalCabinetQuotation.QuoteEmails = _cabinetQuotationService.ReadCabinetQuoteEmails(id, _signInManager.UserManager.GetUserAsync(User).Result).Result;
+            finalCabinetQuotation.QuoteEmails = _cabinetQuotationService.ReadCabinetQuoteEmails(id, _signInManager.UserManager.GetUserAsync(User).Result).Result;
             return View(finalCabinetQuotation);
         }
 

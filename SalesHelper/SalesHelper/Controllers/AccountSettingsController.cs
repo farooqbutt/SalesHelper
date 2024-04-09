@@ -327,7 +327,9 @@ namespace SalesHelper.Controllers
                 account.MaxSize = 500; // 500MB
                 account.Save();
                 _ = account.IMAPFolders.Add("Trash"); // creating Trash folder
+                _ = account.IMAPFolders.Add("Sent");  // creating Sent folder
                 account.IMAPFolders.ItemByName["Trash"].Subscribed = true; // Subscribing Trash folder
+                account.IMAPFolders.ItemByName["Sent"].Subscribed = true;  // Subscribing Sent folder
             }
             catch (Exception ex)
             {
