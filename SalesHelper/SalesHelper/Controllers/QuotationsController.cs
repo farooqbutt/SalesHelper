@@ -141,71 +141,6 @@ namespace SalesHelper.Controllers
             return Json(data);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> QuoteEmailsView(int quoteId, string folderName)
-        {
-            if (folderName == "Inbox")
-            {
-                var emails = await _emailService.GetQuoteInboxEmails(quoteId);
-                return View(emails);
-            }
-            else if (folderName == "Sent")
-            {
-                var emails = await _emailService.GetQuoteSentEmails(quoteId);
-                return View(emails);
-            }
-            else
-            {
-                return View(new QuoteEmailsInterface());
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> EmailMessageDetails(string messageId, string folderName)
-        {
-            if (folderName == "Inbox")
-            {
-                var message = await _emailService.GetInboxEmailMessageDetails(messageId);
-                return Json(message);
-            }
-            else if (folderName == "Sent")
-            {
-                var message = await _emailService.GetSentEmailMessageDetails(messageId);
-                return Json(message);
-            }
-            else
-            {
-                return Json(null);
-            }
-        }
-
-        [HttpPost]
-        public IActionResult SendSimpleEmail(string to, string subject, string body, IFormFile attachment, int quoteId, string quoteType)
-        {
-            try
-            {
-                var task = _emailService.SendSimpleEmail(to, subject, body, attachment,
-                    new QuotationEmails
-                    {
-                        QuotationId = quoteId,
-                        QuoteType = quoteType,
-                        UserId = _signInManager.UserManager.GetUserAsync(User).Result.Id
-                    });
-                if (task.IsCompletedSuccessfully)
-                {
-                    return Json(new { message = "success", result = "Email Sent Successfully!" });
-                }
-                else
-                {
-                    return Json(new { message = "error", result = "Email Sending Failed!" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { message = "error", result = ex.Message });
-            }
-        }
-
         #endregion COMMON METHODS
 
         #region CABINET QUOTATIONS
@@ -323,7 +258,9 @@ namespace SalesHelper.Controllers
         public IActionResult FullCabinetQuoteView(int id)
         {
             var cabinetQuotation = _cabinetQuotationService.Read(id);
-            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
+            var finalCabinetQuotation = _cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation);
+            //finalCabinetQuotation.QuoteEmails = _cabinetQuotationService.ReadCabinetQuoteEmails(id, _signInManager.UserManager.GetUserAsync(User).Result).Result;
+            return View(finalCabinetQuotation);
         }
 
         [HttpGet]

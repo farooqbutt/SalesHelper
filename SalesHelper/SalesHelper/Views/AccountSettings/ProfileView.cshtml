@@ -7,10 +7,6 @@
         font-weight: bold;
         width: 40%;
     }
-
-    .card-body {
-        height: 368.4px;
-    }
 </style>
 
 <div class="content-overlay"></div>
@@ -43,7 +39,7 @@
     <div class="content-body">
         <div class="row">
             <!-- /# column -->
-            <div class="col-lg-6 col-sm-12">
+            <div class="col-lg-12 col-sm-12">
                 <div class="card box-shadow-0 border-primary">
                     <div class="card-header card-head-inverse bg-primary">
                         <h4 class="card-title">
@@ -53,7 +49,7 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <table class="table table-borderless">
                                         <tbody>
                                             <tr>
@@ -76,6 +72,12 @@
                                                 <td>Primary Contact:</td>
                                                 <td id="primaryContact"></td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tbody>
                                             <tr>
                                                 <td>Primary Contact #:</td>
                                                 <td id="primaryContactPhone"></td>
@@ -83,6 +85,10 @@
                                             <tr>
                                                 <td>Email</td>
                                                 <td><a id="emailAddress" href=""></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>SalesHelper Email</td>
+                                                <td><a id="saleshelperEmailAddress" href=""></a></td>
                                             </tr>
                                             <tr>
                                                 <td>Website</td>
@@ -98,6 +104,9 @@
                 <!--card end-->
             </div>
             <!-- /# end column -->
+        </div>
+
+        <div class="row">
             <!-- /# column -->
             <div class="col-lg-6 col-sm-12">
                 <div class="card box-shadow-0 border-primary">
@@ -146,9 +155,6 @@
                 </div>
             </div>
             <!-- /# end column -->
-        </div>
-
-        <div class="row">
             <!-- /# column -->
             <div class="col-lg-6 col-sm-12">
                 <div class="card box-shadow-0 border-primary">
@@ -197,6 +203,9 @@
                 </div>
             </div>
             <!-- /# end column -->
+        </div>
+
+        <div class="row">
             <!-- /# column -->
             <div class="col-lg-6 col-sm-12">
                 <div class="card box-shadow-0 border-primary">
@@ -245,9 +254,6 @@
                 </div>
             </div>
             <!-- /# end column -->
-        </div>
-
-        <div class="row">
             <!-- /# column -->
             <div class="col-lg-6 col-sm-12">
                 <div class="card box-shadow-0 border-primary">
@@ -295,6 +301,9 @@
                 </div>
             </div>
             <!-- /# end column -->
+        </div>
+
+        <div class="row">
             <!-- /# column -->
             <div class="col-lg-6 col-sm-12">
                 <div class="card box-shadow-0 border-primary">
@@ -349,6 +358,7 @@
                     $("#companyName").text(data.result.companyName);
                     $("#emailAddress").text(data.result.email);
                     $("#emailAddress").attr('href', "mailto:" + data.result.email);
+                    $("#saleshelperEmailAddress").text(data.result.salesHelperUsername);
                     $("#mainPhone").text(data.result.mainPhone);
                     $("#fax").text(data.result.fax);
                     $("#primaryContact").text(data.result.primaryContact);

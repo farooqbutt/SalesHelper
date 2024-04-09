@@ -4,16 +4,15 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using SalesHelper.Data;
 using SalesHelper.Models;
-using hMailServer;
+using SalesHelper.Services.EmailService;
+using DotLiquid;
 
 namespace SalesHelper.Areas.Identity.Pages.Account
 {
@@ -24,9 +23,10 @@ namespace SalesHelper.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly EmailService _emailService;
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -34,17 +34,19 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             ApplicationDbContext context,
-            IEmailSender emailSender,
-            IConfiguration config)
+            EmailService emailService,
+            IConfiguration config,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
             _context = context;
             _config = config;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -81,8 +83,8 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required]
-            [Display(Name = "SalesHelper Username")]
-            public string SalesHelperUsername { get; set; }
+            [Display(Name = "Company Name")]
+            public string CompanyName { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -125,29 +127,27 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                // Creating an Account for getting AccountNumber for that User
-                var account = new Models.Account();
-                _context.Account.Add(account);
-                await _context.SaveChangesAsync();
-                var user = CreateUser();
+                // creating an account for getting a account number for that user
+                Models.Account account = new Models.Account();
+                try
+                {
+                    account.CompanyName = Input.CompanyName;
+                    _context.Account.Add(account);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("Company Name", "Company Name is taken already!");
+                    return Page();
+                }
 
+                // creating a user for that account
+                var user = CreateUser();
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.AccountNumber = account.AccountNumber; // assigning account here
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                user.SalesHelperUsername = Input.SalesHelperUsername; // creating hMail account and assigning it here
-
-                // Creating hMail account
-                if (!IsSaleshelperUsernameExist(Input.SalesHelperUsername))
-                {
-                    HMailCreateAccount(Input.SalesHelperUsername, Input.Password);
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "SalesHelper Username already exists.");
-                    return Page();
-                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -155,19 +155,9 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    bool isConfirmationSent = await SendAccountConfirmationEmail(user, returnUrl);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if (isConfirmationSent && _userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
@@ -185,6 +175,30 @@ namespace SalesHelper.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task<bool> SendAccountConfirmationEmail(ApplicationUser user, string returnUrl)
+        {
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                protocol: Request.Scheme);
+
+            // Sending confirmation email with Email Template
+            string pathToFile = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "Account_Confirmation_Email.html");
+            Template template = Template.Parse(System.IO.File.ReadAllText(pathToFile));
+            var appendBodyVariables = new
+            {
+                FirstName = user.FirstName,
+                CallbackUrl = callbackUrl
+            };
+            var message = template.Render(Hash.FromAnonymousObject(appendBodyVariables));
+            // send account confirmation email using EmailService
+            return await _emailService.SendAccountConfirmationEmail(Input.Email, "Confirm your email", message);
         }
 
         private ApplicationUser CreateUser()
@@ -208,57 +222,6 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
-        }
-
-        private Application HMailAuthenticate()
-        {
-            try
-            {
-                Application app = new();
-                _ = app.Authenticate(
-                    _config.GetValue<string>("HMailServerSettings:UserName"),
-                    _config.GetValue<string>("HMailServerSettings:Password")
-                    );
-                return app;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while authenticating hMailServer: " + ex.Message);
-            }
-        }
-
-        private void HMailCreateAccount(string saleshelperUsername, string password)
-        {
-            try
-            {
-                Application hMailApp = HMailAuthenticate();
-                Domain myDomain = hMailApp.Domains.ItemByName[_config.GetValue<string>("HMailServerSettings:Domain")];
-                hMailServer.Account account = myDomain.Accounts.Add();
-                account.Address = saleshelperUsername.ToLower() + "@" + myDomain.Name;
-                account.Password = password;
-                account.Active = true;
-                account.MaxSize = 500; // 500MB
-                account.Save();
-                _ = account.IMAPFolders.Add("Trash"); // creating Trash folder
-                account.IMAPFolders.ItemByName["Trash"].Subscribed = true; // Subscribing Trash folder
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while creating hMail account: " + ex.Message);
-            }
-        }
-
-        private bool IsSaleshelperUsernameExist(string saleshelperUsername)
-        {
-            try
-            {
-                var user = _context.Users.Where(a => a.SalesHelperUsername == saleshelperUsername).FirstOrDefault();
-                return user != null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while checking hMail account: " + ex.Message);
-            }
         }
     }
 }

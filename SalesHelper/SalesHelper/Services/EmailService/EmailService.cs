@@ -14,53 +14,46 @@ namespace SalesHelper.Services.EmailService
 {
     public class EmailService : IEmailService
     {
-        //private static readonly string client_id = "35558157-23e0-4189-988d-b665bc6811c5";
-        //private static readonly string tenant_id = "867180a3-f90d-4e3b-919e-15446003424f";
-        //private static readonly string client_secret = "H~f8Q~hLeJ5E7s_nZsl9EsIOOQrIeMhe2RUudbIw";
-
         private readonly ApplicationDbContext _context;
         private readonly MailSettings _mailSettings;
-        //private readonly ImapClient _imapClient;
-
-
-        public EmailService(IOptions<MailSettings> mailSettings, ApplicationDbContext context)
+        private readonly IConfiguration _config;
+        public EmailService(IOptions<MailSettings> mailSettings, ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
             _mailSettings = mailSettings.Value;
-
-            //// imap client to connect to the email server
-            //var options = new PublicClientApplicationOptions
-            //{
-            //    ClientId = client_id,
-            //    TenantId = tenant_id,
-
-            //    // Use "https://login.microsoftonline.com/common/oauth2/nativeclient" for apps using
-            //    // embedded browsers or "http://localhost" for apps that use system browsers.
-            //    RedirectUri = "http://localhost:5074"
-            //};
-
-            //var publicClientApplication = PublicClientApplicationBuilder
-            //    .CreateWithApplicationOptions(options)
-            //    .Build();
-
-            //var scopes = new string[]
-            //{
-            //    "https://outlook.office.com/IMAP.AccessAsUser.All", // Only needed for IMAP
-            //};
-
-            //var authToken = publicClientApplication.AcquireTokenByUsernamePassword(scopes, _mailSettings.Email, _mailSettings.Password).ExecuteAsync();
-            //var oauth2 = new SaslMechanismOAuth2(authToken.Result.Account.Username, authToken.Result.AccessToken);
-
-            //_imapClient = new ImapClient();
-            //_imapClient.ConnectAsync(_mailSettings.IMAP_Server, _mailSettings.IMAP_Port, SecureSocketOptions.SslOnConnect);
-            //_imapClient.AuthenticateAsync(_mailSettings.Email, _mailSettings.Password);
+            _config = config;
         }
 
-        //public void Dispose()
-        //{
-        //    _imapClient.Disconnect(true);
-        //    _imapClient.Dispose();
-        //}
+        public async Task<bool> SendAccountConfirmationEmail(string to, string subject, string htmlMessage)
+        {
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse(_config.GetValue<string>("SaleshelperTeamAccount:Email")));
+                email.To.Add(MailboxAddress.Parse(to));
+                email.Subject = subject;
+
+                var bodyBuilder = new BodyBuilder
+                {
+                    HtmlBody = htmlMessage
+                };
+                email.Body = bodyBuilder.ToMessageBody();
+
+                using var smtp = new SmtpClient();
+                await smtp.ConnectAsync(_config.GetValue<string>("SaleshelperTeamAccount:Server"), _config.GetValue<int>("SaleshelperTeamAccount:SMTP_Port"), false);
+                await smtp.AuthenticateAsync(_config.GetValue<string>("SaleshelperTeamAccount:Email"), _config.GetValue<string>("SaleshelperTeamAccount:Password"));
+                await smtp.SendAsync(email);
+                await smtp.DisconnectAsync(true);
+
+                SaveMessageCopyToSentFolder(email); // save a copy of the email in the sent folder
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public Task SendSimpleEmail(string to, string subject, string body, IFormFile attachment, QuotationEmails quoteEmail)
         {
@@ -258,7 +251,7 @@ namespace SalesHelper.Services.EmailService
                                 Date = mimeMessage.Date.DateTime,
                                 IsRead = summary[0].Flags!.Value.HasFlag(MessageFlags.Seen),
                                 IsStarred = summary[0].Flags!.Value.HasFlag(MessageFlags.Flagged),
-                                HasAttachments = mimeMessage.Attachments.Count() > 0
+                                HasAttachments = mimeMessage.Attachments.Any()
                             };
                             // add the quoteEmail to the list
                             emailMessages.Add(email);
@@ -323,7 +316,7 @@ namespace SalesHelper.Services.EmailService
                                 IsStarred = summary[0].Flags!.Value.HasFlag(MessageFlags.Flagged),
                                 HasAttachments = mimeMessage.Attachments.Count() > 0
 
-                        };
+                            };
                             // add the quoteEmail to the list
                             emailMessages.Add(email);
                         }
@@ -406,6 +399,27 @@ namespace SalesHelper.Services.EmailService
                 SetupEmailAttachments(mimeMessage, emailMessage);
                 _imapClient.Disconnect(true);
                 return emailMessage;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private async void SaveMessageCopyToSentFolder(MimeMessage? email)
+        {
+            try
+            {
+                using var imap = new ImapClient();
+                await imap.ConnectAsync(_config.GetValue<string>("SaleshelperTeamAccount:Server"), _config.GetValue<int>("SaleshelperTeamAccount:IMAP_Port"), false);
+                await imap.AuthenticateAsync(_config.GetValue<string>("SaleshelperTeamAccount:Email"), _config.GetValue<string>("SaleshelperTeamAccount:Password"));
+
+                var sentFolder = imap.GetFolder("Sent");
+                await sentFolder.OpenAsync(FolderAccess.ReadWrite);
+                await sentFolder.AppendAsync(email);
+                var message = await sentFolder.SearchAsync(SearchQuery.HeaderContains("Message-Id", email!.MessageId));
+                await sentFolder.SetFlagsAsync(message.First(), MessageFlags.Seen, true);
+                await imap.DisconnectAsync(true);
             }
             catch (Exception ex)
             {

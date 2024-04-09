@@ -7,6 +7,8 @@ using SalesHelper.Models.EmailModels;
 using SalesHelper.Services.EmailService;
 using SalesHelper.Services.QuestPDF;
 using SalesHelper.Services.UserServices;
+using Microsoft.AspNetCore.Identity;
+using SalesHelper.Services.EncryptionServices;
 
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
@@ -26,6 +28,7 @@ builder.Services.AddScoped<CountertopQuotationService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<GeneratePDFService>();
 builder.Services.AddScoped<ProfileCheckService>();
+builder.Services.AddScoped<EncryptionDecryptionService>();
 
 // For uploading larg files to the server
 builder.Services.Configure<KestrelServerOptions>(options =>
@@ -40,6 +43,12 @@ builder.Services.Configure<IISServerOptions>(options =>
 
 // configure email settings
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+//Adding Time Span for Confirmation Link
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(24);
+});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

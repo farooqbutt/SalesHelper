@@ -2,14 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using SalesHelper.Models;
+using hMailServer;
 
 namespace SalesHelper.Areas.Identity.Pages.Account.Manage
 {
@@ -18,15 +16,18 @@ namespace SalesHelper.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly IConfiguration _config;
 
         public DeletePersonalDataModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _config = config;
         }
 
         /// <summary>
@@ -94,11 +95,46 @@ namespace SalesHelper.Areas.Identity.Pages.Account.Manage
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");
             }
 
+            // Delete hMailServer account
+            DeleteHMailServerAccount(user.AccountNumberFK.SaleshelperMailingAddress);
+
             await _signInManager.SignOutAsync();
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
             return Redirect("~/");
+        }
+
+        private Application HMailAuthenticate()
+        {
+            try
+            {
+                Application app = new();
+                _ = app.Authenticate(
+                    _config.GetValue<string>("HMailServerSettings:UserName"),
+                    _config.GetValue<string>("HMailServerSettings:Password")
+                    );
+                return app;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while authenticating hMailServer: " + ex.Message);
+            }
+        }
+
+        private void DeleteHMailServerAccount(string email)
+        {
+            try
+            {
+                Application app = HMailAuthenticate();
+                Domain domain = app.Domains.get_ItemByName(_config.GetValue<string>("HMailServerSettings:Domain"));
+                hMailServer.Account account = domain.Accounts.get_ItemByAddress(email);
+                account.Delete();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while deleting hMailServer account: " + ex.Message);
+            }
         }
     }
 }

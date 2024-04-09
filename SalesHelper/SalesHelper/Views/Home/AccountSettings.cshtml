@@ -91,24 +91,40 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <label for="mainPhone">Main Phone</label>
-                                                                <div class="form-group position-relative has-icon-left">
-                                                                    <input type="text" class="form-control" id="mainPhone" placeholder="Main Phone" required>
-                                                                    <div class="form-control-position">
-                                                                        <i class="feather icon-phone primary"></i>
-                                                                    </div>
-                                                                </div>
+                                                        <label>SalesHelper Mailing Address</label>
+                                                        <div class="input-group bootstrap-touchspin">
+                                                            <input type="text" class="touchspin form-control" id="saleshelperMailingAddress" placeholder="Company Name">
+                                                            <span class="input-group-append bootstrap-touchspin-postfix input-group-append bootstrap-touchspin-injected">
+                                                                <span class="input-group-text">@@saleshelper.com</span>
+                                                            </span>
+                                                            <span class="input-group-btn input-group-append bootstrap-touchspin-injected" title="check if this name is available">
+                                                                <button class="btn btn-primary bootstrap-touchspin-up" type="button" onclick="CheckNameAvailablity()">
+                                                                    <i class="feather icon-check-circle"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                        <small class="primary text-muted float-right">
+                                                            Only dash and underscore are allowed
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="mainPhone">Main Phone</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="mainPhone" placeholder="Main Phone" required>
+                                                            <div class="form-control-position">
+                                                                <i class="feather icon-phone primary"></i>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <label for="fax">Fax</label>
-                                                                <div class="form-group position-relative has-icon-left">
-                                                                    <input type="text" class="form-control" id="fax" placeholder="Fax" required>
-                                                                    <div class="form-control-position">
-                                                                        <i class="fa fa-fax primary"></i>
-                                                                    </div>
-                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="fax">Fax</label>
+                                                        <div class="form-group position-relative has-icon-left">
+                                                            <input type="text" class="form-control" id="fax" placeholder="Fax" required>
+                                                            <div class="form-control-position">
+                                                                <i class="fa fa-fax primary"></i>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -615,6 +631,7 @@
                     $("#accountNumber").val(data.result.accountNumber);
                     $("#companyName").val(data.result.companyName);
                     $("#emailAddress").val(data.result.email);
+                    $("#saleshelperMailingAddress").val(data.result.saleshelperMailingAddress.split("@@")[0]); // Split the email address to get the company name
                     $("#mainPhone").val(data.result.mainPhone);
                     $("#fax").val(data.result.fax);
                     $("#primaryContact").val(data.result.primaryContact);
@@ -633,50 +650,35 @@
         // Save Account Details
         $("#accountDetailsForm").submit(function (e) {
             e.preventDefault();
-
-            var bussiness = $("#businessAddressId").val();
-            var billing = $("#billingAddressId").val();
-            var shipping = $("#shippingAddressId").val();
-            var accountNumber = $("#accountNumber").val();
-            var companyName = $("#companyName").val();
-            var emailAddress = $("#emailAddress").val();
-            var mainPhone = $("#mainPhone").val();
-            var fax = $("#fax").val();
-            var primaryContact = $("#primaryContact").val();
-            var primaryContactPhone = $("#primaryContactPhone").val();
-            var websiteLink = $("#websiteLink").val();
-
-            var formData = {
-                businessAddressId: bussiness,
-                billingAddressId: billing,
-                shippingAddressId: shipping,
-                accountNumber: accountNumber,
-                companyName: companyName,
-                email: emailAddress,
-                mainPhone: mainPhone,
-                fax: fax,
-                primaryContact: primaryContact,
-                primaryContactPhone: primaryContactPhone,
-                website: websiteLink
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "/AccountSettings/CreateAccount",
-                data: formData,
-                success: function (data) {
-                    if (data.message == "success") {
-                        toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
-                        setTimeout(function () {
-                            window.location.href = "/AccountSettings/ProfileView";
-                        }, 3000); // Delay the redirection by 3 seconds (3000 milliseconds)
-                    } else {
-                        toastr.error(data.result, 'Error!', { "progressBar": true });
-                    }
+            Swal.fire({
+                title: "Enter your password",
+                input: "password",
+                inputLabel: "Password",
+                inputPlaceholder: "Enter your password",
+                inputAttributes: {
+                    autocapitalize: "off",
+                    autocorrect: "off",
+                    required: true,
                 },
-                error: function (error) {
-                    toastr.error(error, 'Error!', { "progressBar": true });
-                }
+                confirmButtonClass: "btn btn-primary",
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (password) => {
+                    return fetch(`/AccountSettings/VerifyUserPassword?password=${password}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.data == true) {
+                                // save account details if password is matched
+                                SaveAccountDetails(password);
+                            } else {
+                                Swal.showValidationMessage("Please enter correct password!");
+                            }
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(`Request failed: ${error}`);
+                        });
+                },
             });
         });
 
@@ -965,5 +967,101 @@
             $('#shippingAddressDetailsForm')[0].reset();
         }
     });
+
+    // Check Company Name availability for saleshelerMailingAddress Formation
+    function CheckNameAvailablity() {
+        var name = $("#saleshelperMailingAddress").val();
+
+        if (name == "" || name == null) {
+            Swal.fire({
+                title: "Empty Field",
+                text: "Please enter a company name!",
+                type: "warning",
+                confirmButtonClass: "btn btn-warning",
+                buttonsStyling: false
+            });
+            return;
+        };
+
+        $.ajax({
+            type: "GET",
+            url: "/AccountSettings/CheckNameAvailability",
+            data: { name: name + "@@saleshelper.com" },
+            success: function (data) {
+                if (data.message == "success") {
+                    Swal.fire({
+                        title: "Available",
+                        text: name + " is available!",
+                        type: "success",
+                        confirmButtonClass: "btn btn-success",
+                        buttonsStyling: false
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Not Availabe",
+                        text: name + " is not available!",
+                        type: "info",
+                        confirmButtonClass: "btn btn-info",
+                        buttonsStyling: false
+                    });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    }
+
+    function SaveAccountDetails(password) {
+        var bussiness = $("#businessAddressId").val();
+        var billing = $("#billingAddressId").val();
+        var shipping = $("#shippingAddressId").val();
+        var accountNumber = $("#accountNumber").val();
+        var companyName = $("#companyName").val();
+        var emailAddress = $("#emailAddress").val();
+        var saleshelperMailingAddress = $("#saleshelperMailingAddress").val();
+        var mainPhone = $("#mainPhone").val();
+        var fax = $("#fax").val();
+        var primaryContact = $("#primaryContact").val();
+        var primaryContactPhone = $("#primaryContactPhone").val();
+        var websiteLink = $("#websiteLink").val();
+
+        var formData = {
+            businessAddressId: bussiness,
+            billingAddressId: billing,
+            shippingAddressId: shipping,
+            accountNumber: accountNumber,
+            companyName: companyName,
+            email: emailAddress,
+            saleshelperMailingAddress: saleshelperMailingAddress + "@@saleshelper.com",
+            mainPhone: mainPhone,
+            fax: fax,
+            primaryContact: primaryContact,
+            primaryContactPhone: primaryContactPhone,
+            website: websiteLink
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/AccountSettings/CreateAccount",
+            data: {
+                account: formData,
+                password: password
+            },
+            success: function (data) {
+                if (data.message == "success") {
+                    toastr.success('Saved Sccessfully.', 'Success!', { "progressBar": true });
+                    setTimeout(function () {
+                        window.location.href = "/AccountSettings/ProfileView";
+                    }, 3000); // Delay the redirection by 3 seconds (3000 milliseconds)
+                } else {
+                    toastr.error(data.result, 'Error!', { "progressBar": true });
+                }
+            },
+            error: function (error) {
+                toastr.error(error, 'Error!', { "progressBar": true });
+            }
+        });
+    }
 
 </script>

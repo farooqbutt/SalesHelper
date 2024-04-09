@@ -236,10 +236,7 @@
                     </a>
                 }
                 <a asp-controller="Quotations" asp-action="CabinetQuotePrintPreview" asp-route-id="@Model.Id" class="width-150 btn btn-primary">
-                    <i class="feather icon-file-text"></i> Details View
-                </a>
-                <a asp-controller="Quotations" asp-action="QuoteEmailsView" asp-route-quoteId="@Model.Id" asp-route-folderName="Inbox" class="btn btn-warning">
-                    <i class="feather icon-mail"></i> View Emails
+                    <i class="feather icon-printer"></i> Print View
                 </a>
                 <a asp-controller="Quotations" asp-action="RequestEstimateView" asp-route-id="@Model.Id" class="width-180 btn btn-success">
                     Request Estimate <i class="feather icon-arrow-right"></i>
@@ -248,7 +245,32 @@
         </div>
     </div>
 
-
+    @if (Model.QuoteEmails.Any())
+    {
+        <div id="quoteEmails">
+            @foreach (var item in Model.QuoteEmails)
+            {
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body cleartfix">
+                            <div class="media align-items-stretch">
+                                <div class="align-self-center">
+                                    <div class="avatar bg-primary font-size-small font-weight-bold">@item.From</div>
+                                </div>
+                                <div class="media-body">
+                                    <h4>@item.Subject</h4>
+                                    <span>@item.TextBody</span>
+                                </div>
+                                <div class="">
+                                    <p>@item.Date.DateTime</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 
     <div class="sidebar-detached sidebar-right">
         <div class="sidebar">
@@ -281,6 +303,7 @@
         </div>
     </div>
 </div>
+
 
 
 @* Modal for uploading quotation documents *@

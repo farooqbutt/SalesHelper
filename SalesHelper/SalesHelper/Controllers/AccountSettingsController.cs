@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Data;
 using SalesHelper.Models;
+using hMailServer;
+using SalesHelper.Services.EncryptionServices;
 
 namespace SalesHelper.Controllers
 {
@@ -9,12 +11,22 @@ namespace SalesHelper.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _config;
+        private readonly EncryptionDecryptionService _encdecService;
+
         public AccountSettingsController(
             ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            EncryptionDecryptionService encdecService,
+            IConfiguration config)
         {
             _context = context;
             _signInManager = signInManager;
+            _userManager = userManager;
+            _encdecService = encdecService;
+            _config = config;
         }
         public IActionResult ProfileView()
         {
@@ -39,7 +51,7 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateAccount(Account account)
+        public JsonResult CreateAccount(Models.Account account, string password)
         {
             try
             {
@@ -52,8 +64,17 @@ namespace SalesHelper.Controllers
                 else
                 {
                     // Update Account
+                    account.EncryptedSaleshelperEmailPassword = _encdecService.Encrypt(password);
                     _context.Account.Update(account);
-                    _context.SaveChanges();
+                    var savedRecords = _context.SaveChanges();
+                    if (savedRecords > 0)
+                    {
+                        HMailCreateAccount(account.SaleshelperMailingAddress!, password);
+                    }
+                    else
+                    {
+                        throw new Exception("No records updated");
+                    }
                 }
 
                 var data = new { message = "success", result = account };
@@ -235,6 +256,82 @@ namespace SalesHelper.Controllers
             {
                 var data = new { message = "error", result = ex.InnerException?.Message };
                 return Json(data);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult CheckNameAvailability(string name)
+        {
+            try
+            {
+                var account = _context.Account.Where(a => a.SaleshelperMailingAddress == name).FirstOrDefault();
+                if (account == null)
+                {
+                    var data = new { message = "success", result = "Name is available" };
+                    return Json(data);
+                }
+                else
+                {
+                    var data = new { message = "error", result = "Name is not available" };
+                    return Json(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                var data = new { message = "error", result = ex.InnerException?.Message };
+                return Json(data);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult VerifyUserPassword(string password)
+        {
+            bool IsPasswordVerified = _userManager.CheckPasswordAsync(_signInManager.UserManager.GetUserAsync(User).Result, password).Result;
+            if (IsPasswordVerified == true)
+            {
+                return Json(new { data = true });
+            }
+            else
+            {
+                return Json(new { data = false });
+            }
+        }
+
+        private Application HMailAuthenticate()
+        {
+            try
+            {
+                Application app = new();
+                _ = app.Authenticate(
+                    _config.GetValue<string>("HMailServerSettings:UserName"),
+                    _config.GetValue<string>("HMailServerSettings:Password")
+                    );
+                return app;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while authenticating hMailServer: " + ex.Message);
+            }
+        }
+
+        private void HMailCreateAccount(string companyName, string password)
+        {
+            try
+            {
+                Application hMailApp = HMailAuthenticate();
+                Domain myDomain = hMailApp.Domains.ItemByName[_config.GetValue<string>("HMailServerSettings:Domain")];
+                hMailServer.Account account = myDomain.Accounts.Add();
+                account.Address = companyName;
+                account.Password = password;
+                account.Active = true;
+                account.MaxSize = 500; // 500MB
+                account.Save();
+                _ = account.IMAPFolders.Add("Trash"); // creating Trash folder
+                account.IMAPFolders.ItemByName["Trash"].Subscribed = true; // Subscribing Trash folder
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while creating hMail account: " + ex.Message);
             }
         }
     }

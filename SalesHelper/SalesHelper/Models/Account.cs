@@ -9,18 +9,29 @@ namespace SalesHelper.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AccountNumber { get; set; }
+
         [MaxLength(100)]
         public string CompanyName { get; set; } = string.Empty;
+
         [MaxLength(20)]
         public string MainPhone { get; set; } = string.Empty;
+
         [MaxLength(100)]
         public string Fax { get; set; } = string.Empty;
+
         [MaxLength(100)]
         public string Email { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string? SaleshelperMailingAddress { get; set; } = string.Empty;
+        public string? EncryptedSaleshelperEmailPassword { get; set; } = string.Empty;
+
         [MaxLength(100)]
         public string PrimaryContact { get; set; } = string.Empty;
+
         [MaxLength(10)]
         public string PrimaryContactPhone { get; set; } = string.Empty;
+
         [MaxLength(100)]
         public string Website { get; set; } = string.Empty;
         public DateTime RegistrationDate { get; set; }

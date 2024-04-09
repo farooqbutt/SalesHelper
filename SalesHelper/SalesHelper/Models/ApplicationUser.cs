@@ -10,7 +10,6 @@ namespace SalesHelper.Models
         public DateTime RegistrationDate { get; set; }
         public DateTime LastLogin { get; set; }
         public bool IsActive { get; set; }
-        public string SalesHelperUsername { get; set; } = string.Empty;
 
         [ForeignKey("AccountNumberFK")]
         public int AccountNumber { get; set; }

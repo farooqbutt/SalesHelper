@@ -42,6 +42,14 @@ namespace SalesHelper.Data
                 .Property(a => a.AccountNumber)
                 .UseIdentityColumn(236200, 1);
 
+            modelBuilder.Entity<Account>()
+                .HasIndex(a => a.CompanyName)
+                .IsUnique();
+
+            modelBuilder.Entity<Account>()
+                .HasIndex(a => a.SaleshelperMailingAddress)
+                .IsUnique();
+
             modelBuilder.Entity<CabinetQuotation>()
                 .Property(c => c.Id)
                 .UseIdentityColumn(1000, 1);

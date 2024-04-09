@@ -1,8 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MailKit;
+using MailKit.Net.Imap;
+using MailKit.Search;
+using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Newtonsoft.Json;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
+using SalesHelper.Services.EncryptionServices;
 
 namespace SalesHelper.Services
 {
@@ -10,62 +15,12 @@ namespace SalesHelper.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly CustomerService _customerService;
-        public CabinetQuotationService(ApplicationDbContext context, CustomerService customerService)
+        private readonly EncryptionDecryptionService _encdecService;
+        public CabinetQuotationService(ApplicationDbContext context, CustomerService customerService, EncryptionDecryptionService encdecService)
         {
             _context = context;
             _customerService = customerService;
-        }
-
-        public CabinetQuoteInterface CabinetQuoteInterface(CabinetQuotation cabinetQuotation)
-        {
-
-            var cabinetQuoteInterface = new CabinetQuoteInterface
-            {
-                Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
-                CustomerId = cabinetQuotation.CustomerId,
-                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
-                // additional information
-                AdditionalInformation = cabinetQuotation.AdditionalInformation,
-                CreatedByUserId = cabinetQuotation.CreatedByUserId,
-                CreatedDateTime = cabinetQuotation.CreatedDateTime,
-                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
-                CabinetPrice = cabinetQuotation.CabinetPrice,
-                DeliveryCharge = cabinetQuotation.DeliveryCharge,
-                InstallationFee = cabinetQuotation.InstallationFee,
-                Tax = cabinetQuotation.Tax,
-                VendorPrice = cabinetQuotation.VendorPrice,
-                CommentOnPrice = cabinetQuotation.CommentOnPrice,
-                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
-                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
-                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
-                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
-                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
-                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
-                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
-            };
-            return cabinetQuoteInterface;
+            _encdecService = encdecService;
         }
 
         public void Create(CabinetQuotation cabinetQuotation)
@@ -128,6 +83,149 @@ namespace SalesHelper.Services
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public CabinetQuoteInterface CabinetQuoteInterface(CabinetQuotation cabinetQuotation)
+        {
+
+            var cabinetQuoteInterface = new CabinetQuoteInterface
+            {
+                Id = cabinetQuotation.Id,
+                Name = cabinetQuotation.Name,
+                CustomerId = cabinetQuotation.CustomerId,
+                CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
+                VendorId = cabinetQuotation.VendorId,
+                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
+                Construction = cabinetQuotation.Construction,
+                BoxMaterials = cabinetQuotation.BoxMaterials,
+                isOneColorDesign = cabinetQuotation.isOneColorDesign,
+                // one color
+                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
+                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
+                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
+                // multiple color
+                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
+                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
+                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
+                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
+                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
+                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
+                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
+                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
+                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
+                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                // additional information
+                AdditionalInformation = cabinetQuotation.AdditionalInformation,
+                CreatedByUserId = cabinetQuotation.CreatedByUserId,
+                CreatedDateTime = cabinetQuotation.CreatedDateTime,
+                ModifiedDateTime = cabinetQuotation.ModifiedDateTime,
+                CabinetPrice = cabinetQuotation.CabinetPrice,
+                DeliveryCharge = cabinetQuotation.DeliveryCharge,
+                InstallationFee = cabinetQuotation.InstallationFee,
+                Tax = cabinetQuotation.Tax,
+                VendorPrice = cabinetQuotation.VendorPrice,
+                CommentOnPrice = cabinetQuotation.CommentOnPrice,
+                Refrigerator = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Refrigerator"],
+                StoveAndCooktop = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["StoveAndCooktop"],
+                Dishwasher = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Dishwasher"],
+                Hood = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Hood"],
+                BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
+                BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
+                Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
+                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+            };
+            return cabinetQuoteInterface;
+        }
+
+        public async Task<List<MimeMessage>> ReadCabinetQuoteEmails(int quoteId, ApplicationUser user)
+        {
+            try
+            {
+                using var _imapClient = new ImapClient();
+                await _imapClient.ConnectAsync("mail.saleshelper.com", 143, false);
+                await _imapClient.AuthenticateAsync(user.AccountNumberFK.SaleshelperMailingAddress,
+                                                    _encdecService.Decrypt(user.AccountNumberFK.EncryptedSaleshelperEmailPassword!));
+
+                List<MimeMessage> inboxMessages = await ReadInboxEmails(_imapClient, quoteId);
+                List<MimeMessage> sentMessages = await ReadSentEmails(_imapClient, quoteId);
+
+                List<MimeMessage> allMessages = new List<MimeMessage>();
+                allMessages.AddRange(inboxMessages);
+                allMessages.AddRange(sentMessages);
+
+                // sort the messages by date to show the latest email first
+                allMessages.Sort((a, b) => b.Date.CompareTo(a.Date.DateTime));
+
+                return allMessages;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        private async Task<List<MimeMessage>> ReadInboxEmails(ImapClient _imapClient, int quoteId)
+        {
+            var inboxFolder = await _imapClient.GetFolderAsync("INBOX");
+            // open the inbox folder
+            await inboxFolder.OpenAsync(FolderAccess.ReadOnly);
+            // get email ids from our database for the quote
+            var emailIds = _context.QuotationEmails.Where(qe => qe.QuotationId == quoteId && qe.QuoteType == "Cabinet Quote").Select(qe => qe.EmailMessageId).ToList();
+            if (emailIds.Any())
+            {
+                List<MimeMessage> emailMessages = new List<MimeMessage>();
+                foreach (var id in emailIds)
+                {
+                    var messages = await inboxFolder.SearchAsync(SearchQuery.Or(
+                        SearchQuery.HeaderContains("References", id),
+                        SearchQuery.HeaderContains("In-Reply-To", id)
+                    ));
+
+                    foreach (var message in messages)
+                    {
+                        var mimeMessage = await inboxFolder.GetMessageAsync(message);
+                        emailMessages.Add(mimeMessage);
+                    }
+                }
+                _imapClient.Disconnect(true);
+                return emailMessages;
+            }
+            else
+            {
+                _imapClient.Disconnect(true);
+                return new List<MimeMessage>();
+            }
+        }
+
+        private async Task<List<MimeMessage>> ReadSentEmails(ImapClient _imapClient, int quoteId)
+        {
+            var sentFolder = await _imapClient.GetFolderAsync("Sent");
+            // open the sent folder
+            await sentFolder.OpenAsync(FolderAccess.ReadOnly);
+            // get email ids from our database for the quote
+            var emailIds = _context.QuotationEmails.Where(qe => qe.QuotationId == quoteId && qe.QuoteType == "Cabinet Quote").Select(qe => qe.EmailMessageId).ToList();
+
+            if (emailIds.Any())
+            {
+                List<MimeMessage> emailMessages = new List<MimeMessage>();
+                foreach (var id in emailIds)
+                {
+                    var messages = await sentFolder.SearchAsync(SearchQuery.HeaderContains("Message-Id", id));
+
+                    foreach (var message in messages)
+                    {
+                        var mimeMessage = await sentFolder.GetMessageAsync(message);
+                        emailMessages.Add(mimeMessage);
+                    }
+                }
+                _imapClient.Disconnect(true);
+                return emailMessages;
+            }
+            else
+            {
+                _imapClient.Disconnect(true);
+                return new List<MimeMessage>();
             }
         }
     }

@@ -4,20 +4,32 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<div class="content-wrapper">
+    <div class="content-header row">
+    </div>
+    <div class="content-body">
+        <section class="row flexbox-container">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="col-lg-4 col-md-8 col-10 box-shadow-2 p-0">
+                    <div class="card border-grey border-lighten-3 px-2 py-2 m-0">
+                        <div class="card-header border-0">
+                            <div class="card-title text-center">
+                                <img src="/images/logo/SalesHelperLogo.png" alt="branding logo" width="32" height="27">
+                                <img src="/images/logo/SalesHelperTextLogo-Black.png" alt="branding logo" width="130" height="27">
+                            </div>
+                            <h6 class="card-subtitle line-on-side text-muted text-center font-small-3 pt-2">
+                            </h6>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+                                <h1>Register Confirmation</h1>
+                                <p>Please check your email inbox or spam folder to verify your account.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
 

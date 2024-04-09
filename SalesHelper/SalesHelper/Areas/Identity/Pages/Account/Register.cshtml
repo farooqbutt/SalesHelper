@@ -39,19 +39,14 @@
                                             <i class="feather icon-user"></i>
                                         </div>
                                     </fieldset>
-                                    <fieldset>
-                                        <div class="input-group input-group-lg position-relative has-icon-left mb-1 bootstrap-touchspin">
-                                            <input style="border-top-left-radius:0;border-top-right-radius:0;" type="text" asp-for="Input.SalesHelperUsername" class="form-control form-control-lg" placeholder="Username">
-                                            <div class="form-control-position">
-                                                <i class="feather icon-user"></i>
-                                            </div>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">@@saleshelper.com</span>
-                                            </div>
+                                    <fieldset class="form-group position-relative has-icon-left mb-1">
+                                        <input style="border-top-left-radius:0;border-top-right-radius:0;" asp-for="Input.CompanyName" autocomplete="companyname" type="text" class="form-control form-control-lg" placeholder="Company Name">
+                                        <div class="form-control-position">
+                                            <i class="feather icon-user"></i>
                                         </div>
                                     </fieldset>
                                     <fieldset class="form-group position-relative has-icon-left mb-1">
-                                        <input style="border-top-left-radius:0;border-top-right-radius:0;" asp-for="Input.Email" autocomplete="username" type="email" class="form-control form-control-lg" placeholder="Your Personal Email Address">
+                                        <input style="border-top-left-radius:0;border-top-right-radius:0;" asp-for="Input.Email" autocomplete="email" type="email" class="form-control form-control-lg" placeholder="Your Personal Email Address">
                                         <div class="form-control-position">
                                             <i class="feather icon-mail"></i>
                                         </div>
