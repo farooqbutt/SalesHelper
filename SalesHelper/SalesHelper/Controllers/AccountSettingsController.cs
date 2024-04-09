@@ -66,14 +66,10 @@ namespace SalesHelper.Controllers
                     // Update Account
                     account.EncryptedSaleshelperEmailPassword = _encdecService.Encrypt(password);
                     _context.Account.Update(account);
-                    var savedRecords = _context.SaveChanges();
-                    if (savedRecords > 0)
+                    _context.SaveChanges();
+                    if (account.EncryptedSaleshelperEmailPassword == "" || account.EncryptedSaleshelperEmailPassword == null)
                     {
                         HMailCreateAccount(account.SaleshelperMailingAddress!, password);
-                    }
-                    else
-                    {
-                        throw new Exception("No records updated");
                     }
                 }
 

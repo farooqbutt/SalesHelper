@@ -382,7 +382,7 @@ namespace SalesHelper.Controllers
         {
             try
             {
-                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName,
+                var task = _emailService.SendEstimateRequestEmail(_signInManager.UserManager.GetUserAsync(User).Result.AccountNumber, to, subject, body, attachmentName,
                            _generatePDFService.GenerateCabinetQuoteEstimateRequestPDF(quoteId, User), attachment, new QuotationEmails
                            {
                                QuotationId = quoteId,
@@ -501,7 +501,7 @@ namespace SalesHelper.Controllers
         {
             try
             {
-                var task = _emailService.SendEstimateRequestEmail(to, subject, body, attachmentName,
+                var task = _emailService.SendEstimateRequestEmail(_signInManager.UserManager.GetUserAsync(User).Result.AccountNumber, to, subject, body, attachmentName,
                            _generatePDFService.GenerateCountertopQuoteEstimateRequestPDF(quoteId, vendorId, User), attachment, new QuotationEmails
                            {
                                QuotationId = quoteId,

@@ -1,6 +1,4 @@
-﻿using MimeKit;
-
-namespace SalesHelper.Models.InterfaceModels
+﻿namespace SalesHelper.Models.InterfaceModels
 {
     public class CabinetQuoteInterface : CabinetQuotation
     {
@@ -18,6 +16,6 @@ namespace SalesHelper.Models.InterfaceModels
         public List<IFormFile> DocumentFiles { get; set; } = default!;
 
         // Quotation Email
-        public List<MimeMessage> QuoteEmails { get; set; } = default!;
+        public List<QuoteEmailInterface> QuoteEmails { get; set; } = default!;
     }
 }

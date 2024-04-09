@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Services;
-using SalesHelper.Models.EmailModels;
 using SalesHelper.Services.EmailService;
 using SalesHelper.Services.QuestPDF;
 using SalesHelper.Services.UserServices;
@@ -40,9 +39,6 @@ builder.Services.Configure<IISServerOptions>(options =>
 {
     options.MaxRequestBodySize = int.MaxValue;
 });
-
-// configure email settings
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 //Adding Time Span for Confirmation Link
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>

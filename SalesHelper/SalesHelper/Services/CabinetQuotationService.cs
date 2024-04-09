@@ -138,7 +138,7 @@ namespace SalesHelper.Services
             return cabinetQuoteInterface;
         }
 
-        public async Task<List<MimeMessage>> ReadCabinetQuoteEmails(int quoteId, ApplicationUser user)
+        public async Task<List<QuoteEmailInterface>> ReadCabinetQuoteEmails(int quoteId, ApplicationUser user)
         {
             try
             {
@@ -147,16 +147,14 @@ namespace SalesHelper.Services
                 await _imapClient.AuthenticateAsync(_context.Account.Find(user.AccountNumber)!.SaleshelperMailingAddress,
                                                     _encdecService.Decrypt(_context.Account.Find(user.AccountNumber)!.EncryptedSaleshelperEmailPassword!));
 
-                List<MimeMessage> inboxMessages = await ReadInboxEmails(_imapClient, quoteId);
-                List<MimeMessage> sentMessages = await ReadSentEmails(_imapClient, quoteId);
-
-                List<MimeMessage> allMessages = new List<MimeMessage>();
+                List<QuoteEmailInterface> inboxMessages = await ReadInboxEmails(_imapClient, quoteId);
+                List<QuoteEmailInterface> sentMessages = await ReadSentEmails(_imapClient, quoteId);
+                List<QuoteEmailInterface> allMessages = new();
                 allMessages.AddRange(inboxMessages);
                 allMessages.AddRange(sentMessages);
-
                 // sort the messages by date to show the latest email first
-                allMessages.Sort((a, b) => b.Date.CompareTo(a.Date.DateTime));
-
+                allMessages.Sort((a, b) => b.Date.CompareTo(a.Date));
+                _imapClient.Disconnect(true);
                 return allMessages;
             }
             catch (Exception e)
@@ -165,7 +163,7 @@ namespace SalesHelper.Services
             }
         }
 
-        private async Task<List<MimeMessage>> ReadInboxEmails(ImapClient _imapClient, int quoteId)
+        private async Task<List<QuoteEmailInterface>> ReadInboxEmails(ImapClient _imapClient, int quoteId)
         {
             var inboxFolder = await _imapClient.GetFolderAsync("INBOX");
             // open the inbox folder
@@ -174,7 +172,7 @@ namespace SalesHelper.Services
             var emailIds = _context.QuotationEmails.Where(qe => qe.QuotationId == quoteId && qe.QuoteType == "Cabinet Quote").Select(qe => qe.EmailMessageId).ToList();
             if (emailIds.Any())
             {
-                List<MimeMessage> emailMessages = new List<MimeMessage>();
+                List<QuoteEmailInterface> emailMessages = new();
                 foreach (var id in emailIds)
                 {
                     var messages = await inboxFolder.SearchAsync(SearchQuery.Or(
@@ -185,20 +183,28 @@ namespace SalesHelper.Services
                     foreach (var message in messages)
                     {
                         var mimeMessage = await inboxFolder.GetMessageAsync(message);
-                        emailMessages.Add(mimeMessage);
+                        var quoteEmailMessage = new QuoteEmailInterface
+                        {
+                            MessageId = mimeMessage.MessageId,
+                            From = mimeMessage.From.ToString(),
+                            To = mimeMessage.To.ToString(),
+                            Subject = mimeMessage.Subject,
+                            Body = mimeMessage.HtmlBody != null ? mimeMessage.HtmlBody : mimeMessage.TextBody,
+                            Date = mimeMessage.Date.DateTime
+                        };
+                        SetupEmailAttachments(mimeMessage, quoteEmailMessage);
+                        emailMessages.Add(quoteEmailMessage);
                     }
                 }
-                _imapClient.Disconnect(true);
                 return emailMessages;
             }
             else
             {
-                _imapClient.Disconnect(true);
-                return new List<MimeMessage>();
+                return new List<QuoteEmailInterface>();
             }
         }
 
-        private async Task<List<MimeMessage>> ReadSentEmails(ImapClient _imapClient, int quoteId)
+        private async Task<List<QuoteEmailInterface>> ReadSentEmails(ImapClient _imapClient, int quoteId)
         {
             var sentFolder = await _imapClient.GetFolderAsync("Sent");
             // open the sent folder
@@ -208,7 +214,7 @@ namespace SalesHelper.Services
 
             if (emailIds.Any())
             {
-                List<MimeMessage> emailMessages = new List<MimeMessage>();
+                List<QuoteEmailInterface> emailMessages = new List<QuoteEmailInterface>();
                 foreach (var id in emailIds)
                 {
                     var messages = await sentFolder.SearchAsync(SearchQuery.HeaderContains("Message-Id", id));
@@ -216,16 +222,66 @@ namespace SalesHelper.Services
                     foreach (var message in messages)
                     {
                         var mimeMessage = await sentFolder.GetMessageAsync(message);
-                        emailMessages.Add(mimeMessage);
+                        var quoteEmailMessage = new QuoteEmailInterface
+                        {
+                            MessageId = mimeMessage.MessageId,
+                            From = mimeMessage.From.ToString(),
+                            To = mimeMessage.To.ToString(),
+                            Subject = mimeMessage.Subject,
+                            Body = mimeMessage.HtmlBody != null ? mimeMessage.HtmlBody : mimeMessage.TextBody,
+                            Date = mimeMessage.Date.DateTime
+                        };
+                        SetupEmailAttachments(mimeMessage, quoteEmailMessage);
+                        emailMessages.Add(quoteEmailMessage);
                     }
                 }
-                _imapClient.Disconnect(true);
                 return emailMessages;
             }
             else
             {
-                _imapClient.Disconnect(true);
-                return new List<MimeMessage>();
+                return new List<QuoteEmailInterface>();
+            }
+        }
+
+        private void SetupEmailAttachments(MimeMessage mimeMessage, QuoteEmailInterface emailMessage)
+        {
+            foreach (var attachment in mimeMessage.Attachments)
+            {
+                if (attachment is MessagePart)
+                {
+                    var fileName = attachment.ContentDisposition?.FileName;
+                    var rfc822 = (MessagePart)attachment;
+
+                    if (string.IsNullOrEmpty(fileName))
+                        fileName = "attached-message.eml";
+
+                    using var stream = new MemoryStream();
+                    rfc822.Message.WriteTo(stream);
+                    var fileBytes = stream.ToArray();
+                    var base64 = Convert.ToBase64String(fileBytes);
+                    emailMessage.Attachments.Add(new AttachmentModel
+                    {
+                        ContentType = rfc822.ContentType.MimeType,
+                        FileName = fileName,
+                        Base64Data = base64
+                    });
+                }
+                else
+                {
+                    var part = (MimePart)attachment;
+                    var fileName = part.FileName;
+
+                    using var stream = new MemoryStream();
+                    part.Content.DecodeTo(stream);
+                    var fileBytes = stream.ToArray();
+                    var base64 = Convert.ToBase64String(fileBytes);
+                    emailMessage.Attachments.Add(new AttachmentModel
+                    {
+                        ContentType = part.ContentType.MimeType,
+                        FileName = fileName,
+                        Base64Data = base64
+                    });
+                }
             }
         }
     }
