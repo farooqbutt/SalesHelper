@@ -67,10 +67,9 @@ namespace SalesHelper.Controllers
                     account.EncryptedSaleshelperEmailPassword = _encdecService.Encrypt(password);
                     _context.Account.Update(account);
                     _context.SaveChanges();
-                    if (account.EncryptedSaleshelperEmailPassword == "" || account.EncryptedSaleshelperEmailPassword == null)
-                    {
-                        HMailCreateAccount(account.SaleshelperMailingAddress!, password);
-                    }
+
+                    // Update hMail Account
+                    HMailUpdateAccount(account.SaleshelperMailingAddress!);
                 }
 
                 var data = new { message = "success", result = account };
@@ -310,22 +309,15 @@ namespace SalesHelper.Controllers
             }
         }
 
-        private void HMailCreateAccount(string companyName, string password)
+        private void HMailUpdateAccount(string companyName)
         {
             try
             {
                 Application hMailApp = HMailAuthenticate();
                 Domain myDomain = hMailApp.Domains.ItemByName[_config.GetValue<string>("HMailServerSettings:Domain")];
-                hMailServer.Account account = myDomain.Accounts.Add();
+                hMailServer.Account account = myDomain.Accounts.ItemByAddress[companyName];
                 account.Address = companyName;
-                account.Password = password;
-                account.Active = true;
-                account.MaxSize = 500; // 500MB
                 account.Save();
-                _ = account.IMAPFolders.Add("Trash"); // creating Trash folder
-                _ = account.IMAPFolders.Add("Sent");  // creating Sent folder
-                account.IMAPFolders.ItemByName["Trash"].Subscribed = true; // Subscribing Trash folder
-                account.IMAPFolders.ItemByName["Sent"].Subscribed = true;  // Subscribing Sent folder
             }
             catch (Exception ex)
             {

@@ -13,6 +13,8 @@ using SalesHelper.Data;
 using SalesHelper.Models;
 using SalesHelper.Services.EmailService;
 using DotLiquid;
+using SalesHelper.Services.EncryptionServices;
+using hMailServer;
 
 namespace SalesHelper.Areas.Identity.Pages.Account
 {
@@ -27,6 +29,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly EncryptionDecryptionService _encdecService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -36,6 +39,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             ApplicationDbContext context,
             EmailService emailService,
             IConfiguration config,
+            EncryptionDecryptionService encdecService,
             IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
@@ -47,6 +51,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
             _context = context;
             _config = config;
             _webHostEnvironment = webHostEnvironment;
+            _encdecService = encdecService;
         }
 
         /// <summary>
@@ -132,9 +137,13 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 try
                 {
                     account.CompanyName = Input.CompanyName;
-                    account.SaleshelperMailingAddress = Input.CompanyName.Replace(" ", "");
+                    account.SaleshelperMailingAddress = Input.CompanyName.Replace(" ", "") + "@saleshelper.com";
+                    account.EncryptedSaleshelperEmailPassword = _encdecService.Encrypt(Input.Password);
                     _context.Account.Add(account);
                     await _context.SaveChangesAsync();
+
+                    // creating an account in hMailServer
+                    HMailCreateAccount(account.SaleshelperMailingAddress, Input.Password);
                 }
                 catch (Exception)
                 {
@@ -223,6 +232,46 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
+        }
+
+        private Application HMailAuthenticate()
+        {
+            try
+            {
+                Application app = new();
+                _ = app.Authenticate(
+                    _config.GetValue<string>("HMailServerSettings:UserName"),
+                    _config.GetValue<string>("HMailServerSettings:Password")
+                    );
+                return app;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while authenticating hMailServer: " + ex.Message);
+            }
+        }
+
+        private void HMailCreateAccount(string companyName, string password)
+        {
+            try
+            {
+                Application hMailApp = HMailAuthenticate();
+                Domain myDomain = hMailApp.Domains.ItemByName[_config.GetValue<string>("HMailServerSettings:Domain")];
+                hMailServer.Account account = myDomain.Accounts.Add();
+                account.Address = companyName;
+                account.Password = password;
+                account.Active = true;
+                account.MaxSize = 500; // 500MB
+                account.Save();
+                _ = account.IMAPFolders.Add("Trash"); // creating Trash folder
+                _ = account.IMAPFolders.Add("Sent");  // creating Sent folder
+                account.IMAPFolders.ItemByName["Trash"].Subscribed = true; // Subscribing Trash folder
+                account.IMAPFolders.ItemByName["Sent"].Subscribed = true;  // Subscribing Sent folder
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while creating hMail account: " + ex.Message);
+            }
         }
     }
 }
