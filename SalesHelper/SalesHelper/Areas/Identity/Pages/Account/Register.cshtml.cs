@@ -132,7 +132,7 @@ namespace SalesHelper.Areas.Identity.Pages.Account
                 try
                 {
                     account.CompanyName = Input.CompanyName;
-                    account.SaleshelperMailingAddress = new Guid().ToString();
+                    account.SaleshelperMailingAddress = Input.CompanyName.Replace(" ", "");
                     _context.Account.Add(account);
                     await _context.SaveChangesAsync();
                 }
