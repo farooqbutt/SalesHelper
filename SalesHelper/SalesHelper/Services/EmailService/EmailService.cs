@@ -84,7 +84,7 @@ namespace SalesHelper.Services.EmailService
                 email.Body = bodyBuilder.ToMessageBody();
 
                 using var smtp = new SmtpClient();
-                smtp.Connect("mail.saleshelper.com", 543, false);
+                smtp.Connect(_config.GetValue<string>("HMailServerSettings:Server"), _config.GetValue<int>("HMailServerSettings:SMTP_Port"), false);
                 smtp.Authenticate(EmailSender(accountNumber).SaleshelperMailingAddress, _encdecService.Decrypt(EmailSender(accountNumber).EncryptedSaleshelperEmailPassword!));
                 smtp.Send(email);
                 smtp.Disconnect(true);
