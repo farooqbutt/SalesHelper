@@ -185,7 +185,7 @@
                                                 <td class="text-left">@item.Material</td>
                                                 <td>@item.Brand</td>
                                                 <td>@item.Color</td>
-                                                <td>@item.VendorIdFk.CompanyName</td>
+                                                <td>@item.VendorIdFk!.CompanyName</td>
                                                 <td>$@item.VendorRate</td>
                                                 <td class="font-weight-bold text-right">$@item.PriceQuote</td>
                                             </tr>
@@ -313,6 +313,7 @@
         formData.append('subject', $('#subject').val());
         formData.append('body', $('#body').val());
         formData.append('quoteId', @Model.CountertopQuotation.Id);
+        formData.append('vendorId', @Model.CountertopMaterials.First().VendorId);
         formData.append('attachmentName', "Estimate-Request-" + @Model.CountertopQuotation.Id + ".pdf");
 
         var fileInput = $('#attachment')[0].files[0];

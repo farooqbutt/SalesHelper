@@ -246,6 +246,7 @@
 
             @if (Model.QuoteEmails.Any())
             {
+                <h2 class="text-primary">Quote Emails</h2>
                 <div class="collapsible email-detail-head">
                     @foreach (var (item, emailIndex) in Model.QuoteEmails.Select((email, emailIndex) => (email, emailIndex)))
                     {
@@ -264,10 +265,10 @@
                                 </div>
                                 <div class="information d-sm-flex d-none align-items-center">
                                     <small class="text-muted mr-50">@item.Date</small>
-                                    <span class="favorite">
-                                        <i class="feather icon-star mr-25"></i>
-                                    </span>
-                                    @* <div class="dropdown">
+                                    @* <span class="favorite">
+                            <i class="feather icon-star mr-25"></i>
+                            </span>
+                            <div class="dropdown">
                             <a href="#" class="dropdown-toggle" id="fisrt-open-submenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="feather icon-more-vertical mr-0"></i>
                             </a>
