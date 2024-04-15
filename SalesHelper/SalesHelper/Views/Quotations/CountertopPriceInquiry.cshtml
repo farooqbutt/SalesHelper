@@ -246,78 +246,6 @@
     </div>
 </div>
 
-@if (Model.QuoteEmails.Any())
-{
-    <h2 class="text-primary">Quote Emails</h2>
-    <div class="collapsible email-detail-head">
-        @foreach (var (item, emailIndex) in Model.QuoteEmails.Select((email, emailIndex) => (email, emailIndex)))
-        {
-            <div class="card collapse-header" role="tablist">
-                <div id="headingCollapse_@emailIndex" class="card-header d-flex justify-content-between align-items-center" data-toggle="collapse" role="tab" data-target="#collapse_@emailIndex" aria-expanded="false" aria-controls="collapse_@emailIndex">
-                    <div class="collapse-title media">
-                        <div class="pr-1">
-                            <div class="avatar mr-75 bg-primary">
-                                <i class="feather icon-user"></i>
-                            </div>
-                        </div>
-                        <div class="media-body mt-25">
-                            <span class="text-primary">@item.From</span>
-                            <small class="text-muted d-block">to @item.To</small>
-                        </div>
-                    </div>
-                    <div class="information d-sm-flex d-none align-items-center">
-                        <small class="text-muted mr-50">@item.Date</small>
-                        @* <span class="favorite">
-                <i class="feather icon-star mr-25"></i>
-                </span>
-                <div class="dropdown">
-                <a href="#" class="dropdown-toggle" id="fisrt-open-submenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="feather icon-more-vertical mr-0"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fisrt-open-submenu">
-                <a href="#" class="dropdown-item mail-reply">
-                <i class="feather icon-share-2"></i>
-                Reply
-                </a>
-                <a href="#" class="dropdown-item">
-                <i class="feather icon-corner-up-right"></i>
-                Forward
-                </a>
-                <a href="#" class="dropdown-item">
-                <i class="feather icon-info"></i>
-                Report Spam
-                </a>
-                </div>
-                </div> *@
-                    </div>
-                </div>
-                <div id="collapse_@emailIndex" role="tabpanel" aria-labelledby="headingCollapse_@emailIndex" class="collapse">
-                    <div class="card-content">
-                        <div class="card-body py-1">
-                            @Html.Raw(item.Body)
-                        </div>
-                        @if (item.Attachments.Any())
-                        {
-                            <div class="card-footer pt-2 border-top">
-                                <label class="font-weight-bold text-secondary">Attached Files</label>
-                                <ul class="list-unstyled mb-0">
-                                    @foreach (var attachment in item.Attachments)
-                                    {
-                                        <li class="cursor-pointer pb-25" onclick='OpenOrDownloadAttachment("@attachment.ContentType", "@attachment.FileName", "@attachment.Base64Data")'>
-                                            <i class="feather icon-paperclip"></i>
-                                            <small class="text-muted ml-1 attchement-text">@attachment.FileName</small>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-}
-
 @* Estimate Request Modal for sending email *@
 <div class="modal fade text-left" id="EstiamteRequestModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-sm modal-dialog" role="document">
@@ -373,37 +301,6 @@
 
 
 <script>
-    function OpenOrDownloadAttachment(contentType, fileName, base64Data) {
-        event.preventDefault(); // preventing other events to be triggered
-        // Convert base64 data to a Blob object
-        const byteNumbers = atob(base64Data.replace(/^.*,/, ''));
-        const byteArray = new Array(byteNumbers.length);
-        for (let i = 0; i < byteNumbers.length; i++) {
-            byteArray[i] = byteNumbers.charCodeAt(i);
-        }
-        const blob = new Blob([new Uint8Array(byteArray)], { type: contentType });
-        // Check the content type and open in a new tab or download based on the type
-        if (contentType.startsWith('application/pdf') || contentType.startsWith('image/')) {
-            // Open in a new tab
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.target = '_blank';
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            // Download
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    }
-
     function SendEstimateRequest() {
         $('#EstiamteRequestModal').modal('show');
     }

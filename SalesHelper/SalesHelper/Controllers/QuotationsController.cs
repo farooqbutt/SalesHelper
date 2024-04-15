@@ -469,7 +469,8 @@ namespace SalesHelper.Controllers
             var data = new CountertopQuotationCreateInterface
             {
                 CountertopQuotation = quotation,
-                CountertopMaterials = quotationMaterials
+                CountertopMaterials = quotationMaterials,
+                QuoteEmails = _countertopQuoteService.ReadCountertopQuoteEmails(id, _signInManager.UserManager.GetUserAsync(User).Result).Result
             };
             return View(data);
         }
@@ -491,8 +492,7 @@ namespace SalesHelper.Controllers
             var data = new CountertopQuotationCreateInterface
             {
                 CountertopQuotation = quotation,
-                CountertopMaterials = quotationMaterials,
-                QuoteEmails = _countertopQuoteService.ReadCountertopQuoteEmails(quoteId, _signInManager.UserManager.GetUserAsync(User).Result).Result
+                CountertopMaterials = quotationMaterials
             };
             return View(data);
         }
