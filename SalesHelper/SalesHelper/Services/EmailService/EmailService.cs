@@ -89,6 +89,8 @@ namespace SalesHelper.Services.EmailService
                 smtp.Send(email);
                 smtp.Disconnect(true);
 
+                SaveMessageCopyToSentFolderForUsers(email, EmailSender(accountNumber).SaleshelperMailingAddress!, _encdecService.Decrypt(EmailSender(accountNumber).EncryptedSaleshelperEmailPassword!)); // save a copy of the email in the sent folder
+
                 // creating a record of the email sent in our database
                 quoteEmail.EmailMessageId = email.MessageId;
                 CreateQuoteEmail(quoteEmail);
@@ -153,6 +155,27 @@ namespace SalesHelper.Services.EmailService
                 using var imap = new ImapClient();
                 await imap.ConnectAsync(_config.GetValue<string>("SaleshelperTeamAccount:Server"), _config.GetValue<int>("SaleshelperTeamAccount:IMAP_Port"), false);
                 await imap.AuthenticateAsync(_config.GetValue<string>("SaleshelperTeamAccount:Email"), _config.GetValue<string>("SaleshelperTeamAccount:Password"));
+
+                var sentFolder = imap.GetFolder("Sent");
+                await sentFolder.OpenAsync(FolderAccess.ReadWrite);
+                await sentFolder.AppendAsync(email);
+                var message = await sentFolder.SearchAsync(SearchQuery.HeaderContains("Message-Id", email!.MessageId));
+                await sentFolder.SetFlagsAsync(message.First(), MessageFlags.Seen, true);
+                await imap.DisconnectAsync(true);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private async void SaveMessageCopyToSentFolderForUsers(MimeMessage? email, string saleshelperMailingAddress, string password)
+        {
+            try
+            {
+                using var imap = new ImapClient();
+                await imap.ConnectAsync(_config.GetValue<string>("HMailServerSettings:Server"), _config.GetValue<int>("HMailServerSettings:IMAP_Port"), false);
+                await imap.AuthenticateAsync(saleshelperMailingAddress, password);
 
                 var sentFolder = imap.GetFolder("Sent");
                 await sentFolder.OpenAsync(FolderAccess.ReadWrite);
