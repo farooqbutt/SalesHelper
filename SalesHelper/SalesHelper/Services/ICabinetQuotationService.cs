@@ -1,5 +1,4 @@
-﻿using MimeKit;
-using SalesHelper.Models;
+﻿using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services

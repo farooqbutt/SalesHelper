@@ -15,8 +15,8 @@ namespace SalesHelper.Controllers
 {
     public class QuotationsController : Controller
     {
-        private readonly CabinetQuotationService _cabinetQuotationService;
-        private readonly CountertopQuotationService _countertopQuotationService;
+        private readonly CabinetQuotationService _cabinetQuoteService;
+        private readonly CountertopQuotationService _countertopQuoteService;
         private readonly CustomerService _customerService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
@@ -40,8 +40,8 @@ namespace SalesHelper.Controllers
             GeneratePDFService generatePDFService,
             ProfileCheckService profileCheckService)
         {
-            _cabinetQuotationService = cabinetQuotationRepo;
-            _countertopQuotationService = countertopQuotationRepo;
+            _cabinetQuoteService = cabinetQuotationRepo;
+            _countertopQuoteService = countertopQuotationRepo;
             _customerService = customerRepo;
             _context = context;
             _env = env;
@@ -100,9 +100,9 @@ namespace SalesHelper.Controllers
         {
             // right now this is only for getting cabinet quotations
             //TODO: add other quotations logic here as well
-            var cabinetQuotations = _cabinetQuotationService.ReadAll().Where(a => a.CreatedByUserId ==
+            var cabinetQuotations = _cabinetQuoteService.ReadAll().Where(a => a.CreatedByUserId ==
                             _signInManager.UserManager.GetUserAsync(User).Result.Id).OrderByDescending(a => a.ModifiedDateTime).ToList();
-            var countertopQuotations = _countertopQuotationService.ReadAll().Where(a => a.CreatedByUserId ==
+            var countertopQuotations = _countertopQuoteService.ReadAll().Where(a => a.CreatedByUserId ==
                                        _signInManager.UserManager.GetUserAsync(User).Result.Id).OrderByDescending(a => a.ModifiedDateTime).ToList();
             var quotationsList = new List<QuotationsListVM>();
 
@@ -148,8 +148,8 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult EditCabinetQuotation(int id)
         {
-            var cabinetQuotation = _cabinetQuotationService.Read(id);
-            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
+            var cabinetQuotation = _cabinetQuoteService.Read(id);
+            return View(_cabinetQuoteService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpPost]
@@ -169,7 +169,7 @@ namespace SalesHelper.Controllers
             };
             var jsonData = JsonConvert.SerializeObject(additionalInfo);
 
-            var quoteToUpdate = _cabinetQuotationService.Read(cabinetQuotation.Id);
+            var quoteToUpdate = _cabinetQuoteService.Read(cabinetQuotation.Id);
             // updating only fields that are changed in cabinet quotation
             quoteToUpdate.Name = cabinetQuotation.Name;
             quoteToUpdate.CustomerId = cabinetQuotation.CustomerId;
@@ -202,7 +202,7 @@ namespace SalesHelper.Controllers
             quoteToUpdate.VendorPrice = cabinetQuotation.VendorPrice;
             quoteToUpdate.CommentOnPrice = cabinetQuotation.CommentOnPrice;
 
-            _cabinetQuotationService.Update(quoteToUpdate);
+            _cabinetQuoteService.Update(quoteToUpdate);
             return RedirectToAction("CabinetQuotationDetailedView", new { id = cabinetQuotation.Id });
         }
 
@@ -231,7 +231,7 @@ namespace SalesHelper.Controllers
             var jsonData = JsonConvert.SerializeObject(additionalInfo);
             cabinetQuotation.AdditionalInformation = jsonData;
 
-            _cabinetQuotationService.Create(cabinetQuotation);
+            _cabinetQuoteService.Create(cabinetQuotation);
             cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
             return RedirectToAction("CabinetQuotationDetailedView", new { id = cabinetQuotation.Id });
         }
@@ -239,10 +239,10 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult CabinetQuotationDetailedView(int id)
         {
-            var cabinetQuotation = _cabinetQuotationService.Read(id);
+            var cabinetQuotation = _cabinetQuoteService.Read(id);
             var data = new QuotationFullViewInterface
             {
-                CabinetQuotation = _cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation),
+                CabinetQuotation = _cabinetQuoteService.CabinetQuoteInterface(cabinetQuotation),
             };
             return View(data);
         }
@@ -250,23 +250,23 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult CabinetQuotationDetailedView(QuotationFullViewInterface quoteData)
         {
-            _cabinetQuotationService.Update(quoteData.CabinetQuotation);
+            _cabinetQuoteService.Update(quoteData.CabinetQuotation);
             return RedirectToAction("FullCabinetQuoteView", new { id = quoteData.CabinetQuotation.Id });
         }
 
         [HttpGet]
         public IActionResult FullCabinetQuoteView(int id)
         {
-            var cabinetQuotation = _cabinetQuotationService.Read(id);
-            var finalCabinetQuotation = _cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation);
-            finalCabinetQuotation.QuoteEmails = _cabinetQuotationService.ReadCabinetQuoteEmails(id, _signInManager.UserManager.GetUserAsync(User).Result).Result;
+            var cabinetQuotation = _cabinetQuoteService.Read(id);
+            var finalCabinetQuotation = _cabinetQuoteService.CabinetQuoteInterface(cabinetQuotation);
+            finalCabinetQuotation.QuoteEmails = _cabinetQuoteService.ReadCabinetQuoteEmails(id, _signInManager.UserManager.GetUserAsync(User).Result).Result;
             return View(finalCabinetQuotation);
         }
 
         [HttpGet]
         public IActionResult AttachCabinetItems(int id)
         {
-            var cabinetQuotation = _cabinetQuotationService.Read(id);
+            var cabinetQuotation = _cabinetQuoteService.Read(id);
             cabinetQuotation.CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId);
             cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
             var doorStyles = _context.CabinetryDoorStyles.Where(
@@ -290,7 +290,7 @@ namespace SalesHelper.Controllers
                 if (itemsList.Count > 0)
                 {
                     // update modified date time of cabinet quotation
-                    _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(itemsList.First().QuotationId)));
+                    _cabinetQuoteService.Update(TimeAndUserUpdate(_cabinetQuoteService.Read(itemsList.First().QuotationId)));
                     /////////////////////////////////
                     _context.QuotationItems.AddRange(itemsList);
                     _context.SaveChanges();
@@ -322,7 +322,7 @@ namespace SalesHelper.Controllers
                 _context.SaveChanges();
 
                 // update modified date time of cabinet quotation
-                _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(item.QuotationId)));
+                _cabinetQuoteService.Update(TimeAndUserUpdate(_cabinetQuoteService.Read(item.QuotationId)));
 
                 return Json(new { message = "success", result = "Item Updated Successfully!" });
             }
@@ -338,7 +338,7 @@ namespace SalesHelper.Controllers
             try
             {
                 // update modified date time of cabinet quotation
-                _cabinetQuotationService.Update(TimeAndUserUpdate(_cabinetQuotationService.Read(_context.QuotationItems.Find(itemid)!.QuotationId)));
+                _cabinetQuoteService.Update(TimeAndUserUpdate(_cabinetQuoteService.Read(_context.QuotationItems.Find(itemid)!.QuotationId)));
                 /////////////////////////////////
                 _context.QuotationItems.Remove(_context.QuotationItems.Find(itemid)!);
                 _context.SaveChanges();
@@ -361,8 +361,8 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult CabinetQuotePrintPreview(int id)
         {
-            var cabinetQuotation = _cabinetQuotationService.Read(id);
-            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
+            var cabinetQuotation = _cabinetQuoteService.Read(id);
+            return View(_cabinetQuoteService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpGet]
@@ -373,8 +373,8 @@ namespace SalesHelper.Controllers
                 TempData["Message"] = "Please Complete Your Profile First!";
                 return RedirectToAction("ProfileView", "AccountSettings");
             }
-            var cabinetQuotation = _cabinetQuotationService.Read(id);
-            return View(_cabinetQuotationService.CabinetQuoteInterface(cabinetQuotation));
+            var cabinetQuotation = _cabinetQuoteService.Read(id);
+            return View(_cabinetQuoteService.CabinetQuoteInterface(cabinetQuotation));
         }
 
         [HttpPost]
@@ -418,7 +418,7 @@ namespace SalesHelper.Controllers
         [HttpPost]
         public IActionResult CreateCountertopQuotation(CountertopQuotationCreateInterface quotation)
         {
-            _countertopQuotationService.Create(quotation.CountertopQuotation);
+            _countertopQuoteService.Create(quotation.CountertopQuotation);
             foreach (var item in quotation.CountertopMaterials)
             {
                 item.CountertopQuotationId = quotation.CountertopQuotation.Id;
@@ -431,7 +431,7 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult EditCountertopQuotation(int id)
         {
-            var quotation = _countertopQuotationService.Read(id);
+            var quotation = _countertopQuoteService.Read(id);
             quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
             var data = new CountertopQuotationCreateInterface
             {
@@ -448,7 +448,7 @@ namespace SalesHelper.Controllers
             _context.CountertopMaterials.RemoveRange(_context.CountertopMaterials.Where(a => a.CountertopQuotationId == quote.CountertopQuotation.Id));
             _context.SaveChanges();
             // update countertop quotation
-            _countertopQuotationService.Update(quote.CountertopQuotation);
+            _countertopQuoteService.Update(quote.CountertopQuotation);
             // add countertop materials
             foreach (var item in quote.CountertopMaterials)
             {
@@ -462,7 +462,7 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult CountertopQuoteDetailedView(int id)
         {
-            var quotation = _countertopQuotationService.Read(id);
+            var quotation = _countertopQuoteService.Read(id);
             quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
             quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
             var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == id).Include(a => a.VendorIdFk).ToList();
@@ -483,7 +483,7 @@ namespace SalesHelper.Controllers
                 return RedirectToAction("ProfileView", "AccountSettings");
             }
 
-            var quotation = _countertopQuotationService.Read(quoteId);
+            var quotation = _countertopQuoteService.Read(quoteId);
             quotation.CustomerIdFk = _customerService.Read(quotation.CustomerId);
             quotation.CustomerIdFk.AddressIdFK = _addressService.Read(quotation.CustomerIdFk.AddressId);
             var quotationMaterials = _context.CountertopMaterials.Where(a => a.CountertopQuotationId == quoteId &&
@@ -491,7 +491,8 @@ namespace SalesHelper.Controllers
             var data = new CountertopQuotationCreateInterface
             {
                 CountertopQuotation = quotation,
-                CountertopMaterials = quotationMaterials
+                CountertopMaterials = quotationMaterials,
+                QuoteEmails = _countertopQuoteService.ReadCountertopQuoteEmails(quoteId, _signInManager.UserManager.GetUserAsync(User).Result).Result
             };
             return View(data);
         }
@@ -526,13 +527,13 @@ namespace SalesHelper.Controllers
         [HttpGet]
         public IActionResult GetBrandsForMaterial(string material)
         {
-            return Json(_countertopQuotationService.GetBrandsForMaterial(material));
+            return Json(_countertopQuoteService.GetBrandsForMaterial(material));
         }
 
         [HttpGet]
         public IActionResult GetColorsForBrand(string brand, string color)
         {
-            return Json(_countertopQuotationService.GetColorsForBrand(brand, color));
+            return Json(_countertopQuoteService.GetColorsForBrand(brand, color));
         }
 
         #endregion COUNTERTOP QUOTATIONS
@@ -581,7 +582,7 @@ namespace SalesHelper.Controllers
                             FilePath = filePath,
                             UploadDate = DateTime.Now,
                             QuotationId = quoteData.Id,
-                            QuotationIdFK = _cabinetQuotationService.Read(quoteData.Id)
+                            QuotationIdFK = _cabinetQuoteService.Read(quoteData.Id)
                         };
 
                         await _context.QuotationDocuments.AddAsync(document);

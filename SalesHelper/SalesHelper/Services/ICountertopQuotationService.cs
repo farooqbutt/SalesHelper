@@ -1,4 +1,5 @@
 ﻿using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services
 {
@@ -11,5 +12,6 @@ namespace SalesHelper.Services
         public void Delete(int id);
         public List<string> GetBrandsForMaterial(string material);
         public List<CountertopBrandsData> GetColorsForBrand(string brand, string color);
+        public Task<List<QuoteEmailInterface>> ReadCountertopQuoteEmails(int quoteId, ApplicationUser user); // Read Cabinet Quote Emails
     }
 }

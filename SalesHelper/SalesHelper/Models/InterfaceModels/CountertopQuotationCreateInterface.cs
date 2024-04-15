@@ -4,5 +4,6 @@
     {
         public CountertopQuotation CountertopQuotation { get; set; }  = new CountertopQuotation();
         public List<CountertopMaterial> CountertopMaterials { get; set; } = new List<CountertopMaterial>();
+        public List<QuoteEmailInterface> QuoteEmails { get; set; } = default!;
     }
 }
