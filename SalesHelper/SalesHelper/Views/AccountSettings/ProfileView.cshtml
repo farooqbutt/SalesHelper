@@ -87,8 +87,8 @@
                                                 <td><a id="emailAddress" href=""></a></td>
                                             </tr>
                                             <tr>
-                                                <td>SalesHelper Email</td>
-                                                <td><a id="saleshelperEmailAddress" href=""></a></td>
+                                                <td>SalesHelper Mailing Address</td>
+                                                <td><a id="saleshelperMailingAddress" href=""></a></td>
                                             </tr>
                                             <tr>
                                                 <td>Website</td>
@@ -354,11 +354,13 @@
             url: "/AccountSettings/GetAccount",
             success: function (data) {
                 if (data.message == "success") {
+                    console.log(data.result);
                     $("#accountNumber").text(data.result.accountNumber);
                     $("#companyName").text(data.result.companyName);
                     $("#emailAddress").text(data.result.email);
                     $("#emailAddress").attr('href', "mailto:" + data.result.email);
-                    $("#saleshelperEmailAddress").text(data.result.salesHelperUsername);
+                    $("#saleshelperMailingAddress").text(data.result.saleshelperMailingAddress);
+                    $("#saleshelperMailingAddress").attr('href', "mailto:" + data.result.saleshelperMailingAddress);
                     $("#mainPhone").text(data.result.mainPhone);
                     $("#fax").text(data.result.fax);
                     $("#primaryContact").text(data.result.primaryContact);

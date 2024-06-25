@@ -432,7 +432,7 @@
                         </ul>
                     </li>
                     <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" ? "active open" : "")">
-                        <a href="#"><i class="feather icon-edit"></i><span class="menu-title">Quotes</span></a>
+                        <a href="#"><i class="ti-files"></i><span class="menu-title">Quotes</span></a>
                         <ul class="menu-content">
                             <li class="">
                                 <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Quotes</a>
@@ -472,14 +472,16 @@
                             </li>
                         </ul>
                     </li>
-                    <li class=" nav-item">
-                        <a href="#"><i class="ti-files"></i><span class="menu-title">Sales</span></a>
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Sales" ? "active open" : "")">
+                        <a href="#"><i class="feather icon-bar-chart"></i><span class="menu-title">Sales</span></a>
                         <ul class="menu-content">
-                            <li class="">
-                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Sales</a>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Sales" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateSales" ? "active" : "")">
+                                <a class="menu-item" asp-controller="Sales" asp-action="CreateSales">Create New Sales</a>
                             </li>
-                            <li class="">
-                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Sales</a>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Sales" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "SalesList" ? "active" : "")">
+                                <a class="menu-item" asp-controller="Sales" asp-action="SalesList">View Sales</a>
                             </li>
                         </ul>
                     </li>
@@ -621,7 +623,7 @@
                             <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "Vendors" &&
                     ViewContext.RouteData.Values["action"]!.ToString() == "ViewMyVendors" ? "active" : "")">
                                 <a class="menu-item" asp-controller="Vendors" asp-action="ViewMyVendors">
-                                    <i class="feather icon-eye"></i>View Venodrs
+                                    View Venodrs
                                 </a>
                             </li>
                         </ul>
@@ -721,6 +723,9 @@
     <script src="/vendors/js/forms/quill/quill.js"></script>
     <script src="/vendors/js/extensions/sweetalert2.all.min.js"></script>
     <!-- END: Page Vendor JS-->
+
+    <!-- Include Inputmask JS -->
+    <script src="/js/scripts/inputmask/jquery.inputmask.js"></script>
 
     <!-- BEGIN: Theme JS-->
     <script src="/js/core/app-menu.js"></script>

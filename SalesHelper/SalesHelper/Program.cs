@@ -18,12 +18,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// database related services
 builder.Services.AddScoped<VendorService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<AddressService>();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<CabinetQuotationService>();
 builder.Services.AddScoped<CountertopQuotationService>();
+builder.Services.AddScoped<SalesService>();
+// additional services
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<GeneratePDFService>();
 builder.Services.AddScoped<ProfileCheckService>();
@@ -57,7 +60,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint(); 
+    app.UseMigrationsEndPoint();
 }
 else
 {

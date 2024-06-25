@@ -27,6 +27,7 @@ namespace SalesHelper.Data
         public DbSet<CountertopMaterial> CountertopMaterials { get; set; } = default!;
         public DbSet<CountertopBrandsData> CountertopBrandsData { get; set; } = default!;
         public DbSet<QuotationEmails> QuotationEmails { get; set; } = default!;
+        public DbSet<Sale> Sales { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -63,6 +64,10 @@ namespace SalesHelper.Data
 
             modelBuilder.Entity<Vendor>()
                 .Property(a=>a.VendorReferenceId).IsRequired(false);
+
+            modelBuilder.Entity<Sale>()
+                .Property(a=>a.Id)
+                .UseIdentityColumn(10001, 1);
 
             modelBuilder.Entity<BusinessTypes>().HasData(new BusinessTypes
             {

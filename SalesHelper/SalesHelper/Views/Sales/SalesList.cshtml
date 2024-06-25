@@ -1,0 +1,62 @@
+﻿<div class="content-overlay"></div>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">All Sales</h3>
+        </div>
+        <div class="content-header-right col-md-6 col-12 mb-md-0 mb-2">
+            <a class="btn btn-primary float-right" asp-controller="Sales" asp-action="CreateSales">
+                <i class="fa fa-plus"></i> Add New Sale
+            </a>
+        </div>
+    </div>
+    <div class="content-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-content collpase show">
+                        <div class="card-body card-dashboard">
+                            <table id="salesList" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Sale #</th>
+                                        <th>Quote #</th>
+                                        <th>Customer</th>
+                                        <th>Sales Type</th>
+                                        <th>Status</th>
+                                        @* <th>Vendor</th> *@
+                                        <th>Date Created</th>
+                                        <th>Date Modified</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#salesList').DataTable({
+            "pageLength": 50,
+            // "columnDefs": [
+            //     { "orderable": false, "targets": [1, 2, 3, 4, 7] }
+            // ],
+            "ajax": {
+                "url": "/Sales/SalesList",
+                "type": "GET",
+                "dataType": "json",
+                "dataSrc": "data"
+            },
+            "columns": [
+
+            ]
+        });
+
+        $('#salesList').DataTable().order([]).draw();
+    });
+</script>

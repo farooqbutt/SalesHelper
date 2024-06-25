@@ -53,7 +53,7 @@ namespace SalesHelper.Services
         {
             try
             {
-                return _context.CabinetQuotations.Find(id)!;
+                return _context.CabinetQuotations.Where(a => a.Id == id).Include(a => a.CustomerIdFk).Include(a => a.VendorIdFk).FirstOrDefault()!;
             }
             catch (Exception e)
             {

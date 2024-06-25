@@ -1,4 +1,8 @@
-﻿
+﻿<style>
+.dropdown-toggle::after {
+    content: none !important;
+}
+</style>
 <div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -213,17 +217,31 @@
                     "render": function (data, type, row) {
                         return `
                                 <div class="text-center">
-                                    <span class="dropdown">
-                                        <a id="btnSearchDrop6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="dropdown-toggle dropdown-menu-right"><i class="fa fa-ellipsis-v"></i></a>
-                                        <span aria-labelledby="btnSearchDrop6" class="dropdown-menu mt-1 dropdown-menu-right">
+                                    <span class="dropdown mr-2">
+                                        <a id="btnAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="dropdown-toggle dropdown-menu-right"><i class="fa fa-ellipsis-v"></i></a>
+                                        <span aria-labelledby="btnAction" class="dropdown-menu mt-1 dropdown-menu-right">
                                             <a href="/Customers/EditCustomer/${row.customerObject.id}" class="dropdown-item">
-                                                <i class="fa fa-pencil-square-o primary mr-1"></i>Edit
+                                                <i class="fa fa-pencil-square-o primary mr-1"></i> Edit
                                             </a>
                                             <button onclick="DeleteCustomer(${row.customerObject.id})" class="dropdown-item">
                                                 <i class="fa fa-trash danger"></i> Delete
                                             </button>
                                         </span>
                                     </span>
+                                        <span class="dropdown">
+                                            <a id="btnAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="dropdown-toggle dropdown-menu-right"><i class="feather icon-eye"></i></a>
+                                            <span aria-labelledby="btnAction" class="dropdown-menu mt-1 dropdown-menu-right">
+                                                <a href="/Customers/EditCustomer/${row.customerObject.id}" class="dropdown-item">
+                                                    <i class="ti-files primary mr-1"></i> View Quotes
+                                                </a>
+                                                <a href="/Customers/EditCustomer/${row.customerObject.id}" class="dropdown-item">
+                                                    <i class="feather icon-bar-chart primary mr-1"></i> View Sales
+                                                </a>
+                                                <a href="/Customers/EditCustomer/${row.customerObject.id}" class="dropdown-item">
+                                                    <i class="feather icon-shopping-cart primary mr-1"></i> View Orders
+                                                </a>
+                                            </span>
+                                        </span>
                                 </div>
                             `;
                     }

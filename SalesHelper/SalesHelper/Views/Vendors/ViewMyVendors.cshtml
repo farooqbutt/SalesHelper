@@ -59,7 +59,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Company Name</label>
+                            <label>Company Name *</label>
                             <div class="form-group position-relative has-icon-left">
                                 <input asp-for="CompanyName" type="text" class="form-control" placeholder="Company Name" required>
                                 <div class="form-control-position">
@@ -69,7 +69,7 @@
 
                             <label>Email</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Email" type="text" class="form-control" placeholder="Email Address" required>
+                                <input asp-for="Email" type="text" class="form-control" placeholder="Email Address">
                                 <div class="form-control-position">
                                     <i class="feather icon-mail primary"></i>
                                 </div>
@@ -77,7 +77,7 @@
 
                             <label>Main Phone</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="MainPhone" type="text" class="form-control" placeholder="Main Phone" required>
+                                <input asp-for="MainPhone" type="text" class="form-control" placeholder="Main Phone">
                                 <div class="form-control-position">
                                     <i class="feather icon-phone primary"></i>
                                 </div>
@@ -85,7 +85,7 @@
 
                             <label>Fax</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Fax" type="text" class="form-control" placeholder="Fax" required>
+                                <input asp-for="Fax" type="text" class="form-control" placeholder="Fax">
                                 <div class="form-control-position">
                                     <i class="feather icon-phone primary"></i>
                                 </div>
@@ -95,7 +95,7 @@
                         <div class="col-md-6">
                             <label>Primary Contact</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="PrimaryContact" type="text" class="form-control" placeholder="Primary Contact Name" required>
+                                <input asp-for="PrimaryContact" type="text" class="form-control" placeholder="Primary Contact Name">
                                 <div class="form-control-position">
                                     <i class="feather icon-user primary"></i>
                                 </div>
@@ -103,7 +103,7 @@
 
                             <label>Primary Contact Phone</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="PrimaryContactPhone" type="text" class="form-control" placeholder="Primary Contact Phone" required>
+                                <input asp-for="PrimaryContactPhone" type="text" class="form-control" placeholder="Primary Contact Phone">
                                 <div class="form-control-position">
                                     <i class="feather icon-phone primary"></i>
                                 </div>
@@ -111,13 +111,13 @@
 
                             <label>Website</label>
                             <div class="form-group position-relative has-icon-left">
-                                <input asp-for="Website" type="text" class="form-control" placeholder="Websit Link" required>
+                                <input asp-for="Website" type="text" class="form-control" placeholder="Websit Link">
                                 <div class="form-control-position">
                                     <i class="feather icon-link primary"></i>
                                 </div>
                             </div>
 
-                            <label for="businessTypesSelect">Business Type</label>
+                            <label for="businessTypesSelect">Business Type *</label>
                             <div class="form-group position-relative has-icon-left">
                                 <select asp-for="BusinessTypeId" id="businessTypesSelect"></select>
                                 <div class="form-control-position">
@@ -138,7 +138,7 @@
                         <div class="col-md-12">
                             <fieldset>
                                 <div class="custom-control custom-checkbox mb-2">
-                                    <input asp-for="IsPrivate" type="checkbox" class="custom-control-input" id="isPrivateCheck">
+                                    <input asp-for="IsPrivate" type="checkbox" checked="checked" class="custom-control-input" id="isPrivateCheck">
                                     <label class="custom-control-label" for="isPrivateCheck">
                                         <b>Is Private?</b>
                                     </label>
@@ -164,8 +164,14 @@
 
 <script>
     $(document).ready(function () {
-        var businessTypesList = @Html.Raw(Json.Serialize(businessTypesList));
 
+        // Apply input mask to phone number fields
+        $("#MainPhone, #PrimaryContactPhone, #Fax").inputmask({
+            mask: '999-999-9999',
+            placeholder: '___-___-____'
+        });
+
+        var businessTypesList = @Html.Raw(Json.Serialize(businessTypesList));
         $("#businessTypesSelect").select2({
             dropdownAutoWidth: true,
             width: '100%',
@@ -176,6 +182,8 @@
                 };
             })
         });
+        // select cabinetry by default
+        $("#businessTypesSelect").val(1).trigger('change');
 
 
         // Get My Vendors List

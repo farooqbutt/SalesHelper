@@ -38,7 +38,7 @@ namespace SalesHelper.Models
         public BusinessTypes BusinessTypeIdFK { get; set; } = default!;
 
         [Required]
-        public bool IsPrivate { get; set; }
+        public bool IsPrivate { get; set; } = true;
 
         public bool IsRTA { get; set; } = false;
 
