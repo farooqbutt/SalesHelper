@@ -20,152 +20,149 @@
         </div>
     </div>
     <div class="content-body">
-        <form class="form" asp-controller="Sales" asp-action="AddSales" method="post">
+        <!-- New Sale section start -->
+        <section id="basic-form-layouts">
             <div class="row match-height">
-                <div class="col-md-4">
-                    <h4 class="form-section"><i class="fa fa-info-circle"></i> Sales Order Information</h4>
-                    <div class="form-group">
-                        <label>Sales #</label>
-                        <input asp-for="SalesNumber" type="text" class="form-control square" placeholder="Sales #" />
-                    </div>
-                    <div class="form-group">
-                        <label>Customer</label>
-                        <input asp-for="Customer" type="text" class="form-control square" placeholder="Customer" />
-                    </div>
-                    <div class="form-group">
-                        <label>Home Phone</label>
-                        <input asp-for="HomePhone" type="text" class="form-control square" placeholder="Home Phone" />
-                    </div>
-                    <div class="form-group">
-                        <label>Cell Phone</label>
-                        <input asp-for="CellPhone" type="text" class="form-control square" placeholder="Cell Phone" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input asp-for="Email" type="email" class="form-control square" placeholder="Email" />
-                    </div>
-                    <div class="form-group">
-                        <label>Created By</label>
-                        <input asp-for="CreatedBy" type="text" class="form-control square" placeholder="Created By" />
-                    </div>
-                    <div class="form-group">
-                        <label>Sales Date</label>
-                        <input asp-for="SalesDate" type="date" class="form-control square" />
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <h4 class="form-section"><i class="fa fa-home"></i> Home Address</h4>
-                    <div class="form-group">
-                        <label>Address 1</label>
-                        <input asp-for="HomeAddress.Address1" type="text" class="form-control square" placeholder="Address 1" />
-                    </div>
-                    <div class="form-group">
-                        <label>Address 2</label>
-                        <input asp-for="HomeAddress.Address2" type="text" class="form-control square" placeholder="Address 2" />
-                    </div>
-                    <div class="form-group">
-                        <label>City</label>
-                        <input asp-for="HomeAddress.City" type="text" class="form-control square" placeholder="City" />
-                    </div>
-                    <div class="form-group">
-                        <label>Country</label>
-                        <select asp-for="HomeAddress.Country" id="countrySelect" class="form-control square">
-                            <option value="">Select a country</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>State</label>
-                        <select asp-for="HomeAddress.State" id="stateSelect" class="form-control square">
-                            <option value="">Select a state</option>
-                            <!-- Add state options here -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Zip</label>
-                        <input asp-for="HomeAddress.Zip" type="text" class="form-control square" placeholder="Zip" />
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <h4 class="form-section"><i class="fa fa-truck"></i> Shipping Address</h4>
-                    <div class="form-group">
-                        <label>Label</label>
-                        <input asp-for="ShippingAddress.Label1" type="text" class="form-control square" placeholder="Label" />
-                    </div>
-                    <div class="form-group">
-                        <label>Label</label>
-                        <input asp-for="ShippingAddress.Label2" type="text" class="form-control square" placeholder="Label" />
-                    </div>
-                    <div class="form-group">
-                        <label>Label</label>
-                        <input asp-for="ShippingAddress.Label3" type="text" class="form-control square" placeholder="Label" />
-                    </div>
-                    <div class="form-group">
-                        <label>Label</label>
-                        <input asp-for="ShippingAddress.Label4" type="text" class="form-control square" placeholder="Label" />
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <form id="saleForm" class="form">
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <h4 class="form-section"><i class="feather icon-user"></i> Customer Info</h4>
+                                                <div class="form-group">
+                                                    <label>Customer <span class="required">*</span></label>
+                                                    <input id="Customer" type="text" class="form-control square" placeholder="Customer" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input id="Email" type="email" class="form-control square" placeholder="Email">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Cell Phone <span class="required">*</span></label>
+                                                    <input id="CellPhone" type="text" class="form-control square" placeholder="Cell Phone" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Home Phone</label>
+                                                    <input id="HomePhone" type="text" class="form-control square" placeholder="Home Phone">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Created By</label>
+                                                    <input id="CreatedBy" type="text" class="form-control square" placeholder="Created By">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h4 class="form-section"><i class="feather icon-home"></i> Customer Address Info</h4>
+                                                <div class="form-group">
+                                                    <label>Address Line 1</label>
+                                                    <input id="HomeAddress1" class="form-control square" type="text" placeholder="Address Line 1">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Address Line 2</label>
+                                                    <input id="HomeAddress2" class="form-control square" type="text" placeholder="Address Line 2">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>City</label>
+                                                    <input id="HomeCity" class="form-control square" type="text" placeholder="City">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Country</label>
+                                                    <input id="HomeCountry" class="form-control square" type="text" placeholder="Country">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>State</label>
+                                                    <input id="HomeState" class="form-control square" type="text" placeholder="State">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Zip</label>
+                                                    <input id="HomeZip" type="text" class="form-control square" placeholder="Zip Code">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h4 class="form-section"><i class="feather icon-truck"></i> Shipping Info</h4>
+                                                <div class="form-group">
+                                                    <label>Shipping Label 1</label>
+                                                    <input id="ShippingLabel1" class="form-control square" type="text" placeholder="Shipping Label 1">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Shipping Label 2</label>
+                                                    <input id="ShippingLabel2" class="form-control square" type="text" placeholder="Shipping Label 2">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Shipping Label 3</label>
+                                                    <input id="ShippingLabel3" class="form-control square" type="text" placeholder="Shipping Label 3">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Shipping Label 4</label>
+                                                    <input id="ShippingLabel4" class="form-control square" type="text" placeholder="Shipping Label 4">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <button type="reset" class="btn btn-warning"><i class="feather icon-x"></i> Cancel</button>
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o"></i> Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="form-actions">
-                <button type="reset" class="btn btn-warning">
-                    <i class="fa fa-times"></i> Cancel
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-check-square-o"></i> Save
-                </button>
-            </div>
-        </form>
+        </section>
+        <!-- // New Sale section end -->
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        $("#HomePhone, #CellPhone").inputmask({
+        // Apply input mask to phone number fields
+        $("#CellPhone, #HomePhone").inputmask({
             mask: '999-999-9999',
             placeholder: '___-___-____'
         });
 
-        $('#stateSelect').select2({
-            tags: true,
-            placeholder: 'Select or type a state',
-            allowClear: true,
-            createTag: function (params) {
-                return {
-                    id: params.term,
-                    text: params.term,
-                    newOption: true
-                };
-            },
-            templateResult: function (data) {
-                var $result = $("<span></span>");
-                $result.text(data.text);
-                return $result;
-            }
-        });
+        // Handle form submission
+        $("#saleForm").on("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
 
-        $('#countrySelect').select2({
-            placeholder: 'Select a country',
-            allowClear: true
-        });
+            // Gather form data
+            const formData = {
+                Customer: $("#Customer").val(),
+                Email: $("#Email").val(),
+                CellPhone: $("#CellPhone").val(),
+                HomePhone: $("#HomePhone").val(),
+                CreatedBy: $("#CreatedBy").val(),
+                HomeAddress1: $("#HomeAddress1").val(),
+                HomeAddress2: $("#HomeAddress2").val(),
+                HomeCity: $("#HomeCity").val(),
+                HomeCountry: $("#HomeCountry").val(),
+                HomeState: $("#HomeState").val(),
+                HomeZip: $("#HomeZip").val(),
+                ShippingLabel1: $("#ShippingLabel1").val(),
+                ShippingLabel2: $("#ShippingLabel2").val(),
+                ShippingLabel3: $("#ShippingLabel3").val(),
+                ShippingLabel4: $("#ShippingLabel4").val()
+            };
 
-        $.ajax({
-            url: 'https://restcountries.com/v3.1/all',
-            method: 'GET',
-            success: function (data) {
-                let countries = data.map(country => ({
-                    id: country.cca2,
-                    text: country.name.common
-                }));
-                $('#countrySelect').select2({
-                    data: countries
-                });
-                $('#countrySelect').val('US').trigger('change');
-            },
-            error: function (error) {
-                console.error('Error fetching countries:', error);
-            }
+            // Perform AJAX request
+            $.ajax({
+                url: '@Url.Action("CreateSales", "Sales")', // Change this URL to your desired endpoint
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    alert("Sale created successfully!");
+                    // Optionally, redirect to another page or reset the form
+                    // window.location.href = '/Sales/Index';
+                },
+                error: function (error) {
+                    console.error("Error creating sale:", error);
+                    alert("An error occurred while creating the sale.");
+                }
+            });
         });
     });
 </script>
