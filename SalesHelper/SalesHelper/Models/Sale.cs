@@ -50,34 +50,6 @@ namespace SalesHelper.Models
         public DateTime ModifiedDate { get; set; }
         public SaleStatus Status { get; set; }
         public decimal? Balance { get; set; }
-        public SaleStatus SalesOrder { get; set; }
-        public string SalesNumber { get; set; }
-        public Address HomeAddress { get; set; }
-        public string Customer { get; set; }
-        public string HomePhone { get; set; }
-        public string CellPhone { get; set; }
-        public string Email { get; set; }
-        public string CreatedBy { get; set; }
-        public Address ShippingAddress { get; set; }
-        public string Name { get; set; }
-
-        public string PostalCode { get; set; }
         public decimal? SubTotal { get; set; }
     }
-
-    public class Address
-    {
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
-        public string Label1 { get; set; }
-        public string Label2 { get; set; }
-        public string Label3 { get; set; }
-        public string Label4 { get; set; }
-    }
-
-
 }
