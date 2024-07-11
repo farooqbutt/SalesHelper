@@ -9,8 +9,10 @@
         public string? BuiltInOven { get; set; }
         public string? BuiltInDrawerMicrowave { get; set; }
         public string? Sink { get; set; }
-        public string? Comments { get; set; }
+        public string? CommentsOnAdditionalInfo { get; set; }
 
+        // Cabinet Details
+        public List<CabinetDetail> CabinetDetailsList { get; set; } = default!;
 
         // Quotation Document
         public List<IFormFile> DocumentFiles { get; set; } = default!;

@@ -217,7 +217,7 @@
             method: 'GET',
             success: function (data) {
                 let countries = data.map(country => ({
-                    id: country.cca2,
+                    id: country.name.common,
                     text: country.name.common
                 }));
                 $('#countrySelect').select2({

@@ -32,77 +32,66 @@
     <div class="content-detached content-left">
         <div class="content-body">
 
-            <div class="row row-cols-1 row-cols-md-2 match-height">
-                <div class="col">
-                    <div class="card" style="height: 320.5px;">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.Id</b></span></h2>
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-body">
+                        <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.Id</b></span></h2>
+                        <div class="d-flex">
+                            <div class="flex-grow-1 align-items-start d-flex">
                                 <p class="card-text">
                                     <b>Customer Name:</b>
                                     <a class="text-primary" asp-controller="Customers" asp-action="CustomerDetailedView" asp-route-id="@Model.CustomerId">
                                         @Model.CustomerIdFk.FirstName @Model.CustomerIdFk.LastName
                                     </a>
                                 </p>
-                                <p class="card-text"><b>Quote Name:</b> @Model.Name</p>
-                                <p class="card-text"><b>Cabinetry:</b> @Model.VendorIdFk.CompanyName </p>
-                                <p class="card-text"><b>Construction:</b> @Model.Construction </p>
-                                <p class="card-text"><b>Box Materials:</b> @Model.BoxMaterials </p>
+                            </div>
+                            <div class="flex-grow-1 align-items-start d-flex">
+                                <p class="card-text"><b>Quote Name:</b> @Model.CabinetQuoteName</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col">
-                    <div class="card" style="height: 320.5px;">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div @(Model.isOneColorDesign == true ? "" : "hidden")>
-                                    <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (One Color)</span></h2>
-                                    <p class="card-text"><b>Door Style:</b> @Model.DoorStyleForOneColorDesign </p>
-                                    <p class="card-text"><b>Wood Species:</b> @Model.WoodSpeciesForOneColorDesign </p>
-                                    <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetFinishForOneColorDesign </p>
-                                </div>
-                                <div @(Model.isOneColorDesign == false ? "" : "hidden")>
-                                    <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b></span></h2>
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Section</th>
+                                    <th>Cabinetry</th>
+                                    <th>Construction</th>
+                                    <th>Box Materials</th>
+                                    <th>Wood Sopecies</th>
+                                    <th>Door Style</th>
+                                    <th>Finish</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CabinetDetailsList)
+                                {
+                                    <tr>
+                                        <td>@item.SectionName</td>
+                                        <td>@item.VendorIdFk.CompanyName</td>
+                                        <td>@item.Construction</td>
+                                        <td>@item.BoxMaterial</td>
+                                        <td>@item.WoodSpecie</td>
+                                        <td>@item.DoorStyle</td>
+                                        <td>@item.CabinetFinish</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
 
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Section</th>
-                                                <th>Wood Species</th>
-                                                <th>Door Style</th>
-                                                <th>Finish</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="font-weight-bold">Upper</td>
-                                                <td>@Model.UpperWoodSpeciesForMultipleColorDesign</td>
-                                                <td>@Model.UpperDoorStyleForMultipleColorDesign</td>
-                                                <td>@Model.UpperFinishForMultipleColorDesign</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font-weight-bold">Lower</td>
-                                                <td>@Model.LowerWoodSpeciesForMultipleColorDesign</td>
-                                                <td>@Model.LowerDoorStyleForMultipleColorDesign</td>
-                                                <td>@Model.LowerFinishForMultipleColorDesign</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font-weight-bold">Island</td>
-                                                <td>@Model.IslandWoodSpeciesForMultipleColorDesign</td>
-                                                <td>@Model.IslandDoorStyleForMultipleColorDesign</td>
-                                                <td>@Model.IslandFinishForMultipleColorDesign</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                        <p class="card-text mr-2"><b>Comments:</b> @Model.CommentsOnCabinetDetails </p>
 
-                                    <p class="card-text"><b>Comments:</b> @Model.CommentsOnMultiColorDesign </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 match-height">
 
                 <div class="col">
                     <div class="card" style="height: 389.2px;">
@@ -116,7 +105,7 @@
                                 <p class="card-text"><b>Built-in Oven:</b> @Html.Raw(Model.BuiltInOven) </p>
                                 <p class="card-text"><b>Built-in Drawer Microwave:</b> @Html.Raw(Model.BuiltInDrawerMicrowave) </p>
                                 <p class="card-text"><b>Sink:</b> @Html.Raw(Model.Sink) </p>
-                                <p class="card-text"><b>Comments:</b> @Html.Raw(Model.Comments) </p>
+                                <p class="card-text"><b>Comments:</b> @Html.Raw(Model.CommentsOnAdditionalInfo) </p>
                             </div>
                         </div>
                     </div>

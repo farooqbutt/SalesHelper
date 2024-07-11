@@ -1,5 +1,7 @@
-﻿using SalesHelper.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesHelper.Data;
 using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services
 {
@@ -14,11 +16,18 @@ namespace SalesHelper.Services
             _cabinetQuotationService = cabinetQuotationService;
             _countertopQuotationService = countertopQuotationService;
         }
-        public void Create(Sale sale)
+        public void Create(CreateSaleInterface sale)
         {
             try
             {
-                _context.Sales.Add(sale);
+                _context.Sales.Add(sale.SaleData);
+                _context.SaveChanges();
+                //assign sales id to each cabinet item and save to database
+                foreach (var item in sale.CabinetItems)
+                {
+                    item.SalesId = sale.SaleData.Id;
+                    _context.SalesCabinetItems.Add(item);
+                }
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -56,7 +65,10 @@ namespace SalesHelper.Services
         {
             try
             {
-                return _context.Sales.Where(a => a.CreatedByFK.AccountNumber == accountNumber).OrderByDescending(a => a.SalesDate).ToList();
+                return _context.Sales.Where(a => a.CreatedByFK.AccountNumber == accountNumber)
+                    .Include(a => a.CreatedByFK)
+                    .Include(a => a.CustomerFK)
+                    .OrderByDescending(a => a.SalesDate).ToList();
             }
             catch (Exception e)
             {
@@ -77,34 +89,14 @@ namespace SalesHelper.Services
             }
         }
 
-        public Sale CreateSaleForView(int quoteId, string quoteType)
+        public void UpdateStatus(int id, string status)
         {
             try
             {
-                if (quoteType == "Cabinet")
-                {
-                    return new Sale
-                    {
-                        CabinetQuotationId = quoteId,
-                        CabinetQuotationFK = _cabinetQuotationService.Read(quoteId),
-                        Status = SaleStatus.Pending,
-                        SalesDate = DateTime.Now
-                    };
-                }
-                else if (quoteType == "Countertop")
-                {
-                    return new Sale
-                    {
-                        CountertopQuotationId = quoteId,
-                        CountertopQuotationFK = _countertopQuotationService.Read(quoteId),
-                        Status = SaleStatus.Pending,
-                        SalesDate = DateTime.Now
-                    };
-                }
-                else
-                {
-                    return new Sale();
-                }
+                var sale = Read(id);
+                sale.Status = status;
+                _context.Sales.Update(sale);
+                _context.SaveChanges();
             }
             catch (Exception e)
             {

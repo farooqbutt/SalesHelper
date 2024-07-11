@@ -2,21 +2,36 @@
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.CabinetQuoteInterface
 @inject SalesHelper.Services.CustomerService _customerService
-@inject SalesHelper.Data.ApplicationDbContext _context
+@inject SalesHelper.Services.VendorService _vendorService
 @{
     var customerId = Model.CustomerId;
-    var vendorId = Model.VendorId;
     var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
-    var cabinetryVendors = _context.Vendor.Where(v => v.BusinessTypeId == 1).ToList();
+    // getting vendors for cabinetry business type (1 == "Cabinetry")
+    var cabinetryVendors = _vendorService.ReadAll().Where(v => v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber && v.BusinessTypeId == 1).ToList();
+
+    //list of sections
+    var sectionsNames = Enum.GetValues(typeof(CabinetDetail.SectionNames))
+                        .Cast<CabinetDetail.SectionNames>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();    //list of constructions
+    var constructions = Enum.GetValues(typeof(CabinetDetail.Constructions))
+                        .Cast<CabinetDetail.Constructions>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var boxMaterials = Enum.GetValues(typeof(CabinetDetail.BoxMaterials))
+                        .Cast<CabinetDetail.BoxMaterials>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of wood species
+    var woodSpecies = Enum.GetValues(typeof(CabinetDetail.WoodSpecies))
+                        .Cast<CabinetDetail.WoodSpecies>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
 }
 <style>
-    #additionalInformationHeading{
-        padding-left:0;
-        padding-right:0;
-    }
-
-    .select2-container .select2-selection--single .select2-selection__rendered {
-        padding-left: 35px;
+    #additionalInformationHeading {
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .select2-selection {
@@ -31,7 +46,6 @@
     .input-group > .select2-container--default .select2-selection--single {
         height: 100%;
         line-height: inherit;
-        padding: 0.5rem 1rem;
     }
 </style>
 
@@ -62,243 +76,167 @@
             </div>
             <div class="card-content collapse show">
                 <div class="card-body">
-                    <form class="form" asp-controller="Quotations" asp-action="EditCabinetQuotation">
+                    <form class="form" id="EditCabinetQuoteForm">
                         <div class="form-body">
 
                             <div class="hidden">
-                                <input asp-for="Id" />
-                                <input asp-for="CustomerId" />
-                                <input asp-for="CabinetPrice" />
-                                <input asp-for="DeliveryCharge" />
-                                <input asp-for="InstallationFee" />
-                                <input asp-for="Tax" />
-                                <input asp-for="VendorPrice" />
-                                <input asp-for="CommentOnPrice" />
-                                <input asp-for="CreatedDateTime" />
-                                <input asp-for="ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
-                                <input asp-for="CreatedByUserId" />
+                                <input id="Id" />
+                                <input id="CustomerId" />
+                                <input id="CabinetPrice" />
+                                <input id="DeliveryCharge" />
+                                <input id="InstallationFee" />
+                                <input id="Tax" />
+                                <input id="VendorPrice" />
+                                <input id="CommentOnPrice" />
+                                <input id="CreatedDateTime" />
+                                <input id="ModifiedDateTime" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+                                <input id="CreatedByUserId" />
                             </div>
 
 
                             <div class="form-group">
                                 <label>Customer Name <span class="required">*</span></label>
-                                <div class="input-group has-icon-left">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text square">
+                                            <i class="feather icon-user"></i>
+                                        </span>
+                                    </div>
                                     <input class="form-control square" value="@Model.CustomerIdFk.FirstName @Model.CustomerIdFk.LastName"
                                            title="Customer can not be changed" disabled />
-                                    <div class="form-control-position">
-                                        <i class="feather icon-user primary"></i>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label>Quote Name <span class="required">*</span></label>
-                                <input class="form-control square" asp-for="Name" placeholder="Quote Name" required />
+                                <input class="form-control square" id="CabinetQuoteName" value="@Model.CabinetQuoteName" placeholder="Quote Name" required />
                             </div>
+
+                            <table class="table table-responsive" id="cabinetDetailsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Cabinetry</th>
+                                        <th>Construction</th>
+                                        <th>Box Materials</th>
+                                        <th>Wood Sopecies</th>
+                                        <th>Door Style</th>
+                                        <th>Finish</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CabinetDetailsList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <select class="form-control square sectionName" placeholder="section">
+                                                    @foreach (var sectionName in sectionsNames)
+                                                    {
+                                                        if (sectionName == item.SectionName)
+                                                        {
+                                                            <option value="@sectionName" selected>@sectionName</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@sectionName">@sectionName</option>
+                                                        }
+                                                    }
+                                                    @if (!sectionsNames.Contains(item.SectionName))
+                                                    {
+                                                        <option value="@item.SectionName" selected>@item.SectionName</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control square cabinetryVendor" placeholder="cabinetry">
+                                                    @foreach (var vendor in cabinetryVendors)
+                                                    {
+                                                        if(vendor.VendorId == item.VendorId)
+                                                        {
+                                                            <option value="@vendor.VendorId" selected>@vendor.CompanyName</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@vendor.VendorId">@vendor.CompanyName</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control square constructions" placeholder="construction">
+                                                    @foreach (var construction in constructions)
+                                                    {
+                                                        if (construction == item.Construction)
+                                                        {
+                                                            <option value="@construction" selected>@construction</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@construction">@construction</option>
+                                                        }
+                                                    }
+                                                    @if (!constructions.Contains(item.Construction!))
+                                                    {
+                                                        <option value="@item.Construction" selected>@item.Construction</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control square boxMaterials" placeholder="box materials">
+                                                    @foreach (var boxMaterial in boxMaterials)
+                                                    {
+                                                        if (boxMaterial == item.BoxMaterial)
+                                                        {
+                                                            <option value="@boxMaterial" selected>@boxMaterial</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@boxMaterial">@boxMaterial</option>
+                                                        }
+                                                    }
+                                                    @if (!boxMaterials.Contains(item.BoxMaterial!))
+                                                    {
+                                                        <option value="@item.BoxMaterial" selected>@item.BoxMaterial</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control square woodSpecies" placeholder="wood species">
+                                                    @foreach (var woodSpecie in woodSpecies)
+                                                    {
+                                                        if (woodSpecie == item.WoodSpecie)
+                                                        {
+                                                            <option value="@woodSpecie" selected>@woodSpecie</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@woodSpecie">@woodSpecie</option>
+                                                        }
+                                                    }
+                                                    @if (!woodSpecies.Contains(item.WoodSpecie!))
+                                                    {
+                                                        <option value="@item.WoodSpecie" selected>@item.WoodSpecie</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" value="@item.DoorStyle" placeholder="Door Style" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control square" value="@item.CabinetFinish" placeholder="Finish" />
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Cabinet Details"></i></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
 
                             <div class="form-group">
-                                <label>Cabinetry <span class="required">*</span></label>
-                                <div class="input-group has-icon-left">
-                                    <select class="form-control square" asp-for="VendorId" data-placeholder="Select a Cabinetry Provider" required></select>
-                                    <div class="form-control-position">
-                                        <i class="feather icon-users primary"></i>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <a class="btn btn-primary" asp-controller="Vendors" asp-action="ViewMyVendors" target="_blank">
-                                            Add New Cabinetry
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Construction</label>
-                                        <select class="form-control square" asp-for="Construction">
-                                            <option disabled>Choose Construction</option>
-                                            <option value="Frameless">Frameless</option>
-                                            <option value="Framed Inset">Framed Inset</option>
-                                            <option value="Framed Overlay">Framed Overlay</option>
-                                            <option value="Framed Partial Overlay">Framed Partial Overlay</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Box Materials</label>
-                                        <select class="form-control square" asp-for="BoxMaterials">
-                                            <option disabled>Choose Box Materials</option>
-                                            <option value='1/2" Plywood'>1/2" Plywood</option>
-                                            <option value='3/4"" Plywood'>3/4"" Plywood</option>
-                                            <option value="MDF">MDF</option>
-                                            <option value="Practical Board">Practical Board</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-radio">
-                                            <input asp-for="isOneColorDesign" type="radio" class="custom-control-input" id="oneColor" value="true" checked="@(Model.isOneColorDesign == true)" />
-                                            <label class="custom-control-label" for="oneColor">One Color Design</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-radio">
-                                            <input asp-for="isOneColorDesign" type="radio" class="custom-control-input" id="multiColor" value="false" checked="@(Model.isOneColorDesign == false)"/>
-                                            <label class="custom-control-label" for="multiColor">Multiple Color Design</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div id="oneColorDesignDiv" @(Model.isOneColorDesign == true ? "" : "hidden")>
-                                <h4 class="form-section"><i class="fa fa-th-large primary"></i> One Color Design</h4>
-                                <div class="form-group">
-                                    <label>Wood Species</label>
-                                    <select class="form-control square" asp-for="WoodSpeciesForOneColorDesign">
-                                        <option selected disabled>Wood Species</option>
-                                        <option value="Alder">Alder</option>
-                                        <option value="Birch">Birch</option>
-                                        <option value="Cherry">Cherry</option>
-                                        <option value="Hickory">Hickory</option>
-                                        <option value="Maple">Maple</option>
-                                        <option value="MDF">MDF</option>
-                                        <option value="Pine">Pine</option>
-                                        <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                        <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                        <option value="Red Oak">Red Oak</option>
-                                        <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                        <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                        <option value="White Oak">White Oak</option>
-                                        <option value="Walnut">Walnut</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Door Style</label>
-                                    <input class="form-control square" asp-for="DoorStyleForOneColorDesign" placeholder="Door Style" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Cabinet Finish</label>
-                                    <input class="form-control square" asp-for="CabinetFinishForOneColorDesign" placeholder="Cabinet Finish" />
-                                </div>
-                            </div>
-
-                            <div id="multiColorDesignDiv" @(Model.isOneColorDesign == true ? "hidden" : "")>
-                                <h4 class="form-section"><i class="fa fa-th-large primary"></i> Multiple Color Design</h4>
-
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Section</th>
-                                            <th>Wood Species</th>
-                                            <th>Door Style</th>
-                                            <th>Finish</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Upper</td>
-                                            <td>
-                                                <select class="form-control square" asp-for="UpperWoodSpeciesForMultipleColorDesign">
-                                                    <option selected disabled>Wood Species</option>
-                                                    <option value="Alder">Alder</option>
-                                                    <option value="Birch">Birch</option>
-                                                    <option value="Cherry">Cherry</option>
-                                                    <option value="Hickory">Hickory</option>
-                                                    <option value="Maple">Maple</option>
-                                                    <option value="MDF">MDF</option>
-                                                    <option value="Pine">Pine</option>
-                                                    <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                                    <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                                    <option value="Red Oak">Red Oak</option>
-                                                    <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                                    <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                                    <option value="White Oak">White Oak</option>
-                                                    <option value="Walnut">Walnut</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input class="form-control square" asp-for="UpperDoorStyleForMultipleColorDesign" placeholder="Upper Door Style" />
-                                            </td>
-                                            <td>
-                                                <input class="form-control square" asp-for="UpperFinishForMultipleColorDesign" placeholder="Upper Cabinet Color" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Lower</td>
-                                            <td>
-                                                <select class="form-control square" asp-for="LowerWoodSpeciesForMultipleColorDesign">
-                                                    <option selected disabled>Wood Species</option>
-                                                    <option value="Alder">Alder</option>
-                                                    <option value="Birch">Birch</option>
-                                                    <option value="Cherry">Cherry</option>
-                                                    <option value="Hickory">Hickory</option>
-                                                    <option value="Maple">Maple</option>
-                                                    <option value="MDF">MDF</option>
-                                                    <option value="Pine">Pine</option>
-                                                    <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                                    <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                                    <option value="Red Oak">Red Oak</option>
-                                                    <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                                    <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                                    <option value="White Oak">White Oak</option>
-                                                    <option value="Walnut">Walnut</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input class="form-control square" asp-for="LowerDoorStyleForMultipleColorDesign" placeholder="Lower Door Style" />
-                                            </td>
-                                            <td>
-                                                <input class="form-control square" asp-for="LowerFinishForMultipleColorDesign" placeholder="Lower Cabinet Color" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Island</td>
-                                            <td>
-                                                <select class="form-control square" asp-for="IslandWoodSpeciesForMultipleColorDesign">
-                                                    <option selected disabled>Wood Species</option>
-                                                    <option value="Alder">Alder</option>
-                                                    <option value="Birch">Birch</option>
-                                                    <option value="Cherry">Cherry</option>
-                                                    <option value="Hickory">Hickory</option>
-                                                    <option value="Maple">Maple</option>
-                                                    <option value="MDF">MDF</option>
-                                                    <option value="Pine">Pine</option>
-                                                    <option value="Quarter Saw Red Oak">Quarter Saw Red Oak</option>
-                                                    <option value="Quarter Saw White Oak">Quarter Saw White Oak</option>
-                                                    <option value="Red Oak">Red Oak</option>
-                                                    <option value="Rift Cut Red Oak">Rift Cut Red Oak</option>
-                                                    <option value="Rift Cut White Oak">Rift Cut White Oak</option>
-                                                    <option value="White Oak">White Oak</option>
-                                                    <option value="Walnut">Walnut</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input class="form-control square" asp-for="IslandDoorStyleForMultipleColorDesign" placeholder="Island Door Style" />
-                                            </td>
-                                            <td>
-                                                <input class="form-control square" asp-for="IslandFinishForMultipleColorDesign" placeholder="Island Cabinet Color" />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <div class="form-group">
-                                    <label>Comments</label>
-                                    <textarea class="form-control square" asp-for="CommentsOnMultiColorDesign" rows="3" placeholder="Comments"></textarea>
-                                </div>
+                                <label>Comments on Cabinet Details</label>
+                                <textarea class="form-control square" id="CommentsOnCabinetDetails" placeholder="Comments on Cabinet Details...">@Model.CommentsOnCabinetDetails</textarea>
                             </div>
 
                             <div id="additionalInformationWrap" role="tablist" aria-multiselectable="true">
@@ -314,7 +252,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Refrigerator</label>
-                                                    <select asp-for="Refrigerator" class="form-control square">
+                                                    <select id="Refrigerator" class="form-control square">
                                                         <option value='18" Refrigerator'>18" Refrigerator</option>
                                                         <option value='24" Refrigerator'>24" Refrigerator</option>
                                                         <option value='30" Refrigerator'>30" Refrigerator</option>
@@ -335,7 +273,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Dishwasher</label>
-                                                    <select asp-for="Dishwasher" class="form-control square">
+                                                    <select id="Dishwasher" class="form-control square">
                                                         <option value="No Dishwasher">No Dishwasher</option>
                                                         <option value="18&quot; Dishwasher">18" Dishwasher</option>
                                                         <option value="24&quot; Standard Dishwasher">24" Standard Dishwasher</option>
@@ -344,7 +282,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Built-in Oven</label>
-                                                    <select asp-for="BuiltInOven" class="form-control square">
+                                                    <select id="BuiltInOven" class="form-control square">
                                                         <option value="N/A">N/A</option>
                                                         <option value="24&quot; Built-in Microwave">24" Built-in Microwave</option>
                                                         <option value="27&quot; Built-in Single Oven">27" Built-in Single Oven</option>
@@ -359,7 +297,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Sink</label>
-                                                    <select asp-for="Sink" class="form-control square">
+                                                    <select id="Sink" class="form-control square">
                                                         <option value="N/A">N/A</option>
                                                         <option value="24~28&quot; Top Mount Sink">24~28" Top Mount Sink</option>
                                                         <option value="30~32&quot; Top Mount Sink">30~32" Top Mount Sink</option>
@@ -379,7 +317,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Stove or Cooktop</label>
-                                                    <select asp-for="StoveAndCooktop" class="form-control square">
+                                                    <select id="StoveAndCooktop" class="form-control square">
                                                         <option value="18&quot; Stove">18" Stove</option>
                                                         <option value="24&quot; Stove">24" Stove</option>
                                                         <option value="30&quot; Stove">30" Stove</option>
@@ -403,7 +341,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Hood</label>
-                                                    <select asp-for="Hood" class="form-control square">
+                                                    <select id="Hood" class="form-control square">
                                                         <option value="30&quot; Microwave Hood">30" Microwave Hood</option>
                                                         <option value="30&quot; Decoration Hood">30" Decoration Hood</option>
                                                         <option value="33&quot; Decoration Hood">33" Decoration Hood</option>
@@ -419,7 +357,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Built-in Drawer Microwave</label>
-                                                    <select asp-for="BuiltInDrawerMicrowave" class="form-control square">
+                                                    <select id="BuiltInDrawerMicrowave" class="form-control square">
                                                         <option value="N/A">N/A</option>
                                                         <option value="24&quot; Drawer Microwave">24" Drawer Microwave</option>
                                                         <option value="30&quot; Drawer Microwave">30" Drawer Microwave</option>
@@ -427,7 +365,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Comments</label>
-                                                    <textarea asp-for="Comments" rows="2" class="form-control square" placeholder="Additional Comments"></textarea>
+                                                    <textarea id="CommentsOnAdditionalInfo" rows="2" class="form-control square" placeholder="Additional Comments"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -451,30 +389,44 @@
 <script>
 
     $(document).ready(function () {
-        // For Cabinetry Vendors Select List
-        var cabinetryVendorsList = @Html.Raw(Json.Serialize(cabinetryVendors));
-        $("#VendorId").select2({
-            placeholder: $(this).data("placeholder"),
-            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            data: cabinetryVendorsList.map(function (vendor) {
-                return {
-                    id: vendor.vendorId,
-                    text: vendor.companyName
-                };
-            })
-        });
-        $("#VendorId").val(@vendorId).trigger("change");
 
-        // Show and hide one color or multi color design divs
-        $('input[type=radio][name=isOneColorDesign]').change(function () {
-            if (this.value == 'true') {
-                $("#oneColorDesignDiv").removeAttr('hidden');
-                $("#multiColorDesignDiv").attr('hidden', true);
-            }
-            else if (this.value == 'false') {
-                $("#multiColorDesignDiv").removeAttr('hidden');
-                $("#oneColorDesignDiv").attr('hidden', true);
-            }
+        //cabinetry vendor configuration
+        $(".cabinetryVendor").each(function () {
+            $(this).select2({
+                placeholder: "Select Cabinetry",
+                width: "100%",
+                language: {
+                    "noResults": function () {
+                        return "No Vendor Found!";
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }
+            });
         });
+
+        $(".sectionName, .constructions, .boxMaterials, .woodSpecies").each(function () {
+            $(this).select2({
+                tags: true,
+                placeholder: 'Select or type',
+                allowClear: true,
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    };
+                },
+                templateResult: function (data) {
+                    var $result = $("<span></span>");
+                    $result.text(data.text);
+                    return $result;
+                },
+                width: '100%'
+            });
+        });
+
     });
+
 </script>

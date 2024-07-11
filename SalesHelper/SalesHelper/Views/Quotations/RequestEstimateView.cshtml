@@ -84,10 +84,10 @@
                                         <span>Cabinetry</span>
                                     </div>
                                     <div class="company-name mb-1">
-                                        <span class="text-muted no-wrap"><i class="feather icon-user"></i> @Model.VendorIdFk.CompanyName</span>
+                                        @* <span class="text-muted no-wrap"><i class="feather icon-user"></i> @Model.VendorIdFk.CompanyName</span> *@
                                     </div>
                                     <div class="company-name mb-1">
-                                        @if (Model.VendorIdFk.BusinessAddressId != null)
+                                        @* @if (Model.VendorIdFk.BusinessAddressId != null)
                                         {
                                             <span class="text-muted no-wrap">
                                                 <i class="feather icon-map-pin"></i> @_addressRepo.Read((int)Model.VendorIdFk.BusinessAddressId!).Address1
@@ -95,21 +95,21 @@
                                             <span class="text-muted no-wrap">
                                                 <i class="feather icon-map-pin"></i> @_addressRepo.Read((int)Model.VendorIdFk.BusinessAddressId!).Address2
                                             </span>
-                                        }
+                                        } *@
                                     </div>
                                     <div class="company-email  mb-1 mb-1">
                                         <span class="text-muted">
-                                            <i class="feather icon-mail"></i> @Model.VendorIdFk.Email
+                                            @* <i class="feather icon-mail"></i> @Model.VendorIdFk.Email *@
                                         </span>
                                     </div>
                                     <div class="company-name mb-1">
-                                        <span class="text-muted no-wrap"><i class="feather icon-phone"></i> @Model.VendorIdFk.Fax (Fax)</span>
+                                        @* <span class="text-muted no-wrap"><i class="feather icon-phone"></i> @Model.VendorIdFk.Fax (Fax)</span> *@
                                     </div>
                                     <div class="company-name mb-1">
-                                        @if (Model.isOneColorDesign == true)
+                                        @* @if (Model.isOneColorDesign == true)
                                         {
                                             <span class="text-muted no-wrap"><b>Door Style</b> @Model.DoorStyleForOneColorDesign</span>
-                                        }
+                                        } *@
                                     </div>
                                 </div>
                             </div>
@@ -126,10 +126,10 @@
                                             <th>Qty</th>
                                             <th>Item</th>
                                             <th>Description</th>
-                                            @if (Model.isOneColorDesign == false)
+                                            @* @if (Model.isOneColorDesign == false)
                                             {
                                                 <th>Door Style</th>
-                                            }
+                                            } *@
                                             <th>Hinge</th>
                                             <th>Finish</th>
                                             <th>Price</th>
@@ -144,10 +144,10 @@
                                                 <td>@item.Quantity</td>
                                                 <td>@item.Item</td>
                                                 <td>@item.Description</td>
-                                                @if (Model.isOneColorDesign == false)
+                                                @* @if (Model.isOneColorDesign == false)
                                                 {
                                                     <td>@item.DoorStyleName</td>
-                                                }
+                                                } *@
                                                 <td>@item.Hinge</td>
                                                 <td>@item.Finish</td>
                                                 <td>
@@ -200,7 +200,7 @@
 
                     <label>To</label>
                     <div class="form-group position-relative has-icon-left">
-                        <input id="to" type="text" class="form-control" placeholder="jane.doe@gmail.com" value="@Model.VendorIdFk.Email" readonly />
+                        @* <input id="to" type="text" class="form-control" placeholder="jane.doe@gmail.com" value="@Model.VendorIdFk.Email" readonly /> *@
                         <div class="form-control-position">
                             <i class="feather icon-mail primary"></i>
                         </div>

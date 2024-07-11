@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Services;
 
 namespace SalesHelper.Controllers
@@ -8,34 +9,47 @@ namespace SalesHelper.Controllers
     public class SalesController : Controller
     {
         private readonly SalesService _salesService;
+        private readonly CabinetQuotationService _cabinetQuotationService;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public SalesController(SalesService salesService, SignInManager<ApplicationUser> signInManager)
+        public SalesController(SalesService salesService, SignInManager<ApplicationUser> signInManager, CabinetQuotationService cabinetQuotationService)
         {
             _salesService = salesService;
             _signInManager = signInManager;
+            _cabinetQuotationService = cabinetQuotationService;
+        }
+
+        [HttpGet]
+        public List<CabinetDetail> GetCabinetItems(int quoteId)
+        {
+            return _cabinetQuotationService.GetCabinetItems(quoteId);
+        }
+
+        [HttpPost]
+        public void UpdateStatus(int id, string status)
+        {
+            _salesService.UpdateStatus(id, status);
         }
 
         [HttpGet]
         public IActionResult SalesList()
         {
-            return View((List<Sale>?)_salesService.ReadAll(_signInManager.UserManager.GetUserAsync(User).Result.AccountNumber));
+            return View();
         }
 
         [HttpGet]
-        public IActionResult CreateSales(int? quoteId, string? quoteType)
+        public JsonResult SalesListData()
         {
-            if (quoteId != null && quoteType != null)
-            {
-                return View(_salesService.CreateSaleForView(quoteId.Value, quoteType));
-            }
-            else
-            {
-                return View();
-            }
+            return Json(new { data = _salesService.ReadAll(_signInManager.UserManager.GetUserAsync(User).Result.AccountNumber) });
+        }
+
+        [HttpGet]
+        public IActionResult CreateSales()
+        {
+            return View();
         }
 
         [HttpPost]
-        public IActionResult CreateSales(Sale sale)
+        public IActionResult CreateSales(CreateSaleInterface sale)
         {
             _salesService.Create(sale);
             return View();

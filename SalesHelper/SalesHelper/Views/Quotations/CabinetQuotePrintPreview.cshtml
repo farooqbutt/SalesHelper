@@ -83,24 +83,24 @@
                                         <span>Cabinetry Vendor</span>
                                     </div>
                                     <div class="company-name mb-1">
-                                        <span class="text-muted no-wrap">Cabinetry: @Model.VendorIdFk.CompanyName</span>
+                                        @* <span class="text-muted no-wrap">Cabinetry: @Model.VendorIdFk.CompanyName</span> *@
                                     </div>
                                     <div class="company-name mb-1">
-                                        @if (Model.isOneColorDesign == true)
+                                        @* @if (Model.isOneColorDesign == true)
                                         {
                                             <span class="text-muted no-wrap">Door Style: @Model.DoorStyleForOneColorDesign</span>
                                         }
                                         else
                                         {
                                             <span class="text-muted no-wrap">Door Style: @Model.UpperDoorStyleForMultipleColorDesign</span>
-                                        }
+                                        } *@
                                     </div>
                                 </div>
                             </div>
 
                             <!-- quote details -->
                             <div class="row invoice-adress-info py-2">
-                                <div class="col-6 mt-1 from-info">
+                                @* <div class="col-6 mt-1 from-info">
                                     @if (Model.isOneColorDesign == true)
                                     {
                                         <div class="info-title mb-1">
@@ -121,7 +121,7 @@
                                         <p class="card-text">Island Wood Species: @Model.IslandWoodSpeciesForMultipleColorDesign</p>
                                         <p class="card-text">Island Finish: @Model.IslandFinishForMultipleColorDesign</p>
                                     }
-                                </div>
+                                </div> *@
                                 <div class="col-6 mt-1 to-info">
                                     <div class="info-title mb-1">
                                         <span>Aditinoal Information</span>

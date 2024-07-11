@@ -10,31 +10,31 @@ namespace SalesHelper.Models
         public int CustomerId { get; set; }
         public Customer CustomerIdFk { get; set; } = default!;
 
-        public string Name { get; set; } = string.Empty;
+        public string CabinetQuoteName { get; set; } = string.Empty;
 
-        [ForeignKey("VendorIdFk")]
-        public int VendorId { get; set; }
-        public Vendor VendorIdFk { get; set; } = default!;
+        //[ForeignKey("VendorIdFk")]
+        //public int VendorId { get; set; }
+        //public Vendor VendorIdFk { get; set; } = default!;
 
-        public string? Construction { get; set; } = string.Empty;
-        public string? BoxMaterials { get; set; } = string.Empty;
-        // is one color design or multiple color design
-        public bool? isOneColorDesign { get; set; } // true for one color design, false for multiple color design
-        //feilds for one color design
-        public string? WoodSpeciesForOneColorDesign { get; set; } = string.Empty;
-        public string? DoorStyleForOneColorDesign { get; set; } = string.Empty;
-        public string? CabinetFinishForOneColorDesign { get; set; } = string.Empty;
-        // Fields for multiple color design
-        public string? UpperWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
-        public string? UpperDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
-        public string? UpperFinishForMultipleColorDesign { get; set; } = string.Empty;
-        public string? LowerWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
-        public string? LowerDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
-        public string? LowerFinishForMultipleColorDesign { get; set; } = string.Empty;
-        public string? IslandWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
-        public string? IslandFinishForMultipleColorDesign { get; set; } = string.Empty;
-        public string? IslandDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
-        public string? CommentsOnMultiColorDesign { get; set; } = string.Empty;
+        //public string? Construction { get; set; } = string.Empty;
+        //public string? BoxMaterials { get; set; } = string.Empty;
+        //// is one color design or multiple color design
+        //public bool? isOneColorDesign { get; set; } // true for one color design, false for multiple color design
+        ////feilds for one color design
+        //public string? WoodSpeciesForOneColorDesign { get; set; } = string.Empty;
+        //public string? DoorStyleForOneColorDesign { get; set; } = string.Empty;
+        //public string? CabinetFinishForOneColorDesign { get; set; } = string.Empty;
+        //// Fields for multiple color design
+        //public string? UpperWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? UpperDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? UpperFinishForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? LowerWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? LowerDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? LowerFinishForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? IslandWoodSpeciesForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? IslandFinishForMultipleColorDesign { get; set; } = string.Empty;
+        //public string? IslandDoorStyleForMultipleColorDesign { get; set; } = string.Empty;
+        public string? CommentsOnCabinetDetails { get; set; } = string.Empty;
 
         // Additional Information for cabinet
         public string? AdditionalInformation { get; set; }

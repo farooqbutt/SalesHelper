@@ -1,4 +1,45 @@
-﻿@model SalesHelper.Models.Sale
+﻿@using Microsoft.AspNetCore.Identity
+@model SalesHelper.Models.Sale
+@inject SalesHelper.Services.CustomerService _customerService
+@inject SalesHelper.Services.VendorService _vendorService
+@inject SignInManager<ApplicationUser> _signInManager
+
+@{
+    var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+    //list of status
+    var saleStatus = Enum.GetValues(typeof(Sale.SaleStatus))
+                        .Cast<Sale.SaleStatus>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+
+    var cabinetryVendors = _vendorService.ReadAll().Where(v => v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber && v.BusinessTypeId == 1).ToList();
+
+    //list of sections
+    var sectionsNames = Enum.GetValues(typeof(CabinetDetail.SectionNames))
+                        .Cast<CabinetDetail.SectionNames>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of constructions
+    var constructions = Enum.GetValues(typeof(CabinetDetail.Constructions))
+                        .Cast<CabinetDetail.Constructions>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var boxMaterials = Enum.GetValues(typeof(CabinetDetail.BoxMaterials))
+                        .Cast<CabinetDetail.BoxMaterials>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of wood species
+    var woodSpecies = Enum.GetValues(typeof(CabinetDetail.WoodSpecies))
+                        .Cast<CabinetDetail.WoodSpecies>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+}
+
+<style>
+    .select2-selection {
+        border-radius: 0px !important;
+    }
+</style>
 
 <div class="content-overlay"></div>
 <div class="content-wrapper">
@@ -20,6 +61,834 @@
         </div>
     </div>
     <div class="content-body">
-        
+        <form class="form" id="SalesForm">
+            <div class="row match-height">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-primary" id="basic-layout-form"><i class="feather icon-info"></i> Sales Order Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Customer</label>
+                                    <div class="col-sm-9">
+                                        <input id="CustomerId" class="form-control square" placeholder="Customer">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Sales Date</label>
+                                    <div class="col-sm-9">
+                                        <input type="datetime-local" id="SalesDate" class="form-control square" placeholder="Sales Date">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-9">
+                                        <select id="Status" class="form-control square">
+                                            @foreach (var item in saleStatus)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Total Amount</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" id="TotalSalesOrderAmount" class="form-control square" placeholder="Total Amount">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Advance Paid</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" id="AdvancePaid" class="form-control square" placeholder="Advance Paid">
+                                    </div>
+                                </div>
+                            </div>
+
+                            @* two hidden inputs *@
+                            <input type="hidden" id="CreatedById" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
+                            <input type="hidden" id="ModifiedDate" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-primary" id="basic-layout-form"><i class="feather icon-home"></i> Home Address</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Address 1</label>
+                                    <div class="col-sm-9">
+                                        <input id="HomeAddress1" class="form-control square" placeholder="Address 1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Address 2</label>
+                                    <div class="col-sm-9">
+                                        <input id="HomeAddress2" class="form-control square" placeholder="Address 2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-9">
+                                        <input id="HomeCity" class="form-control square" placeholder="City">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Country</label>
+                                    <div class="col-sm-9">
+                                        <select id="HomeCountry" class="form-control square" placeholder="country">
+                                            <option value="">Select a country</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">State</label>
+                                    <div class="col-sm-9">
+                                        <select id="HomeState" class="form-control square" placeholder="state">
+                                            <option value="">Select a state</option>
+                                            <option value="Alabama">Alabama</option>
+                                            <option value="Alaska">Alaska</option>
+                                            <option value="Arizona">Arizona</option>
+                                            <option value="Arkansas">Arkansas</option>
+                                            <option value="California">California</option>
+                                            <option value="Colorado">Colorado</option>
+                                            <option value="Connecticut">Connecticut</option>
+                                            <option value="Delaware">Delaware</option>
+                                            <option value="Florida">Florida</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Hawaii">Hawaii</option>
+                                            <option value="Idaho">Idaho</option>
+                                            <option value="Illinois">Illinois</option>
+                                            <option value="Indiana">Indiana</option>
+                                            <option value="Iowa">Iowa</option>
+                                            <option value="Kansas">Kansas</option>
+                                            <option value="Kentucky">Kentucky</option>
+                                            <option value="Louisiana">Louisiana</option>
+                                            <option value="Maine">Maine</option>
+                                            <option value="Maryland">Maryland</option>
+                                            <option value="Massachusetts">Massachusetts</option>
+                                            <option value="Michigan">Michigan</option>
+                                            <option value="Minnesota">Minnesota</option>
+                                            <option value="Mississippi">Mississippi</option>
+                                            <option value="Missouri">Missouri</option>
+                                            <option value="Montana">Montana</option>
+                                            <option value="Nebraska">Nebraska</option>
+                                            <option value="Nevada">Nevada</option>
+                                            <option value="New Hampshire">New Hampshire</option>
+                                            <option value="New Jersey">New Jersey</option>
+                                            <option value="New Mexico">New Mexico</option>
+                                            <option value="New York">New York</option>
+                                            <option value="North Carolina">North Carolina</option>
+                                            <option value="North Dakota">North Dakota</option>
+                                            <option value="Ohio">Ohio</option>
+                                            <option value="Oklahoma">Oklahoma</option>
+                                            <option value="Oregon">Oregon</option>
+                                            <option value="Pennsylvania">Pennsylvania</option>
+                                            <option value="Rhode Island">Rhode Island</option>
+                                            <option value="South Carolina">South Carolina</option>
+                                            <option value="South Dakota">South Dakota</option>
+                                            <option value="Tennessee">Tennessee</option>
+                                            <option value="Texas">Texas</option>
+                                            <option value="Utah">Utah</option>
+                                            <option value="Vermont">Vermont</option>
+                                            <option value="Virginia">Virginia</option>
+                                            <option value="Washington">Washington</option>
+                                            <option value="West Virginia">West Virginia</option>
+                                            <option value="Wisconsin">Wisconsin</option>
+                                            <option value="Wyoming">Wyoming</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Zip Code</label>
+                                    <div class="col-sm-9">
+                                        <input id="HomeZip" class="form-control square" placeholder="Zip">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-primary" id="basic-layout-form"><i class="feather icon-truck"></i> Shipping Address</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Address 1</label>
+                                    <div class="col-sm-9">
+                                        <input id="ShippingAddress1" class="form-control square" placeholder="Address 1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Address 2</label>
+                                    <div class="col-sm-9">
+                                        <input id="ShippingAddress2" class="form-control square" placeholder="Address 2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-9">
+                                        <input id="ShippingCity" class="form-control square" placeholder="City">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Country</label>
+                                    <div class="col-sm-9">
+                                        <select id="ShippingCountry" class="form-control square" placeholder="country">
+                                            <option value="">Select a country</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">State</label>
+                                    <div class="col-sm-9">
+                                        <select id="ShippingState" class="form-control square" placeholder="state">
+                                            <option value="">Select a state</option>
+                                            <option value="Alabama">Alabama</option>
+                                            <option value="Alaska">Alaska</option>
+                                            <option value="Arizona">Arizona</option>
+                                            <option value="Arkansas">Arkansas</option>
+                                            <option value="California">California</option>
+                                            <option value="Colorado">Colorado</option>
+                                            <option value="Connecticut">Connecticut</option>
+                                            <option value="Delaware">Delaware</option>
+                                            <option value="Florida">Florida</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Hawaii">Hawaii</option>
+                                            <option value="Idaho">Idaho</option>
+                                            <option value="Illinois">Illinois</option>
+                                            <option value="Indiana">Indiana</option>
+                                            <option value="Iowa">Iowa</option>
+                                            <option value="Kansas">Kansas</option>
+                                            <option value="Kentucky">Kentucky</option>
+                                            <option value="Louisiana">Louisiana</option>
+                                            <option value="Maine">Maine</option>
+                                            <option value="Maryland">Maryland</option>
+                                            <option value="Massachusetts">Massachusetts</option>
+                                            <option value="Michigan">Michigan</option>
+                                            <option value="Minnesota">Minnesota</option>
+                                            <option value="Mississippi">Mississippi</option>
+                                            <option value="Missouri">Missouri</option>
+                                            <option value="Montana">Montana</option>
+                                            <option value="Nebraska">Nebraska</option>
+                                            <option value="Nevada">Nevada</option>
+                                            <option value="New Hampshire">New Hampshire</option>
+                                            <option value="New Jersey">New Jersey</option>
+                                            <option value="New Mexico">New Mexico</option>
+                                            <option value="New York">New York</option>
+                                            <option value="North Carolina">North Carolina</option>
+                                            <option value="North Dakota">North Dakota</option>
+                                            <option value="Ohio">Ohio</option>
+                                            <option value="Oklahoma">Oklahoma</option>
+                                            <option value="Oregon">Oregon</option>
+                                            <option value="Pennsylvania">Pennsylvania</option>
+                                            <option value="Rhode Island">Rhode Island</option>
+                                            <option value="South Carolina">South Carolina</option>
+                                            <option value="South Dakota">South Dakota</option>
+                                            <option value="Tennessee">Tennessee</option>
+                                            <option value="Texas">Texas</option>
+                                            <option value="Utah">Utah</option>
+                                            <option value="Vermont">Vermont</option>
+                                            <option value="Virginia">Virginia</option>
+                                            <option value="Washington">Washington</option>
+                                            <option value="West Virginia">West Virginia</option>
+                                            <option value="Wisconsin">Wisconsin</option>
+                                            <option value="Wyoming">Wyoming</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-3 control-label">Zip Code</label>
+                                    <div class="col-sm-9">
+                                        <input id="ShippingZip" class="form-control square" placeholder="Zip">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title text-primary">Cabinet Items</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn mr-1 mb-1 btn-primary btn-sm float-right" onclick="addCabinetDetailRow()"><i class="feather icon-plus"></i> Add Items</button>
+                            <button type="button" class="btn mr-1 mb-1 btn-primary btn-sm float-right" onclick="attachCabinetQuote()"><i class="feather icon-paperclip"></i> Attach Cabinet Quote</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-responsive" id="cabinetDetailsTable">
+                        <thead>
+                            <tr>
+                                <th>Section</th>
+                                <th>Cabinetry</th>
+                                <th>Construction</th>
+                                <th>Box Materials</th>
+                                <th>Wood Sopecies</th>
+                                <th>Door Style</th>
+                                <th>Finish</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title text-primary">Countertop Items</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn mr-1 mb-1 btn-primary btn-sm float-right" onclick=""><i class="feather icon-plus"></i> Add Items</button>
+                            <button type="button" class="btn mr-1 mb-1 btn-primary btn-sm float-right" onclick=""><i class="feather icon-paperclip"></i> Attach Countertop Quote</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-responsive" id="countertopDetailsTable">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Brand</th>
+                                <th>Color</th>
+                                <th>Vendor</th>
+                                <th>Room Type</th>
+                                <th>Edge Profile</th>
+                                <th>Est. Sq Ft</th>
+                                <th>Unit Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-actions text-center">
+                <a asp-controller="Sales" asp-action="SalesList" class="width-150 btn btn-warning"><i class="feather icon-x"></i> Cancel</a>
+                <button type="submit" class="width-150 btn btn-primary"><i class="feather icon-save"></i> Save Sale</button>
+            </div>
+
+        </form>
     </div>
 </div>
+
+@* Creating a model pop up for adding customer *@
+<!-- Modal for adding customer -->
+<div class="modal fade text-left" id="AddCustomerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-sm modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary white">
+                <h4 class="modal-title form-section"><i class="feather icon-user-plus"></i> Add New Customer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="form" id="AddCustomerForm" method="post">
+                <div class="modal-body">
+                    <label>Customer Name *</label>
+                    <div class="form-group position-relative has-icon-left">
+                        <input id="customerName" type="text" class="form-control" placeholder="Jane Doe" required>
+                        <div class="form-control-position">
+                            <i class="feather icon-user primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#HomeCountry, #ShippingCountry').select2({
+            placeholder: 'Select a country',
+            allowClear: true
+        });
+
+        $('#HomeState, #ShippingState').select2({
+            tags: true,
+            placeholder: 'Select or type a state',
+            allowClear: true,
+            createTag: function (params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newOption: true
+                };
+            },
+            templateResult: function (data) {
+                var $result = $("<span></span>");
+                $result.text(data.text);
+                return $result;
+            }
+        });
+
+        $.ajax({
+            url: 'https://restcountries.com/v3.1/all',
+            method: 'GET',
+            success: function (data) {
+                let countries = data.map(country => ({
+                    id: country.name.common,
+                    text: country.name.common
+                }));
+                $('#HomeCountry, #ShippingCountry').select2({
+                    data: countries
+                });
+            },
+            error: function (error) {
+                console.log('Error fetching countries:', error);
+            }
+        });
+
+        var customerList = @Html.Raw(Json.Serialize(customersList));
+        $("#CustomerId").select2({
+            placeholder: $(this).data("placeholder"),
+            language: {
+                noResults: function () {
+                    return `<button style="width: 100%" type="button"
+                                                class="btn btn-primary"
+                                                onClick='ShowCustomer_Canvas()'><i class="feather icon-plus"></i> Add New Customer</button>
+                                                </li>`;
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            width: '100%',
+            data: customerList.map(function (customer) {
+                return {
+                    id: customer.id,
+                    text: customer.firstName + " " + (customer.lastName != null ? customer.lastName : "")
+                };
+            })
+        });
+
+        // on change of customer get customer address using ajax request
+        $("#CustomerId").on("change", function () {
+            var customerId = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/Customers/GetCustomer",
+                data: { id: customerId },
+                success: function (data) {
+                    $("#HomeAddress1").val(data.addressIdFK.address1);
+                    $("#HomeAddress2").val(data.addressIdFK.address2);
+                    $("#HomeCity").val(data.addressIdFK.city);
+                    $("#HomeCountry").val(data.addressIdFK.country).trigger("change");
+                    $("#HomeState").val(data.addressIdFK.state).trigger("change");
+                    $("#HomeZip").val(data.addressIdFK.postalCode);
+
+                    $("#ShippingAddress1").val(data.addressIdFK.address1);
+                    $("#ShippingAddress2").val(data.addressIdFK.address2);
+                    $("#ShippingCity").val(data.addressIdFK.city);
+                    $("#ShippingCountry").val(data.addressIdFK.country).trigger("change");
+                    $("#ShippingState").val(data.addressIdFK.state).trigger("change");
+                    $("#ShippingZip").val(data.addressIdFK.postalCode);
+                },
+                error: function (error) {
+                    console.log("Error fetching customer address:", error);
+                }
+            });
+        });
+    });
+
+    // submit AddCustomerForm form
+    $("#AddCustomerForm").submit(function (e) {
+        e.preventDefault();
+        var customerName = $("#customerName").val();
+        $.ajax({
+            type: "POST",
+            url: "/Customers/AddCustomerFromSearchBar",
+            data: { name: customerName },
+            success: function (data) {
+                // close the modal
+                $("#AddCustomerModal").modal("hide");
+                // refresh the customer select list
+                var customerId = data.data.id;
+                var customerName = data.data.firstName + " " + (data.data.lastName != null ? data.data.lastName : "");
+                var newOption = new Option(customerName, customerId, true, true);
+                $("#CustomerId").append(newOption).trigger("change");
+            }
+        });
+    });
+
+    function ShowCustomer_Canvas() {
+        // get the current text that is inside select2 search input
+        var searchText = $("#CustomerId").data("select2").dropdown.$search.val();
+        // show customer modal pop up
+        $("#AddCustomerModal").modal("show");
+        // set customer name input field equal to searchText
+        $("#customerName").val(searchText);
+        // close select2 list
+        $("#CustomerId").select2("close");
+    }
+
+
+    // cabinet items section functions for adding simple items
+    function addCabinetDetailRow() {
+        var newRow = `
+                                    <tr>
+                                    <td>
+                                        <select class="form-control square sectionName" placeholder="section">
+    @foreach (var sectionName in sectionsNames)
+    {
+                                                                <option value="@sectionName">@sectionName</option>
+    }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control square cabinetryVendor" placeholder="cabinetry">
+    @foreach (var vendor in cabinetryVendors)
+    {
+                                                                <option value="@vendor.VendorId">@vendor.CompanyName</option>
+    }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control square constructions" placeholder="construction">
+    @foreach (var construction in constructions)
+    {
+                                                                <option value="@construction">@construction</option>
+    }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control square boxMaterials" placeholder="box materials">
+    @foreach (var boxMaterial in boxMaterials)
+    {
+                                                                <option value="@boxMaterial">@boxMaterial</option>
+    }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control square woodSpecies" placeholder="wood species">
+    @foreach (var woodSpecie in woodSpecies)
+    {
+                                                                <option value="@woodSpecie">@woodSpecie</option>
+    }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input class="form-control square" placeholder="Door Style" />
+                                    </td>
+                                    <td>
+                                        <input class="form-control square" placeholder="Finish" />
+                                    </td>
+                                    <td style="vertical-align:middle;">
+                                        <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Cabinet Details"></i></button>
+                                    </td>
+                                    </tr>
+                                `;
+
+        $("#cabinetDetailsTable tbody").append(newRow);
+
+        //convert newRow to HTML tr element
+        var addedRow = $('#cabinetDetailsTable tbody tr:last-child');
+        configuringSelectLists(addedRow);
+    }
+
+    // Helper function to configure select2
+    function configureSelect2(selectList) {
+        selectList.select2({
+            tags: true,
+            placeholder: 'Select or type',
+            allowClear: true,
+            createTag: function (params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newOption: true
+                };
+            },
+            templateResult: function (data) {
+                var $result = $("<span></span>");
+                $result.text(data.text);
+                return $result;
+            },
+            width: '100%'
+        });
+        // clearing vendor select for first time
+        selectList.val(null).trigger('change');
+    }
+
+    function configuringSelectLists(addedRow) {
+        //cabinetry vendor configuration
+        var cabinetryVendor = addedRow.find('.cabinetryVendor');
+        cabinetryVendor.select2({
+            placeholder: "Select Cabinetry",
+            width: "100%",
+            language: {
+                "noResults": function () {
+                    return "No Vendor Found!";
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
+        // clearing vendor select for first time
+        cabinetryVendor.val(null).trigger('change');
+
+        //sectionName, construction, boxMaterials, and woodSpecies configuration using for loop
+        var sectionName = addedRow.find('.sectionName');
+        var constructions = addedRow.find('.constructions');
+        var boxMaterials = addedRow.find('.boxMaterials');
+        var woodSpecies = addedRow.find('.woodSpecies');
+        var selectLists = [sectionName, constructions, boxMaterials, woodSpecies];
+        for (var i = 0; i < selectLists.length; i++) {
+            configureSelect2(selectLists[i]);
+        }
+    }
+
+    // Remove row when the "Delete Item" button is clicked
+    $('#cabinetDetailsTable').on('click', '.delete-row', function () {
+        $(this).closest('tr').remove();
+    });
+
+    // Attach Cabinet Quote Items
+    function attachCabinetQuote() {
+        // use sweet alert to get quote id from user and then use ajax request to get cabinet quote items.
+        Swal.fire({
+            title: 'Enter Cabinet Quote ID',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Get Cabite Items',
+            showLoaderOnConfirm: true,
+            preConfirm: (quoteId) => {
+                return $.ajax({
+                    type: "GET",
+                    url: "/Sales/GetCabinetItems",
+                    data: { quoteId: quoteId },
+                    success: function (data) {
+                        return data;
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        );
+                    }
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.value.length > 0) {
+                var cabinetQuoteItems = result.value;
+                // add cabinet quote items to the table
+                cabinetQuoteItems.forEach(item => {
+                    var newRow = `
+                                    <tr>
+                                    <td>
+                                        <select class="form-control square sectionName" placeholder="section">
+    @foreach (var sectionName in sectionsNames)
+    {
+                                                        <option value="@sectionName">@sectionName</option>
+    }
+                                        </select>
+                                        </td>
+                                        <td>
+                                        <select class="form-control square cabinetryVendor" placeholder="cabinetry">
+    @foreach (var vendor in cabinetryVendors)
+    {
+                                                        <option value="@vendor.VendorId">@vendor.CompanyName</option>
+    }
+                                        </select>
+                                        </td>
+                                        <td>
+                                        <select class="form-control square constructions" placeholder="construction">
+    @foreach (var construction in constructions)
+    {
+                                                        <option value="@construction">@construction</option>
+    }
+                                        </select>
+                                        </td>
+                                        <td>
+                                        <select class="form-control square boxMaterials" placeholder="box materials">
+    @foreach (var boxMaterial in boxMaterials)
+    {
+                                                        <option value="@boxMaterial">@boxMaterial</option>
+    }
+                                        </select>
+
+                                        </td>
+                                        <td>
+                                        <select class="form-control square woodSpecies" placeholder="wood species">
+    @foreach (var woodSpecie in woodSpecies)
+    {
+                                                        <option value="@woodSpecie">@woodSpecie</option>
+    }
+                                        </select>
+                                        </td>
+                                        <td>
+                                        <input class="form-control square" placeholder="Door Style" />
+                                        </td>
+                                        <td>
+                                        <input class="form-control square" placeholder="Finish" />
+                                        </td>
+                                        <td hidden>
+                                        <input class="cabinetQuoteId" />
+                                        </td>
+                                        <td style="vertical-align:middle;">
+                                        <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Cabinet Details"></i></button>
+
+                                        </td>
+                                        </tr>
+                                        `;
+                    $("#cabinetDetailsTable tbody").append(newRow);
+                    //convert newRow to HTML tr element
+                    var addedRow = $('#cabinetDetailsTable tbody tr:last-child');
+                    configuringSelectLists(addedRow);
+
+                    // set values of cabinet quote items to the added row
+                    addedRow.find('.sectionName').val(item.sectionName).trigger('change');
+                    addedRow.find('.cabinetryVendor').val(item.vendorIdFk.vendorId).trigger('change');
+                    addedRow.find('.constructions').val(item.construction).trigger('change');
+                    addedRow.find('.boxMaterials').val(item.boxMaterial).trigger('change');
+                    addedRow.find('.woodSpecies').val(item.woodSpecie).trigger('change');
+                    addedRow.find('input[placeholder="Door Style"]').val(item.doorStyle);
+                    addedRow.find('input[placeholder="Finish"]').val(item.cabinetFinish);
+                    addedRow.find('.cabinetQuoteId').val(item.cabinetQuotationId);
+                });
+
+                Swal.fire({
+                    title: 'Cabinet Quote Items Added',
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire({
+                    title: 'No Cabinet Quote Items Found',
+                    icon: 'error'
+                });
+            }
+        });
+    }
+
+
+    // submit SalesForm form
+    $("#SalesForm").submit(function (e) {
+        e.preventDefault();
+        var sale = {
+            CustomerId: $("#CustomerId").val(),
+            SalesDate: $("#SalesDate").val(),
+            Status: $("#Status").val(),
+            TotalSalesOrderAmount: $("#TotalSalesOrderAmount").val(),
+            AdvancePaid: $("#AdvancePaid").val(),
+            CreatedById: $("#CreatedById").val(),
+            ModifiedDate: $("#ModifiedDate").val(),
+            // HomeAddress1: $("#HomeAddress1").val(),
+            // HomeAddress2: $("#HomeAddress2").val(),
+            // HomeCity: $("#HomeCity").val(),
+            // HomeCountry: $("#HomeCountry").val(),
+            // HomeState: $("#HomeState").val(),
+            // HomeZip: $("#HomeZip").val(),
+            // ShippingAddress1: $("#ShippingAddress1").val(),
+            // ShippingAddress2: $("#ShippingAddress2").val(),
+            // ShippingCity: $("#ShippingCity").val(),
+            // ShippingCountry: $("#ShippingCountry").val(),
+            // ShippingState: $("#ShippingState").val(),
+            // ShippingZip: $("#ShippingZip").val()
+        };
+
+        var cabinetDetails = [];
+        $("#cabinetDetailsTable tbody tr").each(function () {
+            var cabinetDetail = {
+                SectionName: $(this).find('.sectionName').val(),
+                VendorId: $(this).find('.cabinetryVendor').val(),
+                Construction: $(this).find('.constructions').val(),
+                BoxMaterial: $(this).find('.boxMaterials').val(),
+                WoodSpecie: $(this).find('.woodSpecies').val(),
+                DoorStyle: $(this).find('input[placeholder="Door Style"]').val(),
+                CabinetFinish: $(this).find('input[placeholder="Finish"]').val(),
+                CabinetQuotationId: $(this).find('.cabinetQuoteId').val()
+            };
+            cabinetDetails.push(cabinetDetail);
+        });
+
+        var data = {
+            saleData: sale,
+            cabinetItems: cabinetDetails
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Sales/CreateSales",
+            data: data,
+            success: function (data) {
+                Swal.fire({
+                    title: 'Sale Created Successfully',
+                    icon: 'success'
+                }).then((result) => {
+                    window.location.href = "/Sales/SalesList";
+                });
+            },
+            error: function (error) {
+                Swal.fire({
+                    title: 'Error Creating Sale',
+                    icon: 'error'
+                });
+            }
+        });
+    });
+</script>

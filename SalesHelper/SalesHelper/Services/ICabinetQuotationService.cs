@@ -12,5 +12,7 @@ namespace SalesHelper.Services
         public void Delete(int id);
         public CabinetQuoteInterface CabinetQuoteInterface(CabinetQuotation cabinetQuotation); // Cabinet Quotation Interface Creator
         public Task<List<QuoteEmailInterface>> ReadCabinetQuoteEmails(int quoteId, ApplicationUser user); // Read Cabinet Quote Emails
+
+        public List<CabinetDetail> GetCabinetItems(int quoteId); // Cabinet Details
     }
 }
