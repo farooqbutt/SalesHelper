@@ -19,6 +19,7 @@ namespace SalesHelper.Data
         public DbSet<Customer> Customers { get; set; } = default!;
         public DbSet<Event> Events { get; set; } = default!;
         public DbSet<CabinetQuotation> CabinetQuotations { get; set; } = default!;
+        public DbSet<CabinetDetail> CabinetDetails { get; set; } = default!;
         public DbSet<QuotationItem> QuotationItems { get; set; } = default!;
         public DbSet<CatalogItem> CatalogItems { get; set; } = default!; 
         public DbSet<CabinetryDoorStyle> CabinetryDoorStyles { get; set; } = default!;
@@ -27,7 +28,10 @@ namespace SalesHelper.Data
         public DbSet<CountertopMaterial> CountertopMaterials { get; set; } = default!;
         public DbSet<CountertopBrandsData> CountertopBrandsData { get; set; } = default!;
         public DbSet<QuotationEmails> QuotationEmails { get; set; } = default!;
+        //sales related tables
         public DbSet<Sale> Sales { get; set; } = default!;
+        public DbSet<SalesCabinetItem> SalesCabinetItems { get; set; } = default!;
+        public DbSet<SalesCountertopItem> SalesCountertopItems { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

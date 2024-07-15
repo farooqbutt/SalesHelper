@@ -134,5 +134,11 @@ namespace SalesHelper.Controllers
             _customerService.Delete(id);
             return "Customer Deleted Successfully!";
         }
+
+        [HttpGet]
+        public Customer GetCustomer(int id)
+        {
+            return _customerService.Read(id);
+        }
     }
 }

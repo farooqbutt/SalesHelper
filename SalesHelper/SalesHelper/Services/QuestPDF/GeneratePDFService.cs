@@ -43,7 +43,8 @@ namespace SalesHelper.Services.QuestPDF
             CabinetQuotation quoteData = _cabinetQuotationService.Read(id);
             Account dealerData = _context.Account.Include(a => a.BusinessAddress).FirstOrDefault(a => a.AccountNumber ==
                                  _signInManager.UserManager.GetUserAsync(user).Result.AccountNumber)!;
-            Vendor cabinetryData = _vendorService.Read(quoteData.VendorId);
+            //Vendor cabinetryData = _vendorService.Read(quoteData.VendorId);
+            Vendor cabinetryData = _vendorService.Read(10);
             var quoteItems = _context.QuotationItems.Where(a => a.QuotationId == id).ToList().GroupBy(a => a.DoorStyleName);
 
             // generate pdf
@@ -160,14 +161,14 @@ namespace SalesHelper.Services.QuestPDF
                         });
 
                         // door style name if door style name if this is a one color design cabinet
-                        if (quoteData.isOneColorDesign == true)
-                        {
-                            column.Item().PaddingTop(20).Text(text =>
-                            {
-                                text.Span("DOOR STYLE : ").SemiBold().FontColor("#00b5b8");
-                                text.Span(quoteData.DoorStyleForOneColorDesign!.ToUpper());
-                            });
-                        }
+                        //if (quoteData.isOneColorDesign == true)
+                        //{
+                        //    column.Item().PaddingTop(20).Text(text =>
+                        //    {
+                        //        text.Span("DOOR STYLE : ").SemiBold().FontColor("#00b5b8");
+                        //        text.Span(quoteData.DoorStyleForOneColorDesign!.ToUpper());
+                        //    });
+                        //}
 
                         // table for showing items
                         column.Item().PaddingVertical(20).Table(table =>
@@ -214,10 +215,10 @@ namespace SalesHelper.Services.QuestPDF
                             foreach (var doorStyles in quoteItems)
                             {
                                 // add door style name when there are multiple door styles
-                                if (quoteData.isOneColorDesign == false)
-                                {
-                                    table.Cell().ColumnSpan(7).Element(CellStyle).AlignCenter().Text(doorStyles.Key).SemiBold();
-                                }
+                                //if (quoteData.isOneColorDesign == false)
+                                //{
+                                //    table.Cell().ColumnSpan(7).Element(CellStyle).AlignCenter().Text(doorStyles.Key).SemiBold();
+                                //}
                                 foreach (var item in doorStyles)
                                 {
                                     table.Cell().Element(CellStyle).AlignRight().Text(item.Quantity.ToString());

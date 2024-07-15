@@ -1,4 +1,10 @@
-﻿<div class="content-overlay"></div>
+﻿@{
+    var saleStatuses = Enum.GetValues(typeof(Sale.SaleStatus))
+                    .Cast<Sale.SaleStatus>()
+                    .Select(e => e.GetEnumMemberAttributeValue())
+                    .ToList();
+}
+<div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -20,13 +26,12 @@
                                 <thead>
                                     <tr>
                                         <th>Sale #</th>
-                                        <th>Quote #</th>
+                                        <th>Date</th>
                                         <th>Customer</th>
-                                        <th>Sales Type</th>
+                                        <th>Phone</th>
                                         <th>Status</th>
-                                        @* <th>Vendor</th> *@
-                                        <th>Date Created</th>
-                                        <th>Date Modified</th>
+                                        <th>Total</th>
+                                        <th>Advance</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -47,16 +52,153 @@
             //     { "orderable": false, "targets": [1, 2, 3, 4, 7] }
             // ],
             "ajax": {
-                "url": "/Sales/SalesList",
+                "url": "/Sales/SalesListData",
                 "type": "GET",
                 "dataType": "json",
                 "dataSrc": "data"
             },
             "columns": [
+                { "data": "id" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                                ${row.salesDate.split("T")[0]}
+                               `;
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                                    <a href="/Customers/CustomerDetailedView/${row.customerFK.id}">${row.customerFK.firstName} ${row.customerFK.lastName ? row.customerFK.lastName : ''}</a>
+                                `;
+                    }
+                },
+                { "data": "customerFK.cellPhone" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return SaleStatusSetter(row.status);
+                    }
+                },
+                { "data": "totalSalesOrderAmount" },
+                { "data": "advancePaid" },
+                { 
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
 
+                            <div class="text-center">
+                                <span class="dropdown">
+                                    <a id="btnSearchDrop3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle dropdown-menu-right secondary"><i class="fa fa-ellipsis-v"></i></a>
+                                    <span aria-labelledby="btnSearchDrop3" class="dropdown-menu mt-1 dropdown-menu-right" x-placement="bottom-end">
+                                        <a data-toggle="modal" data-target="#EditContactModal" class="dropdown-item edit"><i class="fa fa-pencil primary"></i> Update status</a>
+                                        <a href="#" class="dropdown-item"><i class="fa fa-pencil-square-o primary"></i> Create Invoice</a>
+                                        <a href="#" class="dropdown-item"><i class="fa fa-cc-visa primary"></i> Receive payment</a>
+                                        <a href="#" class="dropdown-item"><i class="fa fa-calendar-check-o info"></i> Send reminder</a>
+                                    </span>
+                                </span>
+                            </div>
+                                
+                                `;
+                    }
+                },
             ]
         });
 
         $('#salesList').DataTable().order([]).draw();
     });
+
+    function SaleStatusSetter(status) {
+        if(status == "Pending") {
+            return `
+                    <div class="btn-group">
+                        <div class="badge badge-pill dropdown-toggle badge-glow badge-warning" data-toggle="dropdown" aria-expanded="false">
+                            ${status}
+                        </div>
+                        <div class="dropdown-menu" x-placement="bottom-start">
+                            @foreach(var status in saleStatuses)
+                            {
+                                <span class="dropdown-item" onclick="UpdateSaleStatus(this)">@status</span>
+                            }
+                        </div>
+                    </div>
+               `;
+        }
+        else if(status == "Completed") {
+            return `
+                    <div class="btn-group">
+                        <div class="badge badge-pill dropdown-toggle badge-glow badge-success" data-toggle="dropdown" aria-expanded="false">
+                            ${status}
+                        </div>
+                        <div class="dropdown-menu" x-placement="bottom-start">
+                            @foreach(var status in saleStatuses)
+                            {
+                                <span class="dropdown-item" onclick="UpdateSaleStatus(this)">@status</span>
+                            }
+                        </div>
+                    </div>
+               `;
+        }
+        else if(status == "Cancelled") {
+            return `
+                    <div class="btn-group">
+                        <div class="badge badge-pill dropdown-toggle badge-glow badge-danger" data-toggle="dropdown" aria-expanded="false">
+                            ${status}
+                        </div>
+                        <div class="dropdown-menu" x-placement="bottom-start">
+                            @foreach(var status in saleStatuses)
+                            {
+                                <span class="dropdown-item" onclick="UpdateSaleStatus(this)">@status</span>
+                            }
+                        </div>
+                    </div>
+               `;
+        }
+        else {
+            return `
+                    <div class="btn-group">
+                        <div class="badge badge-pill dropdown-toggle badge-glow badge-primary" data-toggle="dropdown" aria-expanded="false">
+                            ${status}
+                        </div>
+                        <div class="dropdown-menu" x-placement="bottom-start">
+                            @foreach(var status in saleStatuses)
+                            {
+                                <span class="dropdown-item" onclick="UpdateSaleStatus(this)">@status</span>
+                            }
+                        </div>
+                    </div>
+               `;
+        }
+    }
+
+    function UpdateSaleStatus(element) {
+        // Get the text of the clicked dropdown item
+        var newStatus = element.textContent;
+
+        // Get the table row that contains the clicked dropdown item
+        var row = element.closest('tr');
+
+        // Get the sale ID from the first cell of the row
+        var saleId = row.cells[0].textContent;
+
+        // change element inner text to selected status text
+        element.closest('.btn-group').children[0].innerText = newStatus;
+
+        $.ajax({
+            url: "/Sales/UpdateStatus",
+            type: "POST",
+            data: {
+                id: saleId,
+                status: newStatus
+            },
+            success: function () {
+                toastr.success("Status Updated!");
+            },
+            error: function (error) {
+                toastr.error("Error updating status!");
+            }
+        });
+    }
 </script>

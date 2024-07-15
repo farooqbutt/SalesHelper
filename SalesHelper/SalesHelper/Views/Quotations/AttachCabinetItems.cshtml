@@ -55,8 +55,8 @@
                         <div class="col-lg-10 col-sm-12">
                             <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.CabinetQuotation.Id</b></span></h2>
                             <p class="card-text"><b>Customer Name:</b> @Model.CabinetQuotation.CustomerIdFk.FirstName @Model.CabinetQuotation.CustomerIdFk.LastName</p>
-                            <p class="card-text"><b>Qoutation Name:</b> @Model.CabinetQuotation.Name</p>
-                            <p class="card-text"><b>Cabinetry:</b> @Model.CabinetQuotation.VendorIdFk.CompanyName</p>
+                            <p class="card-text"><b>Qoutation Name:</b> @Model.CabinetQuotation.CabinetQuoteName</p>
+                            @* <p class="card-text"><b>Cabinetry:</b> @Model.CabinetQuotation.VendorIdFk.CompanyName</p> *@
                             <label><b>Select Door Style</b></label>
                             <div class="form-group w-25">
                                 <select class="form-control square" id="doorStylesSelect">

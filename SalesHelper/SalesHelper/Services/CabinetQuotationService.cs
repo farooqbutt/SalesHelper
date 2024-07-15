@@ -35,6 +35,23 @@ namespace SalesHelper.Services
                 throw new Exception(e.Message);
             }
         }
+        public void CreateCabinetDetails(CabinetQuoteInterface cabinetQuoteInterface)
+        {
+            try
+            {
+                // assign the cabinet quotation id to the cabinet details
+                foreach (var cabinetDetail in cabinetQuoteInterface.CabinetDetailsList)
+                {
+                    cabinetDetail.CabinetQuotationId = cabinetQuoteInterface.Id;
+                    _context.CabinetDetails.Add(cabinetDetail);
+                }
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
         public void Delete(int id)
         {
@@ -53,7 +70,7 @@ namespace SalesHelper.Services
         {
             try
             {
-                return _context.CabinetQuotations.Where(a => a.Id == id).Include(a => a.CustomerIdFk).Include(a => a.VendorIdFk).FirstOrDefault()!;
+                return _context.CabinetQuotations.Where(a => a.Id == id).Include(a => a.CustomerIdFk).FirstOrDefault()!;
             }
             catch (Exception e)
             {
@@ -65,7 +82,7 @@ namespace SalesHelper.Services
         {
             try
             {
-                return _context.CabinetQuotations.Include(a => a.VendorIdFk).Include(a => a.CustomerIdFk).ToList();
+                return _context.CabinetQuotations.Include(a => a.CustomerIdFk).ToList();
             }
             catch (Exception e)
             {
@@ -92,29 +109,11 @@ namespace SalesHelper.Services
             var cabinetQuoteInterface = new CabinetQuoteInterface
             {
                 Id = cabinetQuotation.Id,
-                Name = cabinetQuotation.Name,
+                CabinetQuoteName = cabinetQuotation.CabinetQuoteName,
                 CustomerId = cabinetQuotation.CustomerId,
                 CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId),
-                VendorId = cabinetQuotation.VendorId,
-                VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!,
-                Construction = cabinetQuotation.Construction,
-                BoxMaterials = cabinetQuotation.BoxMaterials,
-                isOneColorDesign = cabinetQuotation.isOneColorDesign,
-                // one color
-                WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign,
-                DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign,
-                CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign,
-                // multiple color
-                UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign,
-                UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign,
-                UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign,
-                LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign,
-                LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign,
-                LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign,
-                IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign,
-                IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign,
-                IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign,
-                CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign,
+                CabinetDetailsList = _context.CabinetDetails.Where(cd => cd.CabinetQuotationId == cabinetQuotation.Id).Include(a => a.VendorIdFk).ToList(),
+                CommentsOnCabinetDetails = cabinetQuotation.CommentsOnCabinetDetails,
                 // additional information
                 AdditionalInformation = cabinetQuotation.AdditionalInformation,
                 CreatedByUserId = cabinetQuotation.CreatedByUserId,
@@ -133,7 +132,7 @@ namespace SalesHelper.Services
                 BuiltInOven = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInOven"],
                 BuiltInDrawerMicrowave = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["BuiltInDrawerMicrowave"],
                 Sink = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Sink"],
-                Comments = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
+                CommentsOnAdditionalInfo = JsonConvert.DeserializeObject<dynamic>(cabinetQuotation.AdditionalInformation!)!["Comments"]
             };
             return cabinetQuoteInterface;
         }
@@ -282,6 +281,18 @@ namespace SalesHelper.Services
                         Base64Data = base64
                     });
                 }
+            }
+        }
+
+        public List<CabinetDetail> GetCabinetItems(int quoteId)
+        {
+            try
+            {
+                return _context.CabinetDetails.Where(cd => cd.CabinetQuotationId == quoteId).Include(a => a.VendorIdFk).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

@@ -16,24 +16,8 @@
         <div class="hidden">
             <input asp-for="CabinetQuotation.Id" />
             <input asp-for="CabinetQuotation.CustomerId" />
-            <input asp-for="CabinetQuotation.Name" />
-            <input asp-for="CabinetQuotation.VendorId" />
-            <input asp-for="CabinetQuotation.Construction" />
-            <input asp-for="CabinetQuotation.BoxMaterials" />
-            <input asp-for="CabinetQuotation.isOneColorDesign" />
-            <input asp-for="CabinetQuotation.WoodSpeciesForOneColorDesign" />
-            <input asp-for="CabinetQuotation.DoorStyleForOneColorDesign" />
-            <input asp-for="CabinetQuotation.CabinetFinishForOneColorDesign" />
-            <input asp-for="CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.UpperDoorStyleForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.UpperFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.LowerDoorStyleForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.LowerFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.IslandDoorStyleForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.IslandFinishForMultipleColorDesign" />
-            <input asp-for="CabinetQuotation.CommentsOnMultiColorDesign" />
+            <input asp-for="CabinetQuotation.CabinetQuoteName" />
+            <input asp-for="CabinetQuotation.CommentsOnCabinetDetails" />
             <input asp-for="CabinetQuotation.AdditionalInformation" />
             <input asp-for="CabinetQuotation.CreatedDateTime" />
             <input asp-for="CabinetQuotation.CreatedByUserId" />
@@ -49,96 +33,82 @@
         <div class="content-detached content-left">
             <div class="content-body">
 
-                <div class="row row-cols-1 row-cols-md-2 match-height">
-                    <div class="col">
-                        <div class="card" style="height: 320.5px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.CabinetQuotation.Id</b></span></h2>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <h2 class="card-title mt-0 text-primary"><span><b>Quote #: @Model.CabinetQuotation.Id</b></span></h2>
+                            <div class="d-flex">
+                                <div class="flex-grow-1 align-items-start d-flex">
                                     <p class="card-text">
                                         <b>Customer Name:</b>
                                         <a class="text-primary" asp-controller="Customers" asp-action="CustomerDetailedView" asp-route-id="@Model.CabinetQuotation.CustomerId">
                                             @Model.CabinetQuotation.CustomerIdFk.FirstName @Model.CabinetQuotation.CustomerIdFk.LastName
                                         </a>
                                     </p>
-                                    <p class="card-text"><b>Quote Name:</b> @Model.CabinetQuotation.Name</p>
-                                    <p class="card-text"><b>Cabinetry:</b> @Model.CabinetQuotation.VendorIdFk.CompanyName </p>
-                                    <p class="card-text"><b>Construction:</b> @Model.CabinetQuotation.Construction </p>
-                                    <p class="card-text"><b>Box Materials:</b> @Model.CabinetQuotation.BoxMaterials </p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <div class="card" style="height: 320.5px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <div @(Model.CabinetQuotation.isOneColorDesign == true ? "" : "hidden")>
-                                        <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (One Color)</span></h2>
-                                        <p class="card-text"><b>Door Style:</b> @Model.CabinetQuotation.DoorStyleForOneColorDesign </p>
-                                        <p class="card-text"><b>Wood Species:</b> @Model.CabinetQuotation.WoodSpeciesForOneColorDesign </p>
-                                        <p class="card-text"><b>Cabinet Finish:</b> @Model.CabinetQuotation.CabinetFinishForOneColorDesign </p>
-                                    </div>
-                                    <div @(Model.CabinetQuotation.isOneColorDesign == false ? "" : "hidden")>
-                                        <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b> (Multi Color)</span></h2>
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Section</th>
-                                                    <th>Wood Species</th>
-                                                    <th>Door Style</th>
-                                                    <th>Finish</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="font-weight-bold">Upper</td>
-                                                    <td>@Model.CabinetQuotation.UpperWoodSpeciesForMultipleColorDesign</td>
-                                                    <td>@Model.CabinetQuotation.UpperDoorStyleForMultipleColorDesign</td>
-                                                    <td>@Model.CabinetQuotation.UpperFinishForMultipleColorDesign</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="font-weight-bold">Lower</td>
-                                                    <td>@Model.CabinetQuotation.LowerWoodSpeciesForMultipleColorDesign</td>
-                                                    <td>@Model.CabinetQuotation.LowerDoorStyleForMultipleColorDesign</td>
-                                                    <td>@Model.CabinetQuotation.LowerFinishForMultipleColorDesign</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="font-weight-bold">Island</td>
-                                                    <td>@Model.CabinetQuotation.IslandWoodSpeciesForMultipleColorDesign</td>
-                                                    <td>@Model.CabinetQuotation.IslandDoorStyleForMultipleColorDesign</td>
-                                                    <td>@Model.CabinetQuotation.IslandFinishForMultipleColorDesign</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <p class="card-text"><b>Comments:</b> @Model.CabinetQuotation.CommentsOnMultiColorDesign </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col">
-                        <div class="card" style="height: 389.2px;">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h2 class="card-title text-primary mt-0"><span><b>Additional Information</b></span></h2>
-                                    <p class="card-text"><b>Refrigerator:</b> @Html.Raw(Model.CabinetQuotation.Refrigerator) </p>
-                                    <p class="card-text"><b>Stove Or Cooktop:</b> @Html.Raw(Model.CabinetQuotation.StoveAndCooktop) </p>
-                                    <p class="card-text"><b>Dishwasher:</b> @Html.Raw(Model.CabinetQuotation.Dishwasher) </p>
-                                    <p class="card-text"><b>Hood:</b> @Html.Raw(Model.CabinetQuotation.Hood) </p>
-                                    <p class="card-text"><b>Built-in Oven:</b> @Html.Raw(Model.CabinetQuotation.BuiltInOven) </p>
-                                    <p class="card-text"><b>Built-in Drawer Microwave:</b> @Html.Raw(Model.CabinetQuotation.BuiltInDrawerMicrowave) </p>
-                                    <p class="card-text"><b>Sink:</b> @Html.Raw(Model.CabinetQuotation.Sink) </p>
-                                    <p class="card-text"><b>Comments:</b> @Html.Raw(Model.CabinetQuotation.Comments) </p>
+                                <div class="flex-grow-1 align-items-start d-flex">
+                                    <p class="card-text"><b>Quote Name:</b> @Model.CabinetQuotation.CabinetQuoteName</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <h2 class="card-title text-primary mt-0"><span><b>Cabinet Details</b></span></h2>
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Cabinetry</th>
+                                        <th>Construction</th>
+                                        <th>Box Materials</th>
+                                        <th>Wood Sopecies</th>
+                                        <th>Door Style</th>
+                                        <th>Finish</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CabinetQuotation.CabinetDetailsList)
+                                    {
+                                        <tr>
+                                            <td>@item.SectionName</td>
+                                            <td>@item.VendorIdFk.CompanyName</td>
+                                            <td>@item.Construction</td>
+                                            <td>@item.BoxMaterial</td>
+                                            <td>@item.WoodSpecie</td>
+                                            <td>@item.DoorStyle</td>
+                                            <td>@item.CabinetFinish</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <p class="card-text mr-2"><b>Comments:</b> @Model.CabinetQuotation.CommentsOnCabinetDetails </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <h2 class="card-title text-primary mt-0"><span><b>Additional Information</b></span></h2>
+                            <div class="d-flex flex-wrap">
+                                <p class="card-text mr-2"><b>Refrigerator:</b> @Html.Raw(Model.CabinetQuotation.Refrigerator) </p>
+                                <p class="card-text mr-2"><b>Stove Or Cooktop:</b> @Html.Raw(Model.CabinetQuotation.StoveAndCooktop) </p>
+                                <p class="card-text mr-2"><b>Dishwasher:</b> @Html.Raw(Model.CabinetQuotation.Dishwasher) </p>
+                                <p class="card-text mr-2"><b>Hood:</b> @Html.Raw(Model.CabinetQuotation.Hood) </p>
+                                <p class="card-text mr-2"><b>Built-in Oven:</b> @Html.Raw(Model.CabinetQuotation.BuiltInOven) </p>
+                                <p class="card-text mr-2"><b>Built-in Drawer Microwave:</b> @Html.Raw(Model.CabinetQuotation.BuiltInDrawerMicrowave) </p>
+                                <p class="card-text mr-2"><b>Sink:</b> @Html.Raw(Model.CabinetQuotation.Sink) </p>
+                                <p class="card-text mr-2"><b>Comments:</b> @Html.Raw(Model.CabinetQuotation.CommentsOnAdditionalInfo) </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-actions text-center mb-5">
                     <a asp-controller="Quotations" asp-action="EditCabinetQuotation" asp-route-id="@Model.CabinetQuotation.Id" class="width-150 btn btn-primary"><i class="feather icon-arrow-left"></i> Previous</a>

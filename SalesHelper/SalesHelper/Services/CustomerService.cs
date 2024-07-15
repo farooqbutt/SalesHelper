@@ -1,4 +1,5 @@
-﻿using SalesHelper.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesHelper.Data;
 using SalesHelper.Models;
 using static SalesHelper.Services.ICustomerService;
 
@@ -41,7 +42,7 @@ namespace SalesHelper.Services
         {
             try
             {
-                return _context.Customers.Find(id)!;
+                return _context.Customers.Where(c => c.Id == id).Include(c => c.AddressIdFK).FirstOrDefault()!;
             }
             catch (Exception e)
             {

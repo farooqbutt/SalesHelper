@@ -111,10 +111,10 @@ namespace SalesHelper.Controllers
                 var quotation = new QuotationsListVM
                 {
                     QuotationId = QuotationsListVM.QuoteTypesIntials.CBNT.ToString() + "-" + item.Id,
-                    QuotationName = item.Name,
+                    QuotationName = item.CabinetQuoteName,
                     Customer = item.CustomerIdFk,
                     QuoteType = QuotationsListVM.QuoteTypes.Cabinet.ToString(),
-                    Vendor = item.VendorIdFk,
+                    //Vendor = item.VendorIdFk,
                     CreatedDate = item.CreatedDateTime,
                     ModifiedDate = item.ModifiedDateTime
                 };
@@ -129,7 +129,7 @@ namespace SalesHelper.Controllers
                     QuotationName = item.Name,
                     Customer = item.CustomerIdFk,
                     QuoteType = QuotationsListVM.QuoteTypes.Countertop.ToString(),
-                    Vendor = null,
+                    //Vendor = null,
                     CreatedDate = item.CreatedDateTime,
                     ModifiedDate = item.ModifiedDateTime
                 };
@@ -165,33 +165,33 @@ namespace SalesHelper.Controllers
                 BuiltInOven = cabinetQuotation.BuiltInOven,
                 BuiltInDrawerMicrowave = cabinetQuotation.BuiltInDrawerMicrowave,
                 Sink = cabinetQuotation.Sink,
-                Comments = cabinetQuotation.Comments
+                Comments = cabinetQuotation.CommentsOnAdditionalInfo
             };
             var jsonData = JsonConvert.SerializeObject(additionalInfo);
 
             var quoteToUpdate = _cabinetQuoteService.Read(cabinetQuotation.Id);
             // updating only fields that are changed in cabinet quotation
-            quoteToUpdate.Name = cabinetQuotation.Name;
+            quoteToUpdate.CabinetQuoteName = cabinetQuotation.CabinetQuoteName;
             quoteToUpdate.CustomerId = cabinetQuotation.CustomerId;
-            quoteToUpdate.VendorId = cabinetQuotation.VendorId;
-            quoteToUpdate.Construction = cabinetQuotation.Construction;
-            quoteToUpdate.BoxMaterials = cabinetQuotation.BoxMaterials;
-            quoteToUpdate.isOneColorDesign = cabinetQuotation.isOneColorDesign;
-            // one color design fields
-            quoteToUpdate.WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign;
-            quoteToUpdate.DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign;
-            quoteToUpdate.CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign;
-            // multiple color design fields
-            quoteToUpdate.UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign;
-            quoteToUpdate.UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign;
-            quoteToUpdate.UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign;
-            quoteToUpdate.LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign;
-            quoteToUpdate.LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign;
-            quoteToUpdate.LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign;
-            quoteToUpdate.IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign;
-            quoteToUpdate.IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign;
-            quoteToUpdate.IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign;
-            quoteToUpdate.CommentsOnMultiColorDesign = cabinetQuotation.CommentsOnMultiColorDesign;
+            //quoteToUpdate.VendorId = cabinetQuotation.VendorId;
+            //quoteToUpdate.Construction = cabinetQuotation.Construction;
+            //quoteToUpdate.BoxMaterials = cabinetQuotation.BoxMaterials;
+            //quoteToUpdate.isOneColorDesign = cabinetQuotation.isOneColorDesign;
+            //// one color design fields
+            //quoteToUpdate.WoodSpeciesForOneColorDesign = cabinetQuotation.WoodSpeciesForOneColorDesign;
+            //quoteToUpdate.DoorStyleForOneColorDesign = cabinetQuotation.DoorStyleForOneColorDesign;
+            //quoteToUpdate.CabinetFinishForOneColorDesign = cabinetQuotation.CabinetFinishForOneColorDesign;
+            //// multiple color design fields
+            //quoteToUpdate.UpperWoodSpeciesForMultipleColorDesign = cabinetQuotation.UpperWoodSpeciesForMultipleColorDesign;
+            //quoteToUpdate.UpperDoorStyleForMultipleColorDesign = cabinetQuotation.UpperDoorStyleForMultipleColorDesign;
+            //quoteToUpdate.UpperFinishForMultipleColorDesign = cabinetQuotation.UpperFinishForMultipleColorDesign;
+            //quoteToUpdate.LowerWoodSpeciesForMultipleColorDesign = cabinetQuotation.LowerWoodSpeciesForMultipleColorDesign;
+            //quoteToUpdate.LowerDoorStyleForMultipleColorDesign = cabinetQuotation.LowerDoorStyleForMultipleColorDesign;
+            //quoteToUpdate.LowerFinishForMultipleColorDesign = cabinetQuotation.LowerFinishForMultipleColorDesign;
+            //quoteToUpdate.IslandWoodSpeciesForMultipleColorDesign = cabinetQuotation.IslandWoodSpeciesForMultipleColorDesign;
+            //quoteToUpdate.IslandDoorStyleForMultipleColorDesign = cabinetQuotation.IslandDoorStyleForMultipleColorDesign;
+            //quoteToUpdate.IslandFinishForMultipleColorDesign = cabinetQuotation.IslandFinishForMultipleColorDesign;
+            quoteToUpdate.CommentsOnCabinetDetails = cabinetQuotation.CommentsOnCabinetDetails;
             // additional information fields
             quoteToUpdate.AdditionalInformation = jsonData;
             // updating price fields
@@ -226,14 +226,15 @@ namespace SalesHelper.Controllers
                 BuiltInOven = cabinetQuotation.BuiltInOven,
                 BuiltInDrawerMicrowave = cabinetQuotation.BuiltInDrawerMicrowave,
                 Sink = cabinetQuotation.Sink,
-                Comments = cabinetQuotation.Comments
+                Comments = cabinetQuotation.CommentsOnAdditionalInfo
             };
             var jsonData = JsonConvert.SerializeObject(additionalInfo);
             cabinetQuotation.AdditionalInformation = jsonData;
 
             _cabinetQuoteService.Create(cabinetQuotation);
-            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
-            return RedirectToAction("CabinetQuotationDetailedView", new { id = cabinetQuotation.Id });
+            _cabinetQuoteService.CreateCabinetDetails(cabinetQuotation);
+
+            return Json(new { message = "success", result = cabinetQuotation.Id });
         }
 
         [HttpGet]
@@ -268,15 +269,15 @@ namespace SalesHelper.Controllers
         {
             var cabinetQuotation = _cabinetQuoteService.Read(id);
             cabinetQuotation.CustomerIdFk = _customerService.Read(cabinetQuotation.CustomerId);
-            cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
-            var doorStyles = _context.CabinetryDoorStyles.Where(
-                                a => a.CatalogItemIdFK.CabinetryVendorIdFK.VendorId == cabinetQuotation.VendorId
-                            ).Select(a => a.DoorStyleName).Distinct().ToList();
+            //cabinetQuotation.VendorIdFk = _context.Vendor.Find(cabinetQuotation.VendorId)!;
+            //var doorStyles = _context.CabinetryDoorStyles.Where(
+            //                    a => a.CatalogItemIdFK.CabinetryVendorIdFK.VendorId == cabinetQuotation.VendorId
+            //                ).Select(a => a.DoorStyleName).Distinct().ToList();
             var viewData = new CabinetQuotationItems
             {
                 CabinetQuotation = cabinetQuotation,
-                DoorStylesNames = doorStyles,
-                CatalogItems = _context.CatalogItems.Where(a => a.CabinetryVendorIdFK.VendorId == cabinetQuotation.VendorId).ToList(),
+                //DoorStylesNames = doorStyles,
+                //CatalogItems = _context.CatalogItems.Where(a => a.CabinetryVendorIdFK.VendorId == cabinetQuotation.VendorId).ToList(),
                 CabinetQuotationItem = new List<QuotationItem>()
             };
             return View(viewData);
