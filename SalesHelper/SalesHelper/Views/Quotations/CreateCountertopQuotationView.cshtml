@@ -72,8 +72,8 @@
                                 <label>Customer Name <span class="required">*</span></label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text square">
-                                            <i class="feather icon-user"></i>
+                                        <span class="input-group-text square" style="height: 100%; padding: 0 10px; display: flex; align-items: center;">
+                                            <i class="feather icon-user" style="font-size: 1rem;"></i>
                                         </span>
                                     </div>
                                     <select class="form-control square" asp-for="CountertopQuotation.CustomerId" data-placeholder="Select a Customer" required></select>
@@ -82,7 +82,7 @@
 
                             <div class="form-group">
                                 <label>Quote Name <span class="required">*</span></label>
-                                <input class="form-control square" asp-for="CountertopQuotation.Name" placeholder="Quote Name" required />
+                                <input class="form-control form-control-sm square" asp-for="CountertopQuotation.Name" placeholder="Quote Name" required />
                             </div>
 
                             <h4 class="form-section"><i class="feather icon-file-text"></i> Quote Details</h4>
@@ -91,7 +91,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Room Type</label>
-                                        <select class="form-control square" asp-for="CountertopQuotation.RoomType">
+                                        <select class="form-control form-control-sm square" asp-for="CountertopQuotation.RoomType">
                                             <option selected disabled>Choose Room Type</option>
                                             @foreach (var item in roomTypes)
                                             {
@@ -103,7 +103,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Edge Profile</label>
-                                        <select class="form-control square" asp-for="CountertopQuotation.EdgeProfile">
+                                        <select class="form-control form-control-sm square" asp-for="CountertopQuotation.EdgeProfile">
                                             <option selected disabled>Choose Edge Profile</option>
                                             @foreach (var item in edgeProfiles)
                                             {
@@ -183,7 +183,7 @@
 
                             <div class="form-group">
                                 <label>Estimate Square Feet</label>
-                                <input class="form-control square" asp-for="CountertopQuotation.EstimateSquareFeet" placeholder="Estimate Square Feet" />
+                                <input class="form-control form-control-sm square" asp-for="CountertopQuotation.EstimateSquareFeet" placeholder="Estimate Square Feet" />
                             </div>
 
                             <div class="d-flex justify-content-between align-content-lg-end">
@@ -585,10 +585,10 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control square" placeholder="Vendor Rate" />
+                                        <input type="number" class="form-control form-control-sm square" placeholder="Vendor Rate" />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control square" placeholder="Price Quote" />
+                                        <input type="number" class="form-control form-control-sm square" placeholder="Price Quote" />
                                 </td>
                                 <td style="vertical-align:middle;">
                                     <button class="btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>

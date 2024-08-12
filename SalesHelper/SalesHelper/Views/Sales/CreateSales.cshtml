@@ -82,7 +82,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Sales Date</label>
                                     <div class="col-sm-9">
-                                        <input type="datetime-local" id="SalesDate" class="form-control square" placeholder="Sales Date">
+                                        <input type="datetime-local" id="SalesDate" class="form-control form-control-sm square" placeholder="Sales Date">
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Status</label>
                                     <div class="col-sm-9">
-                                        <select id="Status" class="form-control square">
+                                        <select id="Status" class="form-control form-control-sm square">
                                             @foreach (var item in saleStatus)
                                             {
                                                 <option value="@item">@item</option>
@@ -105,7 +105,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Total Amount</label>
                                     <div class="col-sm-9">
-                                        <input type="number" id="TotalSalesOrderAmount" class="form-control square" placeholder="Total Amount">
+                                        <input type="number" id="TotalSalesOrderAmount" class="form-control form-control-sm square" placeholder="Total Amount">
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Advance Paid</label>
                                     <div class="col-sm-9">
-                                        <input type="number" id="AdvancePaid" class="form-control square" placeholder="Advance Paid">
+                                        <input type="number" id="AdvancePaid" class="form-control form-control-sm square" placeholder="Advance Paid">
                                     </div>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Address 1</label>
                                     <div class="col-sm-9">
-                                        <input id="HomeAddress1" class="form-control square" placeholder="Address 1">
+                                        <input id="HomeAddress1" class="form-control form-control-sm square" placeholder="Address 1">
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Address 2</label>
                                     <div class="col-sm-9">
-                                        <input id="HomeAddress2" class="form-control square" placeholder="Address 2">
+                                        <input id="HomeAddress2" class="form-control form-control-sm square" placeholder="Address 2">
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">City</label>
                                     <div class="col-sm-9">
-                                        <input id="HomeCity" class="form-control square" placeholder="City">
+                                        <input id="HomeCity" class="form-control form-control-sm square" placeholder="City">
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Zip Code</label>
                                     <div class="col-sm-9">
-                                        <input id="HomeZip" class="form-control square" placeholder="Zip">
+                                        <input id="HomeZip" class="form-control form-control-sm square" placeholder="Zip">
                                     </div>
                                 </div>
                             </div>
@@ -249,7 +249,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Address 1</label>
                                     <div class="col-sm-9">
-                                        <input id="ShippingAddress1" class="form-control square" placeholder="Address 1">
+                                        <input id="ShippingAddress1" class="form-control form-control-sm square" placeholder="Address 1">
                                     </div>
                                 </div>
                             </div>
@@ -257,7 +257,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Address 2</label>
                                     <div class="col-sm-9">
-                                        <input id="ShippingAddress2" class="form-control square" placeholder="Address 2">
+                                        <input id="ShippingAddress2" class="form-control form-control-sm square" placeholder="Address 2">
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +265,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">City</label>
                                     <div class="col-sm-9">
-                                        <input id="ShippingCity" class="form-control square" placeholder="City">
+                                        <input id="ShippingCity" class="form-control form-control-sm square" placeholder="City">
                                     </div>
                                 </div>
                             </div>
@@ -343,7 +343,7 @@
                                 <div class="row">
                                     <label class="col-sm-3 control-label">Zip Code</label>
                                     <div class="col-sm-9">
-                                        <input id="ShippingZip" class="form-control square" placeholder="Zip">
+                                        <input id="ShippingZip" class="form-control form-control-sm square" placeholder="Zip">
                                     </div>
                                 </div>
                             </div>
@@ -442,7 +442,7 @@
                 <div class="modal-body">
                     <label>Customer Name *</label>
                     <div class="form-group position-relative has-icon-left">
-                        <input id="customerName" type="text" class="form-control" placeholder="Jane Doe" required>
+                        <input id="customerName" type="text" class="form-control " placeholder="Jane Doe" required>
                         <div class="form-control-position">
                             <i class="feather icon-user primary"></i>
                         </div>
@@ -589,7 +589,7 @@
         var newRow = `
                                     <tr>
                                     <td>
-                                        <select class="form-control square sectionName" placeholder="section">
+                                            <select class="form-control form-control-sm square sectionName" placeholder="section">
     @foreach (var sectionName in sectionsNames)
     {
                                                                 <option value="@sectionName">@sectionName</option>
@@ -597,7 +597,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control square cabinetryVendor" placeholder="cabinetry">
+                                            <select class="form-control form-control-sm square cabinetryVendor" placeholder="cabinetry">
     @foreach (var vendor in cabinetryVendors)
     {
                                                                 <option value="@vendor.VendorId">@vendor.CompanyName</option>
@@ -605,7 +605,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control square constructions" placeholder="construction">
+                                        <select class="form-control form-control-sm square constructions" placeholder="construction">
     @foreach (var construction in constructions)
     {
                                                                 <option value="@construction">@construction</option>
@@ -613,7 +613,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control square boxMaterials" placeholder="box materials">
+                                            <select class="form-control form-control-sm square boxMaterials" placeholder="box materials">
     @foreach (var boxMaterial in boxMaterials)
     {
                                                                 <option value="@boxMaterial">@boxMaterial</option>
@@ -621,7 +621,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control square woodSpecies" placeholder="wood species">
+                                        <select class="form-control form-control-sm square woodSpecies" placeholder="wood species">
     @foreach (var woodSpecie in woodSpecies)
     {
                                                                 <option value="@woodSpecie">@woodSpecie</option>
@@ -629,10 +629,10 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input class="form-control square" placeholder="Door Style" />
+                                        <input class="form-control form-control-sm square" placeholder="Door Style" />
                                     </td>
                                     <td>
-                                        <input class="form-control square" placeholder="Finish" />
+                                            <input class="form-control form-control-sm square" placeholder="Finish" />
                                     </td>
                                     <td style="vertical-align:middle;">
                                         <button class=" btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Cabinet Details"></i></button>
@@ -652,7 +652,7 @@
         selectList.select2({
             tags: true,
             placeholder: 'Select or type',
-            allowClear: true,
+            allowClear: true,                                                                                                                                             
             createTag: function (params) {
                 return {
                     id: params.term,
@@ -741,7 +741,7 @@
                     var newRow = `
                                     <tr>
                                     <td>
-                                        <select class="form-control square sectionName" placeholder="section">
+                                        <select class="form-control form-control-sm square sectionName" placeholder="section">
     @foreach (var sectionName in sectionsNames)
     {
                                                         <option value="@sectionName">@sectionName</option>
@@ -749,7 +749,7 @@
                                         </select>
                                         </td>
                                         <td>
-                                        <select class="form-control square cabinetryVendor" placeholder="cabinetry">
+                                        <select class="form-control form-control-sm square cabinetryVendor" placeholder="cabinetry">
     @foreach (var vendor in cabinetryVendors)
     {
                                                         <option value="@vendor.VendorId">@vendor.CompanyName</option>
@@ -757,7 +757,7 @@
                                         </select>
                                         </td>
                                         <td>
-                                        <select class="form-control square constructions" placeholder="construction">
+                                        <select class="form-control form-control-sm square constructions" placeholder="construction">
     @foreach (var construction in constructions)
     {
                                                         <option value="@construction">@construction</option>
@@ -765,7 +765,7 @@
                                         </select>
                                         </td>
                                         <td>
-                                        <select class="form-control square boxMaterials" placeholder="box materials">
+                                            <select class="form-control form-control-sm square boxMaterials" placeholder="box materials">
     @foreach (var boxMaterial in boxMaterials)
     {
                                                         <option value="@boxMaterial">@boxMaterial</option>
@@ -774,7 +774,7 @@
 
                                         </td>
                                         <td>
-                                        <select class="form-control square woodSpecies" placeholder="wood species">
+                                        <select class="form-control form-control-sm square woodSpecies" placeholder="wood species">
     @foreach (var woodSpecie in woodSpecies)
     {
                                                         <option value="@woodSpecie">@woodSpecie</option>
@@ -782,10 +782,10 @@
                                         </select>
                                         </td>
                                         <td>
-                                        <input class="form-control square" placeholder="Door Style" />
+                                        <input class="form-control form-control-sm square" placeholder="Door Style" />
                                         </td>
                                         <td>
-                                        <input class="form-control square" placeholder="Finish" />
+                                            <input class="form-control form-control-sm square" placeholder="Finish" />
                                         </td>
                                         <td hidden>
                                         <input class="cabinetQuoteId" />
