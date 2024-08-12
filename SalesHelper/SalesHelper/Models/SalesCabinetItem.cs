@@ -14,6 +14,7 @@ namespace SalesHelper.Models
         public string? WoodSpecie { get; set; }
         public string? DoorStyle { get; set; } = string.Empty;
         public string? CabinetFinish { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         public int? CabinetQuotationId { get; set; } // can be null if user is going to add new line item
 
         [ForeignKey("SaleFk")]

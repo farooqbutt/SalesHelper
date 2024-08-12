@@ -36,22 +36,13 @@ namespace SalesHelper.Controllers
 
 
         [HttpPost]
-        public IActionResult AddCustomerFromSearchBar(string name)
+        public IActionResult AddCustomerFromSearchBar(AddCustomerInterface customerDetails)
         {
-            string customerFirstName = _customerService.DetermineNameType(name) == ICustomerService.NameType.First ? name : name.Split(" ")[0];
-            string customerLastName = _customerService.DetermineNameType(name) == ICustomerService.NameType.Full ? name.Split(" ")[1] : "";
-            var customer = new Customer
-            {
-                FirstName = customerFirstName,
-                LastName = customerLastName,
-            };
-            SetAccountNumAndCreatorOfCustomer(customer);
-            var address = _addressService.Create(new Address());
-            address.AddressType = "home";
-            _addressService.Update(address);
-            customer.AddressId = address.AddressId;
-            _customerService.Create(customer);
-            return Json(new { data = customer });
+            SetAccountNumAndCreatorOfCustomer(customerDetails.Customer);
+            _addressService.Create(customerDetails.Address);
+            customerDetails.Customer.AddressId = customerDetails.Address.AddressId;
+            _customerService.Create(customerDetails.Customer);
+            return Json(new { data = customerDetails.Customer });
         }
 
         [HttpGet]

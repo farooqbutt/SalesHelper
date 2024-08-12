@@ -1,4 +1,5 @@
-﻿using SalesHelper.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services
@@ -11,5 +12,6 @@ namespace SalesHelper.Services
         public void Update(Sale sale);
         public void Delete(int id);
         public void UpdateStatus(int id, string status);
+        public IActionResult SalePreviewGenerator(CreateSaleInterface sale);
     }
 }

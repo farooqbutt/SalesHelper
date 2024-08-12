@@ -1,0 +1,608 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SalesHelper.Services.CustomerService _customerService
+@inject SalesHelper.Services.VendorService _vendorService
+@inject SignInManager<ApplicationUser> _signInManager
+
+@{
+    var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+    var cabinetryVendors = _vendorService.ReadAll().Where(v => v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber
+                                                                                    && v.BusinessTypeId == 1).ToList();
+}
+
+<style>
+    .select2-selection {
+        border-radius: 0px !important;
+    }
+</style>
+
+<div class="content-overlay"></div>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">New Cabinet Draft Order</h3>
+        </div>
+    </div>
+
+    <div class="content-body">
+
+        <form class="form" id="CabinetDraftOrderForm">
+
+            @* hidden fields *@
+            <input type="hidden" id="CreatedBy" value="@_signInManager.UserManager.GetUserAsync(User).Result.Id" />
+            <input type="hidden" id="OrderDate" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")" />
+
+
+            <div class="row match-height">
+                <div class="col-md-4">
+                    <div class="card DraftOrderInformation">
+                        <div class="card-header">
+                            <h4 class="card-title">Draft Order Information</h4>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label for="donationinput1">Order Name *</label>
+                                        <input id="OrderName" class="form-control form-control-sm square" placeholder="John's cabient" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="donationinput1">Customer *</label>
+                                        <select id="CustomerId" class="form-control form-control-sm square" required>
+                                            <option value="">Select Customer</option>
+                                            @foreach (var customer in customersList)
+                                            {
+                                                <option value="@customer.Id">@customer.FirstName @customer.LastName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="donationinput2">Vendor *</label>
+                                        <select id="VendorId" class="form-control square" required>
+                                            <option value="">Select Vendor</option>
+                                            @foreach (var vendor in cabinetryVendors)
+                                            {
+                                                <option value="@vendor.VendorId">@vendor.CompanyName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="donationinput1">Sales No. #</label>
+                                        <select id="SalesOrderId" class="form-control form-control-sm square">
+                                            <option value="">Select Sales No</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Order Type</label>
+                                        <select id="OrderType" class="form-control form-control-sm square">
+                                            <option value="">Select Order Type</option>
+                                            <option value="Regular Order">Regular Order</option>
+                                            <option value="Warrenty Order">Warranty Order</option>
+                                            <option value="Sample Order">Sample Order</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card ShippingAddressCard">
+                        <div class="card-header">
+                            <h4 class="card-title">Shipping Information</h4>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Method of Shipping</label>
+                                        <select id="MethodOfShipping" class="form-control form-control-sm square">
+                                            <option value="">Select Shipping Method</option>
+                                            <option value="Ship to Home">Ship to Home</option>
+                                            <option value="Ship to Dealer">Ship to Dealer</option>
+                                            <option value="Ship to Warehouse">Ship to Warehouse</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Address Line 1</label>
+                                        <input id="ShippingAddress1" class="form-control form-control-sm square" placeholder="Address Line 1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Address Line 2</label>
+                                        <input id="ShippingAddress2" class="form-control form-control-sm square" placeholder="Address Line 2">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Country</label>
+                                                <select id="ShippingCountry" class="form-control form-control-sm square" data-placeholder="Select Country"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>State</label>
+                                                <select id="ShippingState" class="form-control form-control-sm square" data-placeholder="Select State"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>City</label>
+                                                <input id="ShippingCity" class="form-control form-control-sm square" placeholder="City">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Post/Zip code</label>
+                                                <input id="ShippingPostalCode" class="form-control form-control-sm square" placeholder="Post/Zip Code">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Shipping Contact Name</label>
+                                        <input id="ShippingContactName" class="form-control form-control-sm square" placeholder="Shipping Contact Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Shipping Contact Phone</label>
+                                        <input id="ShippingContactPhone" class="form-control form-control-sm square" placeholder="Shipping Contact Phone">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Order Contact Information</h4>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Purchase Contact</label>
+                                    <input id="PurchaseContactName" class="form-control form-control-sm square" placeholder="Order Contact Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Purchase Contact Phone</label>
+                                    <input id="PurchaseContactPhone" class="form-control form-control-sm square" placeholder="Order Contact Phone">
+                                </div>
+                                <div class="form-group">
+                                    <label>Purchase Contact Email</label>
+                                    <input type="email" id="PurchaseContactEmail" class="form-control form-control-sm square" placeholder="Order Contact Email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="button" class="btn btn-warning"><i class="feather icon-x"></i> Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="feather icon-check"></i> Save Draft</button>
+                <button type="submit" class="btn btn-primary"><i class="feather icon-check"></i> Save as Order</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- Offcanvas HTML Structure -->
+@* <button type="button" class="btn btn-primary" data-toggle="offcanvas" data-target="#myOffcanvas">
+    Open Offcanvas
+</button> *@
+
+<div id="CustomerCanvas" class="offcanvas">
+    <div class="offcanvas-header">
+        <h4>Customer Details</h4>
+        <button type="button" class="close" data-dismiss="offcanvas">
+            <i class="feather icon-x"></i>
+        </button>
+    </div>
+    <hr />
+    <div class="offcanvas-body">
+        <form class="form" id="AddCustomerForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>First Name <span class="required">*</span></label>
+                        <input id="FirstName" type="text" class="form-control form-control-sm square" placeholder="First Name" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input id="LastName" type="text" class="form-control form-control-sm square" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input id="Email" type="email" class="form-control form-control-sm square" placeholder="Email">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Cell Phone <span class="required">*</span></label>
+                        <input id="CellPhone" type="text" class="form-control form-control-sm square" placeholder="Cell Phone" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Home Phone</label>
+                        <input id="HomePhone" type="text" class="form-control form-control-sm square" placeholder="Home Phone">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Work Phone</label>
+                        <input id="WorkPhone" type="text" class="form-control form-control-sm square" placeholder="Work Phone">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input id="Company" type="text" class="form-control form-control-sm square" placeholder="Company">
+                    </div>
+                </div>
+            </div>
+
+            <h4>Address Details</h4><hr />
+
+            <div class="form-group">
+                <label>Address Line 1</label>
+                <input id="Address1" class="form-control form-control-sm square" type="text" placeholder="Address line 1">
+            </div>
+            <div class="form-group">
+                <label>Address Line 2</label>
+                <input id="Address2" class="form-control form-control-sm square" type="text" placeholder="Address line 2">
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <select id="Country" class="form-control form-control-sm square">
+                    <option value="">Select a country</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <select id="State" class="form-control form-control-sm square" placeholder="state">
+                    <option value="">Select a state</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input id="City" class="form-control form-control-sm square" type="text" placeholder="City">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Postal Code / Zip</label>
+                        <input id="PostalCode" type="text" class="form-control form-control-sm square" placeholder="Postal Code / Zip">
+                    </div>
+                </div>
+            </div>
+            <input id="AddressType" value="home" hidden />
+
+            <div class="text-right">
+                <button type="button" class="btn btn-warning" data-dismiss="offcanvas">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+<div class="offcanvas-backdrop"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function setupAutocomplete(inputId, cardId, addressPrefix) {
+            var searchInput = document.getElementById(inputId);
+            var autocomplete = new google.maps.places.Autocomplete(searchInput);
+            autocomplete.setFields(["address_components", "formatted_address"]);
+            autocomplete.addListener("place_changed", function () {
+                var place = autocomplete.getPlace();
+                var address = place.formatted_address;
+
+                var blockui = ShowBlockUi(cardId, "Loading Address...");
+                // setting address1, city, state & postalcode, country in the address fields
+                var addressArray = address.split(",");
+
+                var address1 = addressArray[0].trim();
+                var city = addressArray[1].trim();
+                var state = addressArray[2].trim().split(" ")[0];
+                var postalCode = addressArray[2].trim().split(" ")[1];
+                var country = addressArray[3].trim();
+
+                $("#" + addressPrefix + "Address1").val(address1);
+                $("#" + addressPrefix + "Country").val(country).trigger("change");
+                // wait for states to be populated before setting the state
+                var stateSetInterval = setInterval(function () {
+                    if ($("#" + addressPrefix + "State option").length > 0) {
+                        $("#" + addressPrefix + "State").val(state).trigger("change");
+                        clearInterval(stateSetInterval);
+                        // Unblock the UI after setting the state
+                        $(blockui).unblock();
+                    }
+                }, 100);
+                $("#" + addressPrefix + "City").val(city);
+                $("#" + addressPrefix + "PostalCode").val(postalCode);
+            });
+        }
+
+        setupAutocomplete("ShippingAddress1", "ShippingAddressCard", "Shipping");
+        setupAutocomplete("Address1", "offcanvas", "");
+    });
+
+    function ShowCustomerCanvas(event) {
+        event.stopPropagation();
+        // get the current text that is inside select2 search input
+        var customerSearchText = $("#CustomerId").data("select2").dropdown.$search.val();
+        // show customer modal pop up
+        window.openOffcanvas("#CustomerCanvas");
+        // set customer name input field equal to searchText
+        $("#FirstName").val(customerSearchText);
+        // close select2 list
+        $("#CustomerId").select2("close");
+    }
+
+    $(document).ready(function () {
+
+        // Apply input mask to phone number fields
+        $("#PurchaseContactPhone, #ShippingContactPhone, #CellPhone, #HomePhone, #WorkPhone").inputmask({
+            mask: '999-999-9999',
+            placeholder: '___-___-____'
+        });
+
+        $("#CustomerId").select2({
+            placeholder: "Select Customer",
+            language: {
+                noResults: function () {
+                    return `<button style="width: 100%" type="button"
+                                    class="btn btn-primary"
+                                    onclick='ShowCustomerCanvas(event)'><i class="feather icon-plus"></i> Add New Customer</button>`;
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
+
+        $("#VendorId").select2({
+            placeholder: "Select Vendor",
+            language: {
+                noResults: function () {
+                    return `<button style="width: 100%" type="button"
+                                    class="btn btn-primary"
+                                    onclick='ShowVendor_Canvas()'><i class="feather icon-plus"></i> Add New Vendor</button>`;
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
+
+
+        // loading countries from api endpoint
+        $.ajax({
+            url: 'https://countriesnow.space/api/v0.1/countries/states',
+            method: 'GET',
+            success: function (data) {
+                let countries = data.data.map(country => ({
+                    id: country.iso3,
+                    text: country.name
+                }));
+                $('#ShippingCountry, #Country').select2({
+                    data: countries
+                });
+            },
+            error: function (error) {
+                console.log('Error fetching countries:', error);
+            }
+        });
+
+        // on selecting shipping country get states using ajax request
+        $('#ShippingCountry').on('change', function () {
+            var blockui = ShowBlockUi("ShippingAddressCard", "Loading States...");
+            // first clear all previous options from ShippingState
+            $('#ShippingState').empty();
+            var country = $('#ShippingCountry option:selected').text();
+            $.ajax({
+                url: 'https://countriesnow.space/api/v0.1/countries/states',
+                method: 'POST',
+                data: { "country": country },
+                success: function (data) {
+                    let states = data.data.states.map(state => ({
+                        id: state.state_code,
+                        text: state.name
+                    }));
+                    $('#ShippingState').select2({
+                        data: states
+                    });
+                    // Unblock the UI after setting the state
+                    $(blockui).unblock();
+                },
+                error: function (error) {
+                    console.log('Error fetching states:', error);
+                }
+            });
+        });
+
+        // on selecting shipping country get states using ajax request
+        $('#Country').on('change', function () {
+            var blockui = ShowBlockUi("offcanvas", "Loading States...");
+            // first clear all previous options from ShippingState
+            $('#State').empty();
+            var country = $('#Country option:selected').text();
+            $.ajax({
+                url: 'https://countriesnow.space/api/v0.1/countries/states',
+                method: 'POST',
+                data: { "country": country },
+                success: function (data) {
+                    let states = data.data.states.map(state => ({
+                        id: state.state_code,
+                        text: state.name
+                    }));
+                    $('#State').select2({
+                        data: states
+                    });
+                    // Unblock the UI after setting the state
+                    $(blockui).unblock();
+                },
+                error: function (error) {
+                    console.log('Error fetching states:', error);
+                }
+            });
+        });
+
+        // on change of customer get the sales related to that customer while using blockui and applying select2 on it
+        $('#CustomerId').on('change', function () {
+            var blockui = ShowBlockUi("DraftOrderInformation", "Loading Customer Sales...");
+            var customerId = $('#CustomerId').val();
+            $.ajax({
+                url: '/Sales/GetSalesByCustomerId',
+                method: 'GET',
+                data: { customerId: customerId },
+                success: function (data) {
+                    // the returned data is like [1004, 1005]
+                    // we need to convert it to [{id: 1004, text: 1004}, {id: 1005, text: 1005}]
+                    let sales = data.data.map(sale => ({
+                        id: sale,
+                        text: sale
+                    }));
+                    $('#SalesOrderId').empty();
+                    $('#SalesOrderId').select2({
+                        placeholder: "Select Sales No",
+                        data: sales
+                    });
+                    // unselect for the first time
+                    $('#SalesOrderId').val(null).trigger('change');
+                    // Unblock the UI after setting the state
+                    $(blockui).unblock();
+                },
+                error: function (error) {
+                    console.log('Error fetching sales:', error);
+                }
+            });
+        });
+    });
+
+    // submit CabinetDraftOrderForm form
+    $("#CabinetDraftOrderForm").submit(function (e) {
+        e.preventDefault();
+        var blockui = ShowBlockUi("content-wrapper", "Creating Draft Order...");
+        // get form data for cabinet draft order
+        var cabinetDraftOrder = {
+            OrderName: $("#OrderName").val(),
+            CustomerId: $("#CustomerId").val(),
+            VendorId: $("#VendorId").val(),
+            SalesOrderId: $("#SalesOrderId").val(),
+            OrderType: $("#OrderType").val(),
+            OrderDate: $("#OrderDate").val(),
+            MethodOfShipping: $("#MethodOfShipping").val(),
+            ShippingAddress1: $("#ShippingAddress1").val(),
+            ShippingAddress2: $("#ShippingAddress2").val(),
+            ShippingCountry: $("#ShippingCountry").val(),
+            ShippingState: $("#ShippingState").val(),
+            ShippingCity: $("#ShippingCity").val(),
+            ShippingPostalCode: $("#ShippingPostalCode").val(),
+            ShippingContactName: $("#ShippingContactName").val(),
+            ShippingContactPhone: $("#ShippingContactPhone").val(),
+            PurchaseContactName: $("#PurchaseContactName").val(),
+            PurchaseContactPhone: $("#PurchaseContactPhone").val(),
+            PurchaseContactEmail: $("#PurchaseContactEmail").val(),
+            CreatedBy: $("#CreatedBy").val()
+        }
+
+        // if form is submitted through Save Draft button then ajax url will be /PurchaseOrders/CreateCabinetDraftOrder else /PurchaseOrders/CreateCabinetOrder
+        var ajaxUrl = $(this).find('button[type="submit"]:focus').text().trim() == "Save Draft" ? '/PurchaseOrders/CreateCabinetDraftOrder' : '/PurchaseOrders/CreateCabinetOrder';
+        $.ajax({
+            url: ajaxUrl,
+            method: 'POST',
+            data: cabinetDraftOrder,
+            success: function (data) {
+                // unblock the UI
+                $(blockui).unblock();
+                // show success message
+                toastr.success("Draft Order Created Successfully!");
+                // redirect to the draft order list page after 2 seconds
+                setTimeout(function () {
+                    window.location.href = "/PurchaseOrders/AllDraftOrdersView";
+                }, 2000);
+            },
+            error: function (error) {
+                // unblock the UI
+                $(blockui).unblock();
+                // show error message
+                toastr.error(error.responseJSON.message);
+            }
+        });
+    });
+
+    // submit AddCustomerForm form
+    $("#AddCustomerForm").submit(function (e) {
+        e.preventDefault();
+        var blockui = ShowBlockUi("offcanvas", "Adding Customer...");
+        // get form data for customer
+        var customer = {
+            FirstName: $("#FirstName").val(),
+            LastName: $("#LastName").val(),
+            Email: $("#Email").val(),
+            CellPhone: $("#CellPhone").val(),
+            HomePhone: $("#HomePhone").val(),
+            WorkPhone: $("#WorkPhone").val(),
+            Company: $("#Company").val()
+        }
+
+        var customerAddress = {
+            Address1: $("#Address1").val(),
+            Address2: $("#Address2").val(),
+            Country: $("#Country").val(),
+            State: $("#State").val(),
+            City: $("#City").val(),
+            PostalCode: $("#PostalCode").val(),
+            AddressType: $("#AddressType").val()
+        }
+
+        var customerDetails = {
+            customer: customer,
+            address: customerAddress
+        }
+
+        $.ajax({
+            url: '/Customers/AddCustomerFromSearchBar',
+            method: 'POST',
+            data: customerDetails,
+            success: function (data) {
+                debugger;
+                // refresh the customer select list
+                var customerId = data.data.id;
+                var customerName = data.data.firstName + " " + (data.data.lastName != null ? data.data.lastName : "");
+                var newOption = new Option(customerName, customerId, true, true);
+                $("#CustomerId").append(newOption).trigger("change");
+                // unblock the UI
+                $(blockui).unblock();
+                // close the offcanvas
+                window.closeOffcanvas("#CustomerCanvas");
+                // show success message
+                toastr.success("Customer Added Successfully!");
+            },
+            error: function (error) {
+                // unblock the UI
+                $(blockui).unblock();
+                // show error message
+                toastr.error(error.responseJSON.message);
+            }
+        });
+    });
+
+</script>

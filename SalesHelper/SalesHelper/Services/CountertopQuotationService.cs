@@ -9,6 +9,7 @@ using SalesHelper.Models;
 using SalesHelper.Models.InterfaceModels;
 using System.Text.Json;
 using SalesHelper.Services.EncryptionServices;
+using System.Text.RegularExpressions;
 
 namespace SalesHelper.Services
 {
@@ -100,7 +101,7 @@ namespace SalesHelper.Services
         {
             try
             {
-                if(color == null)
+                if (color == null)
                 {
                     return _context.CountertopBrandsData.Where(a => a.Brand == brand).ToList();
                 }
@@ -259,6 +260,51 @@ namespace SalesHelper.Services
                         Base64Data = base64
                     });
                 }
+            }
+        }
+
+        public List<SalesCountertopItem> GetCountertopItems(int quoteId)
+        {
+            try
+            {
+                var countertopItems = _context.CountertopMaterials.Where(cd => cd.CountertopQuotationId == quoteId)
+                    .Include(a => a.VendorIdFk)
+                    .Include(a => a.CountertopQuotationIdFk)
+                    .ToList();
+
+                List<SalesCountertopItem> salesCountertopItems = new();
+                foreach (var item in countertopItems)
+                {
+                    // Use 0 if EstimateSquareFeet is null or cannot be parsed to an integer
+                    int estimatedSquareFeet = 0;
+                    if (!string.IsNullOrEmpty(item.CountertopQuotationIdFk?.EstimateSquareFeet))
+                    {
+                        int.TryParse(Regex.Replace(item.CountertopQuotationIdFk.EstimateSquareFeet, @"\D", ""), out estimatedSquareFeet);
+                    }
+
+                    // Use 0 if PriceQuote is null
+                    decimal unitPrice = item.PriceQuote ?? 0;
+                    decimal subtotal = unitPrice * estimatedSquareFeet;
+
+                    salesCountertopItems.Add(new SalesCountertopItem
+                    {
+                        Material = item.Material,
+                        Brand = item.Brand,
+                        Color = item.Color,
+                        VendorId = item.VendorId,
+                        RoomType = item.CountertopQuotationIdFk!.RoomType,
+                        EdgeProfile = item.CountertopQuotationIdFk.EdgeProfile,
+                        EstimatedSquareFeet = estimatedSquareFeet,
+                        UnitPrice = unitPrice,
+                        Subtotal = subtotal,
+                        CountertopQuotationId = item.CountertopQuotationId
+                    });
+                }
+                return salesCountertopItems;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

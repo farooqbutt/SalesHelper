@@ -1,0 +1,57 @@
+﻿/* General body settings */
+body {
+    overflow: auto; /* Ensure body can scroll */
+}
+
+.offcanvas {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: -100%;
+    width: 400px;
+    max-width: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease-in-out;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+}
+
+.offcanvas.open {
+    right: 0;
+}
+
+.offcanvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    flex-shrink: 0;
+}
+
+.offcanvas-body {
+    padding: 0 1rem 1rem 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+}
+
+.offcanvas-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 1040;
+}
+
+.offcanvas-backdrop.show {
+    display: block;
+}
+
+.pac-container {
+    z-index: 1060; /* Ensure this value is higher than the offcanvas z-index */
+}

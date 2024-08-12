@@ -58,8 +58,10 @@
     <!-- END: Page CSS-->
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/custom-offcanvas.css">
     <!-- END: Custom CSS-->
     <script src="/js/core/libraries/jquery.min.js"></script>
+    <script aysnc src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfJyZMiCN_7Ba7LBMPWCdUFQsT62P3Z6I&libraries=places&callback=initMap"></script>
 </head>
 <!-- END: Head-->
 
@@ -435,7 +437,7 @@
                         <a href="#"><i class="ti-files"></i><span class="menu-title">Quotes</span></a>
                         <ul class="menu-content">
                             <li class="">
-                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Quotes</a>
+                                <a class="menu-item">Create New Quotes</a>
                                 <ul class="menu-content">
                                     <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "Quotations" &&
                                        ViewContext.RouteData.Values["action"]!.ToString() == "CreateCabinetQuotation" ? "active" : "")">
@@ -485,14 +487,38 @@
                             </li>
                         </ul>
                     </li>
-                    <li class=" nav-item">
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" ? "active open" : "")">
                         <a href="#"><i class="feather icon-shopping-cart"></i><span class="menu-title">Purchase Orders</span></a>
                         <ul class="menu-content">
                             <li class="">
-                                <a class="menu-item" asp-controller="Home" asp-action="Index">Create New Orders</a>
+                                <a class="menu-item">New Draft Order</a>
+                                <ul class="menu-content">
+                                    <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCabinetDraftOrder" ? "active" : "")">
+                                        <a class="menu-item"
+                                           asp-controller="PurchaseOrders" asp-action="CreateCabinetDraftOrder">Cabinet Draft</a>
+                                    </li>
+                                    <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
+                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopDraftOrder" ? "active" : "")">
+                                        <a class="menu-item" asp-controller="PurchaseOrders" asp-action="CreateCountertopQuotationView">Countertop Draft</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="menu-item" asp-controller="" asp-action="">Hardware Draft</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
+                            ViewContext.RouteData.Values["action"]!.ToString() == "AllDraftOrdersView" ? "active" : "")">
+                                <a class="menu-item" asp-controller="PurchaseOrders" asp-action="AllDraftOrdersView">All Drafts</a>
                             </li>
                             <li class="">
-                                <a class="menu-item" asp-controller="Home" asp-action="AnalyticsView">View Purchase Orders</a>
+                                <a class="menu-item" asp-controller="" asp-action="">All Orders</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="" asp-action="">Orders in Processing</a>
+                            </li>
+                            <li class="">
+                                <a class="menu-item" asp-controller="" asp-action="">Completed Orders</a>
                             </li>
                         </ul>
                     </li>
@@ -735,7 +761,12 @@
     <script src="/js/scripts/pages/app-invoice.js"></script>
     <script src="/js/scripts/pages/app-email.js"></script>
     <script src="/js/scripts/extensions/sweet-alerts.min.js"></script>
+    <script src="/js/scripts/extensions/block-ui.js"></script>
     <!-- END: Page JS-->
+
+    <!-- BEGIN: Custom JS-->
+    <script src="/js/custom-offcanvas.js"></script>
+    <!-- END: Custom JS-->
 
     @*Server Side Scripts*@
     <!-- Conditional loading of scripts -->
