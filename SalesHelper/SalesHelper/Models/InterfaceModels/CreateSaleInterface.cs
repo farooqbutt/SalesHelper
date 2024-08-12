@@ -4,5 +4,6 @@
     {
         public Sale SaleData { get; set; } = default!;
         public List<SalesCabinetItem> CabinetItems { get; set; } = default!;
+        public List<SalesCountertopItem> CountertopItems { get; set; } = default!;
     }
 }

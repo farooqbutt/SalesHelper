@@ -21,7 +21,7 @@ namespace SalesHelper.Data
         public DbSet<CabinetQuotation> CabinetQuotations { get; set; } = default!;
         public DbSet<CabinetDetail> CabinetDetails { get; set; } = default!;
         public DbSet<QuotationItem> QuotationItems { get; set; } = default!;
-        public DbSet<CatalogItem> CatalogItems { get; set; } = default!; 
+        public DbSet<CatalogItem> CatalogItems { get; set; } = default!;
         public DbSet<CabinetryDoorStyle> CabinetryDoorStyles { get; set; } = default!;
         public DbSet<QuotationDocument> QuotationDocuments { get; set; } = default!;
         public DbSet<CountertopQuotation> CountertopQuotations { get; set; } = default!;
@@ -32,6 +32,7 @@ namespace SalesHelper.Data
         public DbSet<Sale> Sales { get; set; } = default!;
         public DbSet<SalesCabinetItem> SalesCabinetItems { get; set; } = default!;
         public DbSet<SalesCountertopItem> SalesCountertopItems { get; set; } = default!;
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; } = default!;
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -67,10 +68,14 @@ namespace SalesHelper.Data
                 .HasIndex(b => b.TypeName).IsUnique();
 
             modelBuilder.Entity<Vendor>()
-                .Property(a=>a.VendorReferenceId).IsRequired(false);
+                .Property(a => a.VendorReferenceId).IsRequired(false);
 
             modelBuilder.Entity<Sale>()
-                .Property(a=>a.Id)
+                .Property(a => a.Id)
+                .UseIdentityColumn(10001, 1);
+
+            modelBuilder.Entity<PurchaseOrder>()
+                .Property(a => a.Id)
                 .UseIdentityColumn(10001, 1);
 
             modelBuilder.Entity<BusinessTypes>().HasData(new BusinessTypes

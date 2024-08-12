@@ -42,6 +42,10 @@ namespace SalesHelper.Models
         public DateTime SalesDate { get; set; }
         public DateTime ModifiedDate { get; set; }
         public string Status { get; set; } = string.Empty;
+        public decimal CabinetSubTotal { get; set; }
+        public decimal CountertopSubTotal { get; set; }
+        public decimal Discount { get; set; }
+        public decimal Tax { get; set; }
         public decimal TotalSalesOrderAmount { get; set; }
         public decimal AdvancePaid { get; set; }
     }

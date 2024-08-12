@@ -2,7 +2,7 @@
 @inject SignInManager<ApplicationUser> _signInManager
 @model SalesHelper.Models.InterfaceModels.CountertopQuotationCreateInterface
 @inject SalesHelper.Services.CustomerService _customerService
-@inject SalesHelper.Data.ApplicationDbContext context
+@inject SalesHelper.Services.VendorService _vendorService
 @{
     var roomTypes = Enum.GetValues(typeof(CountertopQuotation.RoomTypes))
                                 .Cast<CountertopQuotation.RoomTypes>()
@@ -18,7 +18,7 @@
                         .ToList();
 
     // getting vendors for the current user with business type 2 (2 = "Stone and Countertops")
-    var vendors = context.Vendor.Where(v => v.BusinessTypeId == 2 && v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber).ToList();
+    var vendors = _vendorService.ReadAll().Where(v => v.BusinessTypeId == 2 && v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber).ToList();
 
     var customerId = TempData["CustomerId"];
     var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
@@ -33,12 +33,12 @@
         flex: 1 1 auto;
     }
 
-    .input-group > .select2-container--default .select2-selection--single {
-        height: 100%;
-        line-height: inherit;
-    }
+        .input-group > .select2-container--default .select2-selection--single {
+            height: 100%;
+            line-height: inherit;
+        }
 
-    #materialTable td{
+    #materialTable td {
         vertical-align: middle;
     }
 </style>
@@ -72,8 +72,8 @@
                                 <label>Customer Name <span class="required">*</span></label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text square" style="height: 100%; padding: 0 10px; display: flex; align-items: center;">
-                                            <i class="feather icon-user" style="font-size: 1rem;"></i>
+                                        <span class="input-group-text square">
+                                            <i class="feather icon-user"></i>
                                         </span>
                                     </div>
                                     <select class="form-control square" asp-for="CountertopQuotation.CustomerId" data-placeholder="Select a Customer" required></select>
@@ -91,7 +91,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Room Type</label>
-                                        <select class="form-control form-control-sm square" asp-for="CountertopQuotation.RoomType">
+                                        <select class="form-control square" asp-for="CountertopQuotation.RoomType">
                                             <option selected disabled>Choose Room Type</option>
                                             @foreach (var item in roomTypes)
                                             {
@@ -103,7 +103,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Edge Profile</label>
-                                        <select class="form-control form-control-sm square" asp-for="CountertopQuotation.EdgeProfile">
+                                        <select class="form-control square" asp-for="CountertopQuotation.EdgeProfile">
                                             <option selected disabled>Choose Edge Profile</option>
                                             @foreach (var item in edgeProfiles)
                                             {
@@ -267,7 +267,7 @@
                 <div class="modal-body">
                     <label>Customer Name *</label>
                     <div class="form-group position-relative has-icon-left">
-                        <input id="customerName" type="text" class="form-control" placeholder="Jane Doe" required>
+                        <input id="customerName" type="text" class="form-control form-control-sm" placeholder="Jane Doe" required>
                         <div class="form-control-position">
                             <i class="feather icon-user primary"></i>
                         </div>
@@ -323,9 +323,9 @@
             language: {
                 noResults: function () {
                     return `<button style="width: 100%" type="button"
-                            class="btn btn-primary"
-                            onClick='ShowCustomer_Canvas()'><i class="feather icon-plus"></i> Add New Customer</button>
-                            </li>`;
+                                class="btn btn-primary"
+                                onClick='ShowCustomer_Canvas()'><i class="feather icon-plus"></i> Add New Customer</button>
+                                </li>`;
                 }
             },
             escapeMarkup: function (markup) {
@@ -335,7 +335,7 @@
             data: customerList.map(function (customer) {
                 return {
                     id: customer.id,
-                    text: customer.firstName + " " + (customer.lastName  != null ? customer.lastName : "")
+                    text: customer.firstName + " " + (customer.lastName != null ? customer.lastName : "")
                 };
             })
         });
@@ -431,14 +431,14 @@
                                 text: item.colorName,
                                 imageUrl: item.imageUrl,
                                 html: `<div style="display:flex;">
-                                            <div>
-                                                <img src="/images/LoadingColorImg.gif" alt="" data-actual-image="${item.imageUrl}" style="height:70px;width:70px;object-fit:cover;" class="lazy img-rounded img-responsive" />
-                                            </div>
-                                            <div style="padding-left:10px;">
-                                                <div style="font-size: 1.2em">${item.colorName}</div>
-                                                <div>Thickness = ${item.thickness || 'N/A'}, Slab Size = ${item.slabSize || 'N/A'}</div>
-                                            </div>
-                                        </div>`,
+                                                <div>
+                                                    <img src="/images/LoadingColorImg.gif" alt="" data-actual-image="${item.imageUrl}" style="height:70px;width:70px;object-fit:cover;" class="lazy img-rounded img-responsive" />
+                                                </div>
+                                                <div style="padding-left:10px;">
+                                                    <div style="font-size: 1.2em">${item.colorName}</div>
+                                                    <div>Thickness = ${item.thickness || 'N/A'}, Slab Size = ${item.slabSize || 'N/A'}</div>
+                                                </div>
+                                            </div>`,
                             }
                         })
                     }
@@ -555,46 +555,43 @@
         function addRow(data) {
             // increment id_indexer
             id_indexer++;
-            if(data.material == null)
-            {
+            if (data.material == null) {
                 toastr.warning("Please select a material first!", "Warning!", { "progressBar": true });
                 return;
             }
-            if(data.brand == null)
-            {
+            if (data.brand == null) {
                 toastr.warning("Please select a brand first!", "Warning!", { "progressBar": true });
                 return;
             }
-            if(data.color == null)
-            {
+            if (data.color == null) {
                 toastr.warning("Please select a color first!", "Warning!", { "progressBar": true });
                 return;
             }
             var newRow = `
-                            <tr>
-                                <td><b class="item-number"></b></td>
-                                <td>${data.material}</td>
-                                <td>${data.brand}</td>
-                                <td>${data.color}</td>
-                                <td>
-                                    <select class="form-control square vendor-select" data-placeholder="Select Vendor">
-                                        @foreach (var item in vendors)
-                                        {
-                                            <option value="@item.VendorId">@item.CompanyName</option>
-                                        }
-                                    </select>
-                                </td>
-                                <td>
+                                <tr>
+                                    <td><b class="item-number"></b></td>
+                                    <td>${data.material}</td>
+                                    <td>${data.brand}</td>
+                                    <td>${data.color}</td>
+                                    <td>
+                                        <select class="form-control square vendor-select" data-placeholder="Select Vendor">
+    @foreach (var item in vendors)
+    {
+                                                    <option value="@item.VendorId">@item.CompanyName</option>
+    }
+                                        </select>
+                                    </td>
+                                    <td>
                                         <input type="number" class="form-control form-control-sm square" placeholder="Vendor Rate" />
-                                </td>
-                                <td>
+                                    </td>
+                                    <td>
                                         <input type="number" class="form-control form-control-sm square" placeholder="Price Quote" />
-                                </td>
-                                <td style="vertical-align:middle;">
-                                    <button class="btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
-                                </td>
-                            </tr>
-                        `;
+                                    </td>
+                                    <td style="vertical-align:middle;">
+                                        <button class="btn btn-sm btn-danger delete-row"><i class="feather icon-trash" title="Delete Item"></i></button>
+                                    </td>
+                                </tr>
+                            `;
 
             $('#materialTable tbody').append(newRow);
 

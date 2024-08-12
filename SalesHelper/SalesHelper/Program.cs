@@ -26,6 +26,7 @@ builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<CabinetQuotationService>();
 builder.Services.AddScoped<CountertopQuotationService>();
 builder.Services.AddScoped<SalesService>();
+builder.Services.AddScoped<PurchaseOrderService>();
 // additional services
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<GeneratePDFService>();

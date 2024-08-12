@@ -2559,8 +2559,11 @@ input[type="month"].form-control {
 
 .select2-container--classic .select2-selection--single,
 .select2-container--default .select2-selection--single {
-  height: 40px !important;
-  padding: 5px; }
+  /*height: 40px !important;
+  padding: 5px; */
+  height: initial !important;
+  padding: 1px;
+}
   .select2-container--classic .select2-selection--single .select2-selection__rendered i,
   .select2-container--default .select2-selection--single .select2-selection__rendered i {
     margin-right: 0.5rem; }

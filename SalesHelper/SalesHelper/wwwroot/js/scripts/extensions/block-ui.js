@@ -8,12 +8,12 @@
 ==========================================================================================*/
 
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-	/************************************
-	*			Block Examples			*
-	************************************/
-    $('.block-element').on('click', function() {
+    /************************************
+    *			Block Examples			*
+    ************************************/
+    $('.block-element').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -33,7 +33,7 @@ $(document).ready(function(){
 
 
     // Block sidebar
-    $('.block-sidebar').on('click', function() {
+    $('.block-sidebar').on('click', function () {
         var block_ele = $('.main-menu');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -53,7 +53,7 @@ $(document).ready(function(){
 
 
     // Block page
-    $('.block-page').on('click', function() {
+    $('.block-page').on('click', function () {
         $.blockUI({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
             timeout: 2000, //unblock after 2 seconds
@@ -72,11 +72,11 @@ $(document).ready(function(){
 
 
     /************************************
-	*			Message Options			*
-	************************************/
+    *			Message Options			*
+    ************************************/
 
     // Spinner only
-    $('.block-spinner-only').on('click', function() {
+    $('.block-spinner-only').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -96,7 +96,7 @@ $(document).ready(function(){
 
 
     // Defult Message
-    $('.block-default-message').on('click', function() {
+    $('.block-default-message').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<span class="semibold"> Loading...</span>',
@@ -115,7 +115,7 @@ $(document).ready(function(){
     });
 
     // Custom Message
-    $('.block-custom-message').on('click', function() {
+    $('.block-custom-message').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<span class="semibold"> Custom Message...</span>',
@@ -135,13 +135,13 @@ $(document).ready(function(){
 
 
     // Message Animation
-    $('.block-msg-animation').on('click', function() {
+    $('.block-msg-animation').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
-			message: '<div class="semibold"><span class="feather icon-refresh-cw icon-spin text-left"></span>&nbsp; Loading ...</div>',
+            message: '<div class="semibold"><span class="feather icon-refresh-cw icon-spin text-left"></span>&nbsp; Loading ...</div>',
             fadeIn: 1000,
             fadeOut: 1000,
-			timeout: 2000, //unblock after 2 seconds
+            timeout: 2000, //unblock after 2 seconds
             overlayCSS: {
                 backgroundColor: '#fff',
                 opacity: 0.8,
@@ -159,7 +159,7 @@ $(document).ready(function(){
 
 
     // Multiple messages
-    $('.block-multiple-msgs').on('click', function() {
+    $('.block-multiple-msgs').on('click', function () {
         var message = $('.multiple-msgs');
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
@@ -170,39 +170,39 @@ $(document).ready(function(){
                 cursor: 'wait'
             },
             css: {
-				// width: 200,
+                // width: 200,
                 border: 0,
                 padding: 0,
                 backgroundColor: 'transparent'
             },
-            onBlock: function(){
-				clearTimeout();
-			}
+            onBlock: function () {
+                clearTimeout();
+            }
         });
 
         window.setTimeout(function () {
-			message.html('<div class="semibold"><span class="feather icon-refresh-cw icon-spin text-left"></span>&nbsp; Loading ...</div>');
+            message.html('<div class="semibold"><span class="feather icon-refresh-cw icon-spin text-left"></span>&nbsp; Loading ...</div>');
         }, 0);
 
         window.setTimeout(function () {
-			message.html('<div class="semibold">Just a minute...</div>');
+            message.html('<div class="semibold">Just a minute...</div>');
         }, 2000);
 
         window.setTimeout(function () {
-			message.addClass('bg-success').html('<div class="semibold"><span class="icon-thumbs-o-up text-left"></span>&nbsp; Success</div>');
+            message.addClass('bg-success').html('<div class="semibold"><span class="icon-thumbs-o-up text-left"></span>&nbsp; Success</div>');
         }, 4000);
 
         window.setTimeout(function () {
-           $(block_ele).unblock({
-                onUnblock: function(){
+            $(block_ele).unblock({
+                onUnblock: function () {
                     message.removeClass('bg-success');
                 }
-           });
+            });
         }, 6000);
     });
 
     // Non centered message
-    $('.block-non-centered-msg').on('click', function() {
+    $('.block-non-centered-msg').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="semibold"><span class="feather icon-refresh-cw icon-spin text-left"></span>&nbsp; Loading ...</div>',
@@ -227,11 +227,11 @@ $(document).ready(function(){
 
 
     /****************************************
-	*			Overlay Examples			*
-	****************************************/
+    *			Overlay Examples			*
+    ****************************************/
 
     // Light overlay
-    $('.block-light-overlay').on('click', function() {
+    $('.block-light-overlay').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -251,7 +251,7 @@ $(document).ready(function(){
 
 
     // Custom overlay
-    $('.block-opaque-overlay').on('click', function() {
+    $('.block-opaque-overlay').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -272,7 +272,7 @@ $(document).ready(function(){
 
 
     // Overlay with custom color
-    $('.block-custom-overlay').on('click', function() {
+    $('.block-custom-overlay').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -294,11 +294,11 @@ $(document).ready(function(){
 
 
     /****************************************
-	*			Callback Options			*
-	****************************************/
+    *			Callback Options			*
+    ****************************************/
 
     // onBlock callback
-    $('.onblock-callback').on('click', function() {
+    $('.onblock-callback').on('click', function () {
         $.blockUI({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
             fadeIn: 1000,
@@ -314,7 +314,7 @@ $(document).ready(function(){
                 color: '#333',
                 backgroundColor: 'transparent'
             },
-            onBlock: function() {
+            onBlock: function () {
                 alert('Page is now blocked, FadeIn complete.');
             }
         });
@@ -322,7 +322,7 @@ $(document).ready(function(){
 
 
     // onUnblock callback
-    $('.onunblock-callback').on('click', function() {
+    $('.onunblock-callback').on('click', function () {
         $.blockUI({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
             timeout: 2000, //unblock after 2 seconds
@@ -337,7 +337,7 @@ $(document).ready(function(){
                 color: '#333',
                 backgroundColor: 'transparent'
             },
-            onUnblock: function() {
+            onUnblock: function () {
                 alert('Page is now unblocked. FadeOut complete.');
             }
         });
@@ -345,7 +345,7 @@ $(document).ready(function(){
 
 
     // Overlay callback
-    $('.onoverlay-click-callback').on('click', function() {
+    $('.onoverlay-click-callback').on('click', function () {
         $.blockUI({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
             overlayCSS: {
@@ -366,11 +366,11 @@ $(document).ready(function(){
 
 
     /************************************
-	*			Other Options			*
-	************************************/
+    *			Other Options			*
+    ************************************/
 
     // Block Without Message
-    $('.block-without-msg').on('click', function() {
+    $('.block-without-msg').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: null,
@@ -390,7 +390,7 @@ $(document).ready(function(){
 
 
     // Block without overlay
-    $('.block-without-overlay').on('click', function() {
+    $('.block-without-overlay').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -398,7 +398,7 @@ $(document).ready(function(){
             timeout: 2000, //unblock after 2 seconds
             css: {
                 width: 50,
-				height: 50,
+                height: 50,
                 lineHeight: 1,
                 color: '#FFF',
                 border: 0,
@@ -409,7 +409,7 @@ $(document).ready(function(){
     });
 
     // Unblock on overlay click
-    $('.overlay-unblock').on('click', function() {
+    $('.overlay-unblock').on('click', function () {
         var block_ele = $(this).closest('.card');
         $(block_ele).block({
             message: '<div class="feather icon-refresh-cw icon-spin font-medium-2"></div>',
@@ -425,13 +425,13 @@ $(document).ready(function(){
             }
         });
 
-        $('.blockOverlay').on('click', function() {
-			$(block_ele).unblock();
+        $('.blockOverlay').on('click', function () {
+            $(block_ele).unblock();
         });
     });
 
     // Growl notification
-    $('.growl-notification').on('click', function() {
+    $('.growl-notification').on('click', function () {
         $.blockUI({
             message: $('.growl-notification-example'),
             fadeIn: 700,
@@ -456,3 +456,23 @@ $(document).ready(function(){
     });
 
 });
+
+
+
+function ShowBlockUi(elementClassName, customMessage) {
+    var blockElement = $("." + elementClassName);
+    $(blockElement).block({
+        message: '<div class="semibold"><span class="feather icon-refresh-cw icon-spin text-left"></span>&nbsp; ' + customMessage + '</div>',
+        overlayCSS: {
+            backgroundColor: '#fff',
+            opacity: 0.8,
+            cursor: 'wait'
+        },
+        css: {
+            border: 0,
+            padding: 0,
+            backgroundColor: 'transparent'
+        }
+    });
+    return blockElement;
+}

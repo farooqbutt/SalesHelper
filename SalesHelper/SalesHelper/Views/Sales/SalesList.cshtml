@@ -82,8 +82,20 @@
                         return SaleStatusSetter(row.status);
                     }
                 },
-                { "data": "totalSalesOrderAmount" },
-                { "data": "advancePaid" },
+                { 
+                    "data": "totalSalesOrderAmount", 
+                    "className": "text-right",
+                    "render": function (data, type, row) {
+                        return `$ ${parseFloat(data).toFixed(2)}`;
+                    }
+                },
+                { 
+                    "data": "advancePaid", 
+                    "className": "text-right" ,
+                    "render": function (data, type, row) {
+                        return `$ ${parseFloat(data).toFixed(2)}`;
+                    }
+                },
                 { 
                     "data": null,
                     "render": function (data, type, row) {

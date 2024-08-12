@@ -13,7 +13,7 @@ namespace SalesHelper.Models
         public int? VendorId { get; set; }
         public string? RoomType { get; set; } 
         public string? EdgeProfile { get; set; } 
-        public int EstimatedSquareFeet { get; set; }
+        public decimal EstimatedSquareFeet { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Subtotal { get; set; }
         public int? CountertopQuotationId { get; set; } // can be null if user is going to add new line item
