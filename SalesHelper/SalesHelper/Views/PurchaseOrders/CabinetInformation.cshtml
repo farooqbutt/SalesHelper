@@ -1,0 +1,167 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SalesHelper.Services.CustomerService _customerService
+@inject SalesHelper.Services.VendorService _vendorService
+@inject SignInManager<ApplicationUser> _signInManager
+
+@{
+    var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+    //list of status
+    var saleStatus = Enum.GetValues(typeof(Sale.SaleStatus))
+                        .Cast<Sale.SaleStatus>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+
+    var cabinetryVendors = _vendorService.ReadAll().Where(v => v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber && v.BusinessTypeId == 1).ToList();
+
+    //list of sections
+    var sectionsNames = Enum.GetValues(typeof(CabinetDetail.SectionNames))
+                        .Cast<CabinetDetail.SectionNames>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of constructions
+    var constructions = Enum.GetValues(typeof(CabinetDetail.Constructions))
+                        .Cast<CabinetDetail.Constructions>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var boxMaterials = Enum.GetValues(typeof(CabinetDetail.BoxMaterials))
+                        .Cast<CabinetDetail.BoxMaterials>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of wood species
+    var woodSpecies = Enum.GetValues(typeof(CabinetDetail.WoodSpecies))
+                        .Cast<CabinetDetail.WoodSpecies>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+
+    var materials = Enum.GetValues(typeof(CountertopMaterial.Materials))
+    .Cast<CountertopMaterial.Materials>()
+    .Select(e => e.GetEnumMemberAttributeValue())
+    .ToList();
+
+    // getting vendors for the current user with business type 2 (2 = "Stone and Countertops")
+    var vendors = _vendorService.ReadAll().Where(v => v.BusinessTypeId == 2 && v.AccountNumberId == _signInManager.UserManager.GetUserAsync(User).Result.AccountNumber).ToList();
+
+    var roomTypes = Enum.GetValues(typeof(CountertopQuotation.RoomTypes))
+                                .Cast<CountertopQuotation.RoomTypes>()
+                                .Select(e => e.GetEnumMemberAttributeValue())
+                                .ToList();
+    var edgeProfiles = Enum.GetValues(typeof(CountertopQuotation.EdgeProfiles))
+                        .Cast<CountertopQuotation.EdgeProfiles>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+}
+
+<style>
+    .select2-selection {
+        border-radius: 0px !important;
+    }
+
+    #cabinetDetailsTable, th, td {
+        border: 1px solid #ccd6e6;
+    }
+
+    .expandableSpan {
+        border: 2px solid primary;
+        border-radius: 7px;
+    }
+</style>
+
+
+<div class="content-overlay"></div>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3 class="content-header-title mb-0">Cabinet Information</h3>
+        </div>
+    </div>
+    <div class="content-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-content collpase show">
+                        <div class="card-body card-dashboard">
+                            <table id="CabinetInformation" class="table table-striped table-bordered">
+
+                                <form method="post">
+
+                                    <div class="form-group">
+                                        <label for="Construction">Construction</label>
+                                        <label>Construction <span class="required">*</span></label>
+                                        <select id="Construction" class="form-control form-control-sm square" style="background-color: lightyellow;">
+                                            <option value="">Select Construction Type</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Box Material">Box Material</label>
+                                        <label>Box Material <span class="required">*</span></label>
+                                        <select id="Box Material" class="form-control form-control-sm square" style="background-color: lightyellow;">
+                                            <option value="">Select Construction Type</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Wood Specie">Wood Specie</label>
+                                        <label>Wood Specie <span class="required">*</span></label>
+                                        <select id="Wood Specie" class="form-control form-control-sm square" style="background-color: lightyellow;">
+                                            <option value="">Select Construction Type</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Field4">DoorStyle</label>
+                                        <input type="text" class="form-control" id="Field4" name="Field4" placeholder="Enter Field 4">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Field5">CabinetFinish</label>
+                                        <input type="text" class="form-control" id="Field5" name="Field5" placeholder="Enter Field 5">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Field6">Comments</label>
+                                        <input type="text" class="form-control" id="Field6" name="Field6" placeholder="Enter Field 6">
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h4 class="card-title text-primary">Cabinet Items</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button type="button" class="btn mr-1 mb-1 btn-primary btn-sm float-right" onclick="addCabinetDetailRow()"><i class="feather icon-plus"></i> Add Items</button>
+                                                    <button type="button" class="btn mr-1 mb-1 btn-primary btn-sm float-right" onclick="attachCabinetQuote()"><i class="feather icon-paperclip"></i> Attach Cabinet Quote</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div style="overflow-x:auto;">
+                                                <table class="w-100" id="cabinetDetailsTable" style="color:#404e67;">
+                                                    <thead class="text-center">
+                                                        <tr>
+                                                            <th>Construction</th>
+                                                            <th>Box Materials</th>
+                                                            <th>Wood Species</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <button type="reset" class="btn btn-warning"><i class="feather icon-x"></i> Back</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o"></i> Save & Submit</button>
+                                    </div>
+                                </form>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

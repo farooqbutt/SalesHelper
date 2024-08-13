@@ -18,6 +18,12 @@ namespace SalesHelper.Controllers
         }
 
         [HttpGet]
+        public IActionResult CabinetInformation()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult GetAllDraftOrders()
         {
             return Json(new { data = _purchaseOrderService.ReadAll().Where(a => a.Status == "Draft").OrderByDescending(a => a.OrderDate) });
