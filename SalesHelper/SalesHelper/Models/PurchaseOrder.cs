@@ -40,11 +40,22 @@ namespace SalesHelper.Models
         public string? ShippingContactPhone { get; set; } = string.Empty;
 
         // Cabinet Information
-        public string? Construction { get; set; } = string.Empty;
-        public string? BoxMaterial { get; set; } = string.Empty;
-        public string? WoodSpecie { get; set; }
-        public string? DoorStyle { get; set; } = string.Empty;
-        public string? CabinetFinish { get; set; } = string.Empty;
-        public string? Comments { get; set; } = string.Empty;
+        public string? CabinetLine { get; set; }
+        public string? BoxConstruction { get; set; }
+        public string? BoxMaterial { get; set; }
+        public string? DoorDesignStyle { get; set; }
+        public string? DoorDesignUppers { get; set; }
+        public string? DoorDesignLowers { get; set; }
+        public string? DoorMaterial { get; set; }
+        public string? DrawerHead { get; set; }
+        public string? CabinetColor { get; set; }
+        public string? CabinetGlaze { get; set; }
+        public string? IslandColor { get; set; }
+        public string? IslandGlaze { get; set; }
+        public string? FrameOption { get; set; }
+        public string? HingeTypeInset { get; set; }
+        public string? HingeTypeOverlay { get; set; }
+
+        public string? Comments { get; set; }
     }
 }
