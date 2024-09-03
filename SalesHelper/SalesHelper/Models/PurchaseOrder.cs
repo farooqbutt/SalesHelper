@@ -22,7 +22,9 @@ namespace SalesHelper.Models
         public Vendor VendorFK { get; set; } = default!;
 
         public int? PurchaseOrderNumber { get; set; }
-        public string OrderType { get; set; } = string.Empty;
+        public string? OrderNumberByVendor { get; set; } = string.Empty;
+        public string? OrderType { get; set; } = string.Empty;
+        public string? OrderTypeForSalesHelper { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
         public string CreatedBy { get; set; } = string.Empty;
@@ -38,14 +40,13 @@ namespace SalesHelper.Models
         public string? ShippingPostalCode { get; set; } = string.Empty;
         public string? ShippingContactName { get; set; } = string.Empty;
         public string? ShippingContactPhone { get; set; } = string.Empty;
+        public DateTime? ShippingDate { get; set; }
 
         // Cabinet Information
         public string? CabinetLine { get; set; }
         public string? BoxConstruction { get; set; }
         public string? BoxMaterial { get; set; }
         public string? DoorDesignStyle { get; set; }
-        public string? DoorDesignUppers { get; set; }
-        public string? DoorDesignLowers { get; set; }
         public string? DoorMaterial { get; set; }
         public string? DrawerHead { get; set; }
         public string? CabinetColor { get; set; }
@@ -57,5 +58,9 @@ namespace SalesHelper.Models
         public string? HingeTypeOverlay { get; set; }
 
         public string? Comments { get; set; }
+
+        public string? AdditionalFieldsJson { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 }
