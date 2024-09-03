@@ -4,80 +4,34 @@
 @inject SignInManager<ApplicationUser> _signInManager
 
 @{
-    var customersList = _customerService.ReadAll().Where(a => a.CreatedByUserId == _signInManager.UserManager.GetUserAsync(User).Result.Id);
+    var vendor = TempData["Vendor"];
+    var purchaseOrderId = TempData["PurchaseOrderId"];
+    //list of sections
+    var sectionsNames = Enum.GetValues(typeof(CabinetDetail.SectionNames))
+                        .Cast<CabinetDetail.SectionNames>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of constructions
+    var boxConstructions = Enum.GetValues(typeof(CabinetDetail.Constructions))
+                        .Cast<CabinetDetail.Constructions>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    var boxMaterials = Enum.GetValues(typeof(CabinetDetail.BoxMaterials))
+                        .Cast<CabinetDetail.BoxMaterials>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
+    //list of wood species
+    var woodSpecies = Enum.GetValues(typeof(CabinetDetail.WoodSpecies))
+                        .Cast<CabinetDetail.WoodSpecies>()
+                        .Select(e => e.GetEnumMemberAttributeValue())
+                        .ToList();
 }
 
 <style>
     .select2-selection {
         border-radius: 0px !important;
     }
-
-    .form-group {
-        margin-bottom: 0.8rem; /* Reducing the spacing */
-    }
-
-    #cabinetDetailsTable {
-        border: 1px solid #ccd6e6;
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        border: 1px solid #ccd6e6;
-        padding: 8px;
-    }
-
-    .radio-label {
-        margin-right: 20px;
-    }
-
-    .btn-space {
-        margin-right: 8px;
-    }
-
-    .mandatory select {
-        background-color: #fff7a1 !important; /* Light yellow color for mandatory fields */
-    }
-
-    /* Add dropdown icon for select elements */
-    .form-control {
-        background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjMiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAyMyAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTIvMjAxMSIvPjxwYXRoIGQ9Ik01LjUsNy4yNUwyMywyMywxMyw1LjUsOS43NVoiIGZpbGw9IiM2NjYiLz48L3N2ZyBzdHJva2U9InByZWdsaXNoIiBzdHJva2Utd2lkdGg9IjEuNSIvPg==') no-repeat right 10px center;
-        background-size: 12px;
-        padding-right: 30px;
-    }
-
-    /* Style for select2 dropdowns */
-    .select2-container--default .select2-selection--single {
-        background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjMiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAyMyAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTIvMjAxMSIvPjxwYXRoIGQ9Ik01LjUsNy4yNUwyMywyMywxMyw1LjUsOS43NVoiIGZpbGw9IiM2NjYiLz48L3N2ZyBzdHJva2U9InByZWdsaXNoIiBzdHJva2Utd2lkdGg9IjEuNSIvPg==') no-repeat right 10px center;
-        background-size: 12px;
-    }
 </style>
-
-<script>
-    $(document).ready(function () {
-        // Ensure Frame Option & Hinge Type are always visible
-        $('#frameOptionField').show();
-        $('#hingeTypeField').show();
-
-        // Show/hide fields based on Cabinet Line selection
-        $('input[name="cabinetLine"]').change(function () {
-            if ($(this).val() === 'Insert') {
-                $('#frameOptionField').show();
-                $('#hingeTypeField').show();
-                $('#hingeType').val('Concealed'); // Set Hinge Type to Concealed
-            } else if ($(this).val() === 'Overlay') {
-                $('#frameOptionField').hide();
-                $('#hingeTypeField').show();
-                $('#hingeType').val('Softclose'); // Set Hinge Type to Softclose
-            }
-        });
-
-        // Enable Select2 for dropdowns
-        $('.form-control').select2({
-            tags: true
-        });
-    });
-</script>
 
 <div class="content-overlay"></div>
 <div class="content-wrapper">
@@ -92,110 +46,162 @@
                 <div class="card">
                     <div class="card-content collpase show">
                         <div class="card-body card-dashboard">
-                            <form method="post">
-                                <div class="form-group">
-                                    <label>Maker <span class="text-danger">*</span></label><br />
-                                    <label class="radio-label">
-                                        <input type="radio" name="maker" value="Starmark" required> Starmark
-                                    </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="maker" value="Other" required> Other
-                                    </label>
-                                </div>
+                            <form class="form" id="CabinetInformationForm">
 
                                 <div class="form-group">
-                                    <label>Cabinet Line <span class="text-danger">*</span></label><br />
-                                    <label class="radio-label">
-                                        <input type="radio" name="cabinetLine" value="Overlay" required> Overlay
-                                    </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="cabinetLine" value="Insert" required> Insert
-                                    </label>
+                                    <label>Maker / Vendor</label><br />
+                                    <b>@vendor</b>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group mandatory">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Cabinet Line <span class="text-danger">*</span></label><br />
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" name="CabinetLine" id="CabinetLineOverly" value="Overlay">
+                                                            <label class="custom-control-label" for="CabinetLineOverly">Overlay</label>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" name="CabinetLine" id="CabinetLineInset" value="Inset">
+                                                            <label class="custom-control-label" for="CabinetLineInset">Inset</label>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label>Box Construction <span class="text-danger">*</span></label>
-                                            <select id="boxConstruction" class="form-control">
-                                                <option value="Framed Overlay">Framed Overlay</option>
-                                                <option value="Frameless">Frameless</option>
-                                                <option value="Inset">Inset</option>
+                                            <select id="BoxConstruction" class="form-control form-control-sm square">
+                                                @foreach (var item in boxConstructions)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group mandatory">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label>Box Material <span class="text-danger">*</span></label>
-                                            <select id="boxMaterial" class="form-control">
-                                                <option value="Plywood 3/4">Plywood 3/4</option>
-                                                <option value="Plywood 1/2">Plywood 1/2</option>
-                                                <option value="Standard Interiors">Standard Interiors</option>
+                                            <select id="BoxMaterial" class="form-control form-control-sm square">
+                                                @foreach (var item in boxMaterials)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group mandatory">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label>Door Design Style <span class="text-danger">*</span></label>
-                                            <select id="doorDesignStyle" class="form-control">
-                                                <option value="Style">Style</option>
-                                                <option value="Uppers">Uppers</option>
-                                                <option value="Lowers">Lowers</option>
-                                            </select>
+                                            <input id="DoorDesignStyle" class="form-control form-control-sm square" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group mandatory">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label>Door Material <span class="text-danger">*</span></label>
-                                            <select id="doorMaterial" class="form-control">
-                                                <option value="Mel/Laminate">Mel/Laminate</option>
-                                                <option value="Thermo foil">Thermo foil</option>
-                                                <option value="Painted">Painted</option>
-                                                <option value="Oak">Oak</option>
-                                                <option value="Maple">Maple</option>
-                                                <option value="Cherry">Cherry</option>
+                                            <select id="DoorMaterial" class="form-control form-control-sm square">
+                                                @foreach (var item in woodSpecies)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group mandatory">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label>Drawer Head <span class="text-danger">*</span></label>
-                                            <select id="drawerHead" class="form-control">
+                                            <select id="DrawerHead" class="form-control form-control-sm square">
                                                 <option value="5-PC">5-PC</option>
                                                 <option value="Scooped Profile Head">Scooped Profile Head</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4" id="hingeTypeField">
+                                    <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Hinge Type</label>
-                                            <select id="hingeType" class="form-control">
-                                                <option value="Concealed">Concealed</option>
-                                                <option value="Softclose">Softclose</option>
-                                            </select>
+                                            <label>Color</label>
+                                            <input id="CabinetColor" class="form-control form-control-sm square" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Glaze</label>
+                                            <input id="CabinetGlaze" class="form-control form-control-sm square" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-4" id="frameOptionField">
+                                    <div class="col-md-4 insetHidden hidden">
                                         <div class="form-group">
-                                            <label>Frame Option (Inset only)</label>
-                                            <select id="frameOption" class="form-control">
-                                                <option value="Flush Frame">Flush Frame</option>
-                                                <option value="Beaded Frame">Beaded Frame</option>
-                                            </select>
+                                            <label>Frame Option (Inset Only)</label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" name="FrameOption" id="FlushFrame" value="Flush Frame">
+                                                            <label class="custom-control-label" for="FlushFrame">Flush Frame</label>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" name="FrameOption" id="BeadedFrame" value="Beaded Frame">
+                                                            <label class="custom-control-label" for="BeadedFrame">Beaded Frame</label>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4"></div>
+                                    <div class="col-md-2 insetHidden hidden">
+                                        <div class="form-group">
+                                            <label>Hinge Type (Inset)</label>
+                                            <input id="HingeTypeInset" class="form-control form-control-sm square" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 overlayHidden hidden">
+                                        <div class="form-group">
+                                            <label>Hinge Type (Overlay)</label>
+                                            <input id="HingeTypeOverlay" class="form-control form-control-sm square" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Color (Island)</label>
+                                            <input id="IslandColor" class="form-control form-control-sm square" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Glaze (Island)</label>
+                                            <input id="IslandGlaze" class="form-control form-control-sm square" />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-2">
-                                    <button type="reset" class="btn btn-warning btn-space"><i class="feather icon-arrow-left"></i> Back</button>
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o"></i> Save & Submit</button>
+                                <h5 class="text-primary">Additional Fields</h5>
+
+                                <div id="additional-fields-container"></div>
+
+                                <button type="button" id="add-field-button" class="btn btn-secondary mb-3">Add New Field</button>
+
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-warning"><i class="feather icon-arrow-left"></i> Back</button>
+                                    <button type="submit" class="btn btn-outline-primary"><i class="feather icon-check"></i> Save as Order</button>
+                                    <button type="submit" class="btn btn-outline-primary"><i class="feather icon-check"></i> Save as Draft</button>
                                 </div>
                             </form>
                         </div>
@@ -205,3 +211,177 @@
         </div>
     </div>
 </div>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        const selectElements = [
+            { id: "#BoxConstruction", placeholder: "Select Box Construction" },
+            { id: "#BoxMaterial", placeholder: "Select Box Material" },
+            { id: "#DoorMaterial", placeholder: "Select Door Material" }
+        ];
+
+        selectElements.forEach(element => {
+            $(element.id).select2({
+                tags: true,
+                placeholder: element.placeholder,
+                width: "100%",
+                allowClear: true,
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    };
+                },
+                templateResult: function (data) {
+                    var $result = $("<span></span>");
+                    $result.text(data.text);
+                    return $result;
+                }
+            });
+        });
+        // clearing vendor select for first time
+        $("#BoxConstruction, #BoxMaterial, #DoorMaterial").val(null).trigger('change');
+
+        $('input[type=radio][name=CabinetLine]').change(function () {
+            if (this.value == 'Overlay') {
+                // remove hidden class from overyHidden
+                $('.overlayHidden').removeClass('hidden');
+                // add hidden class to insetHidden
+                $('.insetHidden').addClass('hidden');
+
+                // remove all box contruction options
+                $('#BoxConstruction').empty();
+                // add new box construction options
+                $('#BoxConstruction').append('<option value="Frameless">Frameless</option>');
+                $('#BoxConstruction').append('<option value="Framed Overlay">Framed Overlay</option>');
+                $('#BoxConstruction').append('<option value="Framed Partial Overlay">Framed Partial Overlay</option>');
+                // clear box construction select
+                $('#BoxConstruction').val(null).trigger('change');
+            }
+            else if (this.value == 'Inset') {
+                // remove hidden class from insetHidden
+                $('.insetHidden').removeClass('hidden');
+                // add hidden class to overlayHidden
+                $('.overlayHidden').addClass('hidden');
+
+                // remove all box contruction options
+                $('#BoxConstruction').empty();
+                // add new box construction options
+                $('#BoxConstruction').append('<option value="Framed Inset">Framed Inset</option>');
+                // clear box construction select
+                $('#BoxConstruction').val(null).trigger('change');
+            }
+        });
+
+        //////////////////////
+        var fieldIndex = 0;
+
+        $('#add-field-button').click(function () {
+            fieldIndex++;
+            var fieldHtml = `
+                    <div class="row mb-2" id="field-row-${fieldIndex}">
+                        <div class="col-md-4">
+                            <input type="text" name="AdditionalFields[${fieldIndex}].Name" class="form-control form-control-sm square" placeholder="Field Name" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="AdditionalFields[${fieldIndex}].Value" class="form-control form-control-sm square" placeholder="Field Value" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-sm remove-field-button" data-field-id="${fieldIndex}">Delete</button>
+                        </div>
+                    </div>
+                `;
+            $('#additional-fields-container').append(fieldHtml);
+        });
+
+        $(document).on('click', '.remove-field-button', function () {
+            var fieldId = $(this).data('field-id');
+            $('#field-row-' + fieldId).remove();
+        });
+
+
+        // function for getting additional fields
+        function getAdditionalFields() {
+            var additionalFields = [];
+            $('#additional-fields-container').find('div.row').each(function (index, item) {
+                var fieldName = $(item).find('input[name$=".Name"]').val();
+                var fieldValue = $(item).find('input[name$=".Value"]').val();
+                additionalFields.push({
+                    Name: fieldName,
+                    Value: fieldValue
+                });
+            });
+            // return additional fields json array as string
+            return JSON.stringify(additionalFields);
+        }
+
+        
+        // Submit Form
+        $('#CabinetInformationForm').submit(function (e) {
+            e.preventDefault();
+            var blockui = ShowBlockUi("content-wrapper", "Saving Cabinet Infomation...");
+            
+            // Get form data
+            var cabinetInformation = {
+                Id: '@purchaseOrderId',
+                CabinetLine: $('input[name="CabinetLine"]:checked').val(),
+                BoxConstruction: $('#BoxConstruction').val(),
+                BoxMaterial: $('#BoxMaterial').val(),
+                DoorDesignStyle: $('#DoorDesignStyle').val(),
+                DoorDesignUppers: $('#DoorDesignUppers').val(),
+                DoorDesignLowers: $('#DoorDesignLowers').val(),
+                DoorMaterial: $('#DoorMaterial').val(),
+                DrawerHead: $('#DrawerHead').val(),
+                CabinetColor: $('#CabinetColor').val(),
+                CabinetGlaze: $('#CabinetGlaze').val(),
+                FrameOption: $('input[name="FrameOption"]:checked').val(),
+                HingeTypeInset: $('#HingeTypeInset').val(),
+                HingeTypeOverlay: $('#HingeTypeOverlay').val(),
+                IslandColor: $('#IslandColor').val(),
+                IslandGlaze: $('#IslandGlaze').val(),
+                AdditionalFieldsJson: getAdditionalFields()
+            }
+
+            // if form is submitted through Save Draft button then ajax url will be /PurchaseOrders/CreateCabinetDraftOrder else /PurchaseOrders/CreateCabinetOrder
+            var buttonText = $(this).find('button[type="submit"]:focus').text().trim();
+            var ajaxUrl = "";
+            if (buttonText == "Save as Order") {
+                ajaxUrl = '/PurchaseOrders/CabinetInformationUpdateWithPO';
+            }
+            if (buttonText == "Save as Draft") {
+                ajaxUrl = '/PurchaseOrders/CabinetInformationUpdate';
+            }
+
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                data: cabinetInformation,
+                success: function (data) {
+                    // unblock the UI
+                    $(blockui).unblock();
+                    // show success message
+                    if (buttonText == 'Save as Draft') {
+                        toastr.success("Draft Order Created Successfully!");
+                        setTimeout(function () {
+                            window.location.href = `/PurchaseOrders/POSummary/` + data.data.id;
+                        }, 2000);
+                    }
+                    if (buttonText == 'Save as Order') {
+                        toastr.success("Order Created Successfully!");
+                        setTimeout(function () {
+                            window.location.href = `/PurchaseOrders/POSummary/` + data.data.id;
+                        }, 2000);
+                    }
+                },
+                error: function (error) {
+                    toastr.error('An error occurred while saving the cabinet information.');
+                }
+            });
+        });
+
+    });
+</script>

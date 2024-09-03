@@ -179,9 +179,10 @@
             </div>
 
             <div class="text-center">
-                <button type="button" class="btn btn-warning"><i class="feather icon-x"></i> Cancel</button>
-                <button type="submit" class="btn btn-outline-primary"><i class="feather icon-check"></i> Save as Order</button>
-                <button type="submit" class="btn btn-primary">Save Draft <i class="feather icon-arrow-right"></i></button>
+                <a asp-controller="PurchaseOrders" asp-action="AllDraftOrdersView" class="btn btn-warning"><i class="feather icon-x"></i> Cancel</a>
+                <button type="submit" class="btn btn-outline-success"><i class="feather icon-check"></i> Save as Order</button>
+                <button type="submit" class="btn btn-outline-primary"><i class="feather icon-check"></i> Save as Draft</button>
+                <button type="submit" class="btn btn-warning">Next <i class="feather icon-arrow-right"></i></button>
             </div>
 
         </form>
@@ -501,7 +502,7 @@
         e.preventDefault();
         var blockui = ShowBlockUi("content-wrapper", "Creating Draft Order...");
         // get form data for cabinet draft order
-        var cabinetDraftOrder = {
+        var cabinetOrderInformation = {
             OrderName: $("#OrderName").val(),
             CustomerId: $("#CustomerId").val(),
             VendorId: $("#VendorId").val(),
@@ -524,20 +525,44 @@
         }
 
         // if form is submitted through Save Draft button then ajax url will be /PurchaseOrders/CreateCabinetDraftOrder else /PurchaseOrders/CreateCabinetOrder
-        var ajaxUrl = $(this).find('button[type="submit"]:focus').text().trim() == "Save Draft" ? '/PurchaseOrders/CreateCabinetDraftOrder' : '/PurchaseOrders/CreateCabinetOrder';
+        var buttonText = $(this).find('button[type="submit"]:focus').text().trim();
+        var ajaxUrl = "";
+        if (buttonText == "Save as Order") {
+            ajaxUrl = '/PurchaseOrders/CreateCabinetOrder';
+        }
+        if (buttonText == "Save as Draft") {
+            ajaxUrl = '/PurchaseOrders/CreateCabinetDraftOrder';
+        }
+        if (buttonText == "Next") {
+            ajaxUrl = '/PurchaseOrders/CreateCabinetDraftOrder';
+        }
+
         $.ajax({
             url: ajaxUrl,
             method: 'POST',
-            data: cabinetDraftOrder,
+            data: cabinetOrderInformation,
             success: function (data) {
                 // unblock the UI
                 $(blockui).unblock();
                 // show success message
-                toastr.success("Draft Order Created Successfully!");
-                // redirect to the draft order list page after 2 seconds
-                setTimeout(function () {
-                    window.location.href = "/PurchaseOrders/AllDraftOrdersView";
-                }, 2000);
+                if (buttonText == 'Save as Draft') {
+                    toastr.success("Draft Order Created Successfully!");
+                    setTimeout(function () {
+                        window.location.href = `/PurchaseOrders/POSummary/` + data.data.id;
+                    }, 2000);
+                } 
+                if (buttonText == 'Save as Order') {
+                    toastr.success("Order Created Successfully!");
+                    setTimeout(function () {
+                        window.location.href = `/PurchaseOrders/POSummary/` + data.data.id;
+                    }, 2000);
+                }
+                if (buttonText == 'Next') {
+                    toastr.success("Draft Order Created Successfully!");
+                    setTimeout(function () {
+                        window.location.href = `/PurchaseOrders/CabinetInformation?vendorId=` + data.data.vendorId + `&purchaseOrderId=` + data.data.id;
+                    }, 2000);
+                }
             },
             error: function (error) {
                 // unblock the UI

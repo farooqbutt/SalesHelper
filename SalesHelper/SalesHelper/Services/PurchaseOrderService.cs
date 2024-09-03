@@ -16,6 +16,7 @@ namespace SalesHelper.Services
         {
             try
             {
+                purchaseOrder.ModifiedDate = DateTime.Now;
                 _context.PurchaseOrders.Add(purchaseOrder);
                 _context.SaveChanges();
             }
@@ -74,6 +75,7 @@ namespace SalesHelper.Services
         {
             try
             {
+                purchaseOrder.ModifiedDate = DateTime.Now;
                 _context.PurchaseOrders.Update(purchaseOrder);
                 _context.SaveChanges();
             }
@@ -88,14 +90,14 @@ namespace SalesHelper.Services
             try
             {
                 // get last PO number
-                int? lastPONumber = _context.PurchaseOrders.Where(a => a.PurchaseOrderNumber != null).LastOrDefault()!.PurchaseOrderNumber;
-                if (lastPONumber == null)
+                var lastPO = _context.PurchaseOrders.OrderByDescending(a => a.Id).Where(a => a.PurchaseOrderNumber != null).LastOrDefault();
+                if (lastPO == null)
                 {
                     return 10001;
                 }
                 else
                 {
-                    return lastPONumber.Value + 1;
+                    return lastPO!.PurchaseOrderNumber!.Value + 1;
                 }
             }
             catch (Exception e)

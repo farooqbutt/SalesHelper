@@ -5,7 +5,6 @@ using MailKit.Search;
 using MimeKit;
 using SalesHelper.Data;
 using SalesHelper.Models;
-using SalesHelper.Models.InterfaceModels;
 using SalesHelper.Services.EncryptionServices;
 
 namespace SalesHelper.Services.EmailService

@@ -494,12 +494,13 @@
                                 <a class="menu-item">New Draft Order</a>
                                 <ul class="menu-content">
                                     <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
-                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCabinetDraftOrder" ? "active" : "")">
+                                        (ViewContext.RouteData.Values["action"]!.ToString() == "CreateCabinetDraftOrder" ||
+                                         ViewContext.RouteData.Values["action"]!.ToString() == "CabinetInformation") ? " active" : "" )">
                                         <a class="menu-item"
                                            asp-controller="PurchaseOrders" asp-action="CreateCabinetDraftOrder">Cabinet Draft</a>
                                     </li>
                                     <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
-                                       ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopDraftOrder" ? "active" : "")">
+                                        ViewContext.RouteData.Values["action"]!.ToString() == "CreateCountertopDraftOrder" ? "active" : "")">
                                         <a class="menu-item" asp-controller="PurchaseOrders" asp-action="CreateCountertopQuotationView">Countertop Draft</a>
                                     </li>
                                     <li class="">
@@ -508,17 +509,22 @@
                                 </ul>
                             </li>
                             <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
-                            ViewContext.RouteData.Values["action"]!.ToString() == "AllDraftOrdersView" ? "active" : "")">
+                                ViewContext.RouteData.Values["action"]!.ToString() == "AllDraftOrdersView" ? "active" : "")">
                                 <a class="menu-item" asp-controller="PurchaseOrders" asp-action="AllDraftOrdersView">All Drafts</a>
                             </li>
-                            <li class="">
-                                <a class="menu-item" asp-controller="" asp-action="">All Orders</a>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
+                                ViewContext.RouteData.Values["action"]!.ToString() == "AllOrders" ? "active" : "")">
+                                <a class="menu-item" asp-controller="PurchaseOrders" asp-action="AllOrders">All Orders</a>
                             </li>
                             <li class="">
                                 <a class="menu-item" asp-controller="" asp-action="">Orders in Processing</a>
                             </li>
                             <li class="">
                                 <a class="menu-item" asp-controller="" asp-action="">Completed Orders</a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"]!.ToString() == "PurchaseOrders" &&
+                                ViewContext.RouteData.Values["action"]!.ToString() == "POSummary" ? "active" : "")">
+                                <a class="menu-item" href="#">PO Summary</a>
                             </li>
                         </ul>
                     </li>
