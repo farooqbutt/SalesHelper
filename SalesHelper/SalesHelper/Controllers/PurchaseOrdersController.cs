@@ -125,11 +125,30 @@ namespace SalesHelper.Controllers
         }
 
         [HttpPost]
-        public void SaveOrderNumberByVendor(int id, string OrderNumber)
+        public IActionResult SaveOrderNumberByVendor(int id, string OrderNumber)
         {
             var po = _purchaseOrderService.Read(id);
-            po.OrderNumberByVendor = OrderNumber;
-            _purchaseOrderService.Update(po);
+            if (po != null)
+            {
+                po.OrderNumberByVendor = OrderNumber;
+                _purchaseOrderService.Update(po);
+                return Ok(); // Return a success status
+            }
+            return BadRequest("Invalid Purchase Order ID.");
         }
+
+        [HttpPost]
+        public IActionResult SaveShippingDateByVendor(int id, DateTime ShippingDate)
+        {
+            var po = _purchaseOrderService.Read(id);
+            if (po != null)
+            {
+                po.ShippingDate = ShippingDate;
+                _purchaseOrderService.Update(po);
+                return Ok(); // Return a success status
+            }
+            return BadRequest("Invalid Purchase Order ID.");
+        }
+
     }
 }

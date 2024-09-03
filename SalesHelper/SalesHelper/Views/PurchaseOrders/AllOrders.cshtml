@@ -94,10 +94,12 @@
                             return row.orderNumberByVendor;
                         } else {
                             return `
-                                <div class="d-flex flex-row">
-                                    <input class="form-control form-control-sm square" id="OrderNumberByVendor_${row.id}" style="width:120px;height:22px;" />
-                                    <button onclick="SaveOrderNumberByVendor('OrderNumberByVendor_${row.id}')" class="btn btn-primary btn-sm"><i class="feather icon-check"></i></button>
-                                </div>
+                                    <div class="d-flex flex-row">
+                                     <input class="form-control form-control-sm square" id="OrderNumberByVendor_row.id" style="width:120px;height:22px;" />
+                                     <button onclick="SaveOrderNumberByVendor(row.id)" class="btn btn-primary btn-sm">
+                                  <i class="feather icon-check"></i>
+                                  </button>
+                                 </div>
                             `;
                         }
                     }
@@ -129,8 +131,10 @@
                         } else {
                             return `
                                 <div class="d-flex flex-row">
-                                    <input type="date" class="form-control form-control-sm square" style="width:120px;height:22px;" />
-                                    <button class="btn btn-primary btn-sm"><i class="feather icon-check"></i></button>
+                                  <input type="date" class="form-control form-control-sm square" id="ShippingDateByVendor_row.id" style="width:120px;height:22px;" />
+                                  <button onclick="SaveShippingDateByVendor(row.id)" class="btn btn-primary btn-sm">
+                                  <i class="feather icon-check"></i>
+                                  </button>
                                 </div>
                             `;
                         }
@@ -154,8 +158,36 @@
         });
     });
 
-    function SaveOrderNumberByVendor (inputId) {
-        var orderno = $('#' + inputId).val();
-        var id = inputId.split('_')[1];
+    function SaveOrderNumberByVendor(id) {
+        var orderno = $('#OrderNumberByVendor_' + id).val();
+
+        $.ajax({
+            url: "/PurchaseOrders/AllOrders",
+            type: 'POST',
+            data: { id: id, OrderNumber: orderno },
+            success: function (response) {
+                alert('Order number saved successfully.');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error saving order number:', error);
+            }
+        });
     }
+
+    function SaveShippingDateByVendor(id) {
+        var shippingDate = $('#ShippingDateByVendor_' + id).val();
+
+        $.ajax({
+            url: "/PurchaseOrders/AllOrders",
+            type: 'POST',
+            data: { id: id, ShippingDate: shippingDate },
+            success: function (response) {
+                alert('Shipping date saved successfully.');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error saving shipping date:', error);
+            }
+        });
+    }
+
 </script>
