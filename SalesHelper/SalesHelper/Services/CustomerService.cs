@@ -42,7 +42,10 @@ namespace SalesHelper.Services
         {
             try
             {
-                return _context.Customers.Where(c => c.Id == id).Include(c => c.AddressIdFK).FirstOrDefault()!;
+                return _context.Customers.Where(c => c.Id == id)
+                    .Include(c => c.AddressIdFK)
+                    .Include(a => a.AccountNumberFK)
+                    .FirstOrDefault()!;
             }
             catch (Exception e)
             {

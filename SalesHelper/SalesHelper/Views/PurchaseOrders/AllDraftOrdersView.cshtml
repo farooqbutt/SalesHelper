@@ -9,7 +9,7 @@
             <span class="dropdown">
                 <button id="btnQuote" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
                         class="btn btn-primary dropdown-menu-right dropdown-toggle btn-md float-right">
-                    <i class="fa fa-plus"></i> New Draft
+                    <i class="feather icon-plus"></i> New Draft
                 </button>
                 <span aria-labelledby="btnQuote" class="dropdown-menu dropdown-menu-right mt-1">
                     <a asp-controller="PurchaseOrders" asp-action="CreateCabinetDraftOrder" class="dropdown-item">Cabinet Draft</a>
@@ -78,7 +78,7 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return moment(row.dateCreated).format('MM/DD/YYYY');
+                        return moment(row.orderDate).format('MM/DD/YYYY');
                     }
                 },
                 {

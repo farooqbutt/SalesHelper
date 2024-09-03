@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // database related services
+builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<VendorService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<AddressService>();
