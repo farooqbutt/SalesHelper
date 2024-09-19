@@ -1,4 +1,5 @@
 ﻿using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services
 {
@@ -12,5 +13,7 @@ namespace SalesHelper.Services
         
         // Other methods
         public int CreatePONumber(int accountId);
+
+        public Task<List<POEmailInterface>> ReadPOEmails(int? poNumber, ApplicationUser user); // Read PO Emails
     }
 }

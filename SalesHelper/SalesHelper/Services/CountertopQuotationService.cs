@@ -237,7 +237,7 @@ namespace SalesHelper.Services
                     rfc822.Message.WriteTo(stream);
                     var fileBytes = stream.ToArray();
                     var base64 = Convert.ToBase64String(fileBytes);
-                    emailMessage.Attachments.Add(new AttachmentModel
+                    emailMessage.Attachments.Add(new QuoteAttachmentModel
                     {
                         ContentType = rfc822.ContentType.MimeType,
                         FileName = fileName,
@@ -253,7 +253,7 @@ namespace SalesHelper.Services
                     part.Content.DecodeTo(stream);
                     var fileBytes = stream.ToArray();
                     var base64 = Convert.ToBase64String(fileBytes);
-                    emailMessage.Attachments.Add(new AttachmentModel
+                    emailMessage.Attachments.Add(new QuoteAttachmentModel
                     {
                         ContentType = part.ContentType.MimeType,
                         FileName = fileName,

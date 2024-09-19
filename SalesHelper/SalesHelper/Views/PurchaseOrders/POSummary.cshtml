@@ -1,5 +1,14 @@
-﻿@model SalesHelper.Models.PurchaseOrder
+﻿@using Microsoft.AspNetCore.Identity
+@model SalesHelper.Models.PurchaseOrder
 @inject SalesHelper.Services.UserServices.AccountService _accountService
+@inject SalesHelper.Services.PurchaseOrderService _purchaseOrderService
+@inject SignInManager<ApplicationUser> _signInManager
+
+@{
+    var poEmails = Model.PurchaseOrderNumber != null
+        ? _purchaseOrderService.ReadPOEmails(Model.PurchaseOrderNumber, _signInManager.UserManager.GetUserAsync(User).Result).GetAwaiter().GetResult()
+        : null;
+}
 
 <div class="content-overlay"></div>
 <div class="content-wrapper">
@@ -19,7 +28,7 @@
                             <!-- card-header -->
                             <div class="card-header px-0">
                                 <div class="row mb-50">
-                                    @if (Model.PurchaseOrderNumber != null) 
+                                    @if (Model.PurchaseOrderNumber != null && Model.Status != "Draft")
                                     {
                                         <div class="col-md-3">
                                             <span class="invoice-id font-weight-bold">PO # </span>
@@ -82,8 +91,8 @@
                                         </span>
                                     </div>
                                     @* <div class="company-name mb-1">
-                                        <span class="invoice-id font-weight-bold">Brand: </span>
-                                        <span>Wood-Mode</span>
+                                    <span class="invoice-id font-weight-bold">Brand: </span>
+                                    <span>Wood-Mode</span>
                                     </div> *@
                                 </div>
                                 <div class="col-4 mt-1 to-info">
@@ -217,311 +226,379 @@
 
                             <!--product details table -->
                             @* <div class="product-details-table py-2 table-responsive">
-                                <table class="table table-borderless">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Line #</th>
-                                            <th scope="col">Item</th>
-                                            <th scope="col">Qty</th>
-                                            <th scope="col">Product</th>
-                                            <th scope="col">Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>TUP</td>
-                                            <td>1</td>
-                                            <td>TOUCH UP PEN</td>
-                                            <td> </td>
+                            <table class="table table-borderless">
+                            <thead>
+                            <tr>
+                            <th scope="col">Line #</th>
+                            <th scope="col">Item</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                            <td>5</td>
+                            <td>TUP</td>
+                            <td>1</td>
+                            <td>TOUCH UP PEN</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>10</td>
-                                            <td>PTY</td>
-                                            <td>1</td>
-                                            <td>PUTTY STICK</td>
-                                            <td> </td>
+                            <tr>
+                            <td>10</td>
+                            <td>PTY</td>
+                            <td>1</td>
+                            <td>PUTTY STICK</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>15</td>
-                                            <td>2RW3312</td>
-                                            <td>1</td>
-                                            <td>REFRIGERATOR WALL</td>
-                                            <td>W 33.00/H 12.00/D 24.00/ </td>
+                            <tr>
+                            <td>15</td>
+                            <td>2RW3312</td>
+                            <td>1</td>
+                            <td>REFRIGERATOR WALL</td>
+                            <td>W 33.00/H 12.00/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>20</td>
-                                            <td>2W2430</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>W 24.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>20</td>
+                            <td>2W2430</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>W 24.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>25</td>
-                                            <td>2W2430</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>W 24.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>25</td>
+                            <td>2W2430</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>W 24.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>30</td>
-                                            <td>2W2430</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>W 24.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>30</td>
+                            <td>2W2430</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>W 24.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>35</td>
-                                            <td>W1230</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>HR/W 12.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>35</td>
+                            <td>W1230</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>HR/W 12.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>40</td>
-                                            <td>DW2430</td>
-                                            <td>1</td>
-                                            <td>DIAGONAL WALL</td>
-                                            <td>FNR/HR/6LITES/W 24.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>40</td>
+                            <td>DW2430</td>
+                            <td>1</td>
+                            <td>DIAGONAL WALL</td>
+                            <td>FNR/HR/6LITES/W 24.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>45</td>
-                                            <td>W1230</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>FNL/FNR/HL/W 12.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>45</td>
+                            <td>W1230</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>FNL/FNR/HL/W 12.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>50</td>
-                                            <td>2W3012</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>W 30.00/H 12.00/D 12.00/ </td>
+                            <tr>
+                            <td>50</td>
+                            <td>2W3012</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>W 30.00/H 12.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>55</td>
-                                            <td>W1230</td>
-                                            <td>1</td>
-                                            <td>WALL</td>
-                                            <td>FNL/FNR/HR/W 12.00/H 30.00/D 12.00/ </td>
+                            <tr>
+                            <td>55</td>
+                            <td>W1230</td>
+                            <td>1</td>
+                            <td>WALL</td>
+                            <td>FNL/FNR/HR/W 12.00/H 30.00/D 12.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>60</td>
-                                            <td>2B24RT</td>
-                                            <td>1</td>
-                                            <td>BASE W/ROLL OUT TRAYS</td>
-                                            <td>W 24.00/H 34.50/D 24.00/ </td>
+                            <tr>
+                            <td>60</td>
+                            <td>2B24RT</td>
+                            <td>1</td>
+                            <td>BASE W/ROLL OUT TRAYS</td>
+                            <td>W 24.00/H 34.50/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>65</td>
-                                            <td>3DB24</td>
-                                            <td>1</td>
-                                            <td>THREE DRAWER BASE</td>
-                                            <td>W 24.00/H 34.50/D 24.00/ </td>
+                            <tr>
+                            <td>65</td>
+                            <td>3DB24</td>
+                            <td>1</td>
+                            <td>THREE DRAWER BASE</td>
+                            <td>W 24.00/H 34.50/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>70</td>
-                                            <td>DCSB36</td>
-                                            <td>1</td>
-                                            <td>DIAGONAL CORNER SINK BASE</td>
-                                            <td>HR/W 36.00/H 34.50/D 24.00/ </td>
+                            <tr>
+                            <td>70</td>
+                            <td>DCSB36</td>
+                            <td>1</td>
+                            <td>DIAGONAL CORNER SINK BASE</td>
+                            <td>HR/W 36.00/H 34.50/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>75</td>
-                                            <td>3DB24</td>
-                                            <td>1</td>
-                                            <td>THREE DRAWER BASE</td>
-                                            <td>W 24.00/H 34.50/D 24.00/ </td>
+                            <tr>
+                            <td>75</td>
+                            <td>3DB24</td>
+                            <td>1</td>
+                            <td>THREE DRAWER BASE</td>
+                            <td>W 24.00/H 34.50/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>80</td>
-                                            <td>B12</td>
-                                            <td>1</td>
-                                            <td>BASE</td>
-                                            <td>FNR/HR/W 12.00/H 34.50/D 24.00/ </td>
+                            <tr>
+                            <td>80</td>
+                            <td>B12</td>
+                            <td>1</td>
+                            <td>BASE</td>
+                            <td>FNR/HR/W 12.00/H 34.50/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>85</td>
-                                            <td>2B24RT</td>
-                                            <td>1</td>
-                                            <td>BASE W/ROLL OUT TRAYS</td>
-                                            <td>FNR/BESSD/W 24.00/H 34.50/D 24.00/BESSD RIGHT </td>
+                            <tr>
+                            <td>85</td>
+                            <td>2B24RT</td>
+                            <td>1</td>
+                            <td>BASE W/ROLL OUT TRAYS</td>
+                            <td>FNR/BESSD/W 24.00/H 34.50/D 24.00/BESSD RIGHT </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>90</td>
-                                            <td>2B24RT</td>
-                                            <td>1</td>
-                                            <td>BASE W/ROLL OUT TRAYS</td>
-                                            <td>FNL/BESSD/W 24.00/H 34.50/D 24.00/BESSD LEFT </td>
+                            <tr>
+                            <td>90</td>
+                            <td>2B24RT</td>
+                            <td>1</td>
+                            <td>BASE W/ROLL OUT TRAYS</td>
+                            <td>FNL/BESSD/W 24.00/H 34.50/D 24.00/BESSD LEFT </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>95</td>
-                                            <td>4439DRSQFT</td>
-                                            <td>5</td>
-                                            <td>SPECIAL DOOR PRICING</td>
-                                            <td>XR/SQF5/W 23.50/H 30.00/D .75/ </td>
+                            <tr>
+                            <td>95</td>
+                            <td>4439DRSQFT</td>
+                            <td>5</td>
+                            <td>SPECIAL DOOR PRICING</td>
+                            <td>XR/SQF5/W 23.50/H 30.00/D .75/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>100</td>
-                                            <td>FBP4835</td>
-                                            <td>1</td>
-                                            <td>PLYWOOD PANELS</td>
-                                            <td>W 48.00/H 34.50/D .25/ </td>
+                            <tr>
+                            <td>100</td>
+                            <td>FBP4835</td>
+                            <td>1</td>
+                            <td>PLYWOOD PANELS</td>
+                            <td>W 48.00/H 34.50/D .25/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>105</td>
-                                            <td>4439DRSQFT</td>
-                                            <td>1</td>
-                                            <td>SPECIAL DOOR PRICING</td>
-                                            <td>XR/SQF3/W 11.50/H 28.75/D .75/ </td>
+                            <tr>
+                            <td>105</td>
+                            <td>4439DRSQFT</td>
+                            <td>1</td>
+                            <td>SPECIAL DOOR PRICING</td>
+                            <td>XR/SQF3/W 11.50/H 28.75/D .75/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>110</td>
-                                            <td>RBEP.7584</td>
-                                            <td>1</td>
-                                            <td>REFRIGERATOR BASE END PNL</td>
-                                            <td>LEF/REF/W .75/H 84.00/D 35.00/AS 35D </td>
+                            <tr>
+                            <td>110</td>
+                            <td>RBEP.7584</td>
+                            <td>1</td>
+                            <td>REFRIGERATOR BASE END PNL</td>
+                            <td>LEF/REF/W .75/H 84.00/D 35.00/AS 35D </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>115</td>
-                                            <td>2UB2484RT</td>
-                                            <td>1</td>
-                                            <td>UTILITY WITH ROLL OUT TRAYS</td>
-                                            <td>REF/WBRB/W 24.00/H 84.00/D 24.00/ </td>
+                            <tr>
+                            <td>115</td>
+                            <td>2UB2484RT</td>
+                            <td>1</td>
+                            <td>UTILITY WITH ROLL OUT TRAYS</td>
+                            <td>REF/WBRB/W 24.00/H 84.00/D 24.00/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>120</td>
-                                            <td>F3305</td>
-                                            <td>2</td>
-                                            <td>FILLERS</td>
-                                            <td>W 3.00/H 30.50/D .75/ </td>
+                            <tr>
+                            <td>120</td>
+                            <td>F3305</td>
+                            <td>2</td>
+                            <td>FILLERS</td>
+                            <td>W 3.00/H 30.50/D .75/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>125</td>
-                                            <td>F330</td>
-                                            <td>1</td>
-                                            <td>FILLERS</td>
-                                            <td>W 3.00/H 30.00/D .75/ </td>
+                            <tr>
+                            <td>125</td>
+                            <td>F330</td>
+                            <td>1</td>
+                            <td>FILLERS</td>
+                            <td>W 3.00/H 30.00/D .75/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>130</td>
-                                            <td>MTBT</td>
-                                            <td>3</td>
-                                            <td>TOE BOARD TRIM</td>
-                                            <td> </td>
+                            <tr>
+                            <td>130</td>
+                            <td>MTBT</td>
+                            <td>3</td>
+                            <td>TOE BOARD TRIM</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>135</td>
-                                            <td>SCM8</td>
-                                            <td>3</td>
-                                            <td>SMALL CROWN MOULDING</td>
-                                            <td> </td>
+                            <tr>
+                            <td>135</td>
+                            <td>SCM8</td>
+                            <td>3</td>
+                            <td>SMALL CROWN MOULDING</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>140</td>
-                                            <td>5PC HDR</td>
-                                            <td>11</td>
-                                            <td>FIVE PIECE HEADER OPTION</td>
-                                            <td> </td>
+                            <tr>
+                            <td>140</td>
+                            <td>5PC HDR</td>
+                            <td>11</td>
+                            <td>FIVE PIECE HEADER OPTION</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>145</td>
-                                            <td>LBM8</td>
-                                            <td>2</td>
-                                            <td>LARGE BASE MOULDING</td>
-                                            <td> </td>
+                            <tr>
+                            <td>145</td>
+                            <td>LBM8</td>
+                            <td>2</td>
+                            <td>LARGE BASE MOULDING</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>150</td>
-                                            <td>SCM8</td>
-                                            <td>1</td>
-                                            <td>SMALL CROWN MOULDING</td>
-                                            <td> </td>
+                            <tr>
+                            <td>150</td>
+                            <td>SCM8</td>
+                            <td>1</td>
+                            <td>SMALL CROWN MOULDING</td>
+                            <td> </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>155</td>
-                                            <td>F396</td>
-                                            <td>1</td>
-                                            <td>FILLERS</td>
-                                            <td>W 3.00/H 96.00/D .75/ </td>
+                            <tr>
+                            <td>155</td>
+                            <td>F396</td>
+                            <td>1</td>
+                            <td>FILLERS</td>
+                            <td>W 3.00/H 96.00/D .75/ </td>
 
-                                        </tr>
+                            </tr>
 
-                                        <tr>
-                                            <td>160</td>
-                                            <td>FLAT8</td>
-                                            <td>2</td>
-                                            <td>FLAT OR SCRIBE MOULDING</td>
-                                            <td> </td>
+                            <tr>
+                            <td>160</td>
+                            <td>FLAT8</td>
+                            <td>2</td>
+                            <td>FLAT OR SCRIBE MOULDING</td>
+                            <td> </td>
 
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            </tr>
+                            </tbody>
+                            </table>
                             </div> *@
                             <hr>
 
                         </div>
                     </div>
+
+                    @if (poEmails!.Any())
+                    {
+                        <h2 class="text-primary">Purchase Order Emails</h2>
+                        <div class="collapsible email-detail-head">
+                            @foreach (var (item, emailIndex) in poEmails!.Select((email, emailIndex) => (email, emailIndex)))
+                            {
+                                <div class="card collapse-header" role="tablist">
+                                    <div id="headingCollapse_@emailIndex" class="card-header d-flex justify-content-between align-items-center" data-toggle="collapse" role="tab" data-target="#collapse_@emailIndex" aria-expanded="false" aria-controls="collapse_@emailIndex">
+                                        <div class="collapse-title media">
+                                            <div class="pr-1">
+                                                <div class="avatar mr-75 bg-primary">
+                                                    <i class="feather icon-user"></i>
+                                                </div>
+                                            </div>
+                                            <div class="media-body mt-25">
+                                                <span class="text-primary">@item.From</span>
+                                                <small class="text-muted d-block">to @item.To</small>
+                                            </div>
+                                        </div>
+                                        <div class="information d-sm-flex d-none align-items-center">
+                                            <small class="text-muted mr-50">@item.Date</small>
+                                            @* <span class="favorite">
+                                    <i class="feather icon-star mr-25"></i>
+                                    </span> *@
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" id="fisrt-open-submenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="feather icon-more-vertical mr-0"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fisrt-open-submenu">
+                                                    <a href="#" class="dropdown-item mail-reply">
+                                                        <i class="feather icon-corner-up-left"></i>
+                                                        Reply
+                                                    </a>
+                                                    <a href="#" class="dropdown-item">
+                                                        <i class="feather icon-corner-up-right"></i>
+                                                        Forward
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="collapse_@emailIndex" role="tabpanel" aria-labelledby="headingCollapse_@emailIndex" class="collapse">
+                                        <div class="card-content">
+                                            <div class="card-body py-1">
+                                                @Html.Raw(item.Body)
+                                            </div>
+                                            @if (item.Attachments.Any())
+                                            {
+                                                <div class="card-footer pt-2 border-top">
+                                                    <label class="font-weight-bold text-secondary">Attached Files</label>
+                                                    <ul class="list-unstyled mb-0">
+                                                        @foreach (var attachment in item.Attachments)
+                                                        {
+                                                            <li class="cursor-pointer pb-25" onclick='OpenOrDownloadAttachment("@attachment.ContentType", "@attachment.FileName", "@attachment.Base64Data")'>
+                                                                <i class="feather icon-paperclip"></i>
+                                                                <small class="text-muted ml-1 attchement-text">@attachment.FileName</small>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
 
                 <!-- buttons section -->
@@ -539,3 +616,36 @@
         </section>
     </div>
 </div>
+
+<script>
+    function OpenOrDownloadAttachment(contentType, fileName, base64Data) {
+        event.preventDefault(); // preventing other events to be triggered
+        // Convert base64 data to a Blob object
+        const byteNumbers = atob(base64Data.replace(/^.*,/, ''));
+        const byteArray = new Array(byteNumbers.length);
+        for (let i = 0; i < byteNumbers.length; i++) {
+            byteArray[i] = byteNumbers.charCodeAt(i);
+        }
+        const blob = new Blob([new Uint8Array(byteArray)], { type: contentType });
+        // Check the content type and open in a new tab or download based on the type
+        if (contentType.startsWith('application/pdf') || contentType.startsWith('image/')) {
+            // Open in a new tab
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.target = '_blank';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            // Download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+</script>
