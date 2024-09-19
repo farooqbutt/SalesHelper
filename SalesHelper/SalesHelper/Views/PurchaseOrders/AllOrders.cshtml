@@ -62,7 +62,16 @@
                 "dataSrc": "data"
             },
             "columns": [
-                { "data": "purchaseOrderNumber" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                            <a href="/PurchaseOrders/POSummary/${row.id}">
+                                ${row.purchaseOrderNumber}
+                            </a>
+                        `;
+                    }
+                },
                 {
                     "data": null,
                     "render": function(data, type, row){
@@ -91,15 +100,19 @@
                     "data": null,
                     "render": function (data, type, row) {
                         if (row.orderNumberByVendor) {
-                            return row.orderNumberByVendor;
+                            // show row.orderNumberByVendor in a span element with copy icon to copy this string
+                            return `
+                                    <span>${row.orderNumberByVendor}</span> <i onclick="CopyOrderNumber('${row.orderNumberByVendor}')" style="cursor:pointer;" title="Copy Order Number" class="feather icon-copy"></i> 
+                            `;
+
                         } else {
                             return `
                                     <div class="d-flex flex-row">
-                                     <input class="form-control form-control-sm square" id="OrderNumberByVendor_row.id" style="width:120px;height:22px;" />
-                                     <button onclick="SaveOrderNumberByVendor(row.id)" class="btn btn-primary btn-sm">
-                                  <i class="feather icon-check"></i>
-                                  </button>
-                                 </div>
+                                     <input class="form-control form-control-sm square" id="OrderNumberByVendor_${row.id}" style="width:120px;height:22px;" />
+                                     <button onclick="SaveOrderNumberByVendor('${row.id}')" class="btn btn-primary btn-sm">
+                                        <i class="feather icon-check"></i>
+                                     </button>
+                                    </div>
                             `;
                         }
                     }
@@ -114,11 +127,12 @@
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                            <select class="form-control form-control-sm">
-                                <option value="Created">Created</option>
-                                <option value="Inprocessing">Inprocessing</option>
-                                <option value="Shipped">Shipped</option>
-                                <option value="Completed">Completed</option>
+                            <select class="form-control form-control-sm" onchange="UpdatePOStatus('${row.id}',this)">
+                                <option value="Draft" ${row.status === 'Draft' ? 'selected' : ''}>Draft</option>
+                                <option value="Created" ${row.status === 'Created' ? 'selected' : ''}>Created</option>
+                                <option value="Inprocessing" ${row.status === 'Inprocessing' ? 'selected' : ''}>Inprocessing</option>
+                                <option value="Shipped" ${row.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                <option value="Completed" ${row.status === 'Completed' ? 'selected' : ''}>Completed</option>
                             </select>
                         `;
                     }
@@ -131,8 +145,8 @@
                         } else {
                             return `
                                 <div class="d-flex flex-row">
-                                  <input type="date" class="form-control form-control-sm square" id="ShippingDateByVendor_row.id" style="width:120px;height:22px;" />
-                                  <button onclick="SaveShippingDateByVendor(row.id)" class="btn btn-primary btn-sm">
+                                  <input type="date" class="form-control form-control-sm square" id="ShippingDateByVendor_${row.id}" style="width:120px;height:22px;" />
+                                  <button onclick="SaveShippingDateByVendor('${row.id}')" class="btn btn-primary btn-sm">
                                   <i class="feather icon-check"></i>
                                   </button>
                                 </div>
@@ -162,14 +176,14 @@
         var orderno = $('#OrderNumberByVendor_' + id).val();
 
         $.ajax({
-            url: "/PurchaseOrders/AllOrders",
+            url: "/PurchaseOrders/SaveOrderNumberByVendor",
             type: 'POST',
-            data: { id: id, OrderNumber: orderno },
-            success: function (response) {
-                alert('Order number saved successfully.');
+            data: { id: id, orderNumber: orderno },
+            success: function () {
+                toastr.success("Order Number Saved Successfully!");
             },
-            error: function (xhr, status, error) {
-                console.error('Error saving order number:', error);
+            error: function (error) {
+                toastr.error('Error saving order number:', error);
             }
         });
     }
@@ -178,14 +192,39 @@
         var shippingDate = $('#ShippingDateByVendor_' + id).val();
 
         $.ajax({
-            url: "/PurchaseOrders/AllOrders",
+            url: "/PurchaseOrders/SaveShippingDateByVendor",
             type: 'POST',
-            data: { id: id, ShippingDate: shippingDate },
-            success: function (response) {
-                alert('Shipping date saved successfully.');
+            data: { id: id, shippingDate: shippingDate },
+            success: function () {
+                toastr.success("Shipping Date Updated Successfully!");
             },
-            error: function (xhr, status, error) {
-                console.error('Error saving shipping date:', error);
+            error: function (error) {
+                toastr.error('Error saving shipping date:', error);
+            }
+        });
+    }
+
+    function CopyOrderNumber(orderNumber) {
+        var tempInput = document.createElement("input");
+        tempInput.value = orderNumber;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        toastr.success("Order Number Copied Successfully!");
+    }
+
+    function UpdatePOStatus(id, element) {
+        var status = $(element).val();
+        $.ajax({
+            url: "/PurchaseOrders/UpdatePOStatus",
+            type: 'POST',
+            data: { id: id, status: status },
+            success: function () {
+                toastr.success("Status Updated Successfully!");
+            },
+            error: function (error) {
+                toastr.error('Error updating status:', error);
             }
         });
     }

@@ -16,7 +16,11 @@ namespace SalesHelper.Services
         private readonly ApplicationDbContext _context;
         private readonly CustomerService _customerService;
         private readonly EncryptionDecryptionService _encdecService;
-        public CabinetQuotationService(ApplicationDbContext context, CustomerService customerService, EncryptionDecryptionService encdecService)
+        public CabinetQuotationService(
+            ApplicationDbContext context, 
+            CustomerService customerService, 
+            EncryptionDecryptionService encdecService
+            )
         {
             _context = context;
             _customerService = customerService;
@@ -258,7 +262,7 @@ namespace SalesHelper.Services
                     rfc822.Message.WriteTo(stream);
                     var fileBytes = stream.ToArray();
                     var base64 = Convert.ToBase64String(fileBytes);
-                    emailMessage.Attachments.Add(new AttachmentModel
+                    emailMessage.Attachments.Add(new QuoteAttachmentModel
                     {
                         ContentType = rfc822.ContentType.MimeType,
                         FileName = fileName,
@@ -274,7 +278,7 @@ namespace SalesHelper.Services
                     part.Content.DecodeTo(stream);
                     var fileBytes = stream.ToArray();
                     var base64 = Convert.ToBase64String(fileBytes);
-                    emailMessage.Attachments.Add(new AttachmentModel
+                    emailMessage.Attachments.Add(new QuoteAttachmentModel
                     {
                         ContentType = part.ContentType.MimeType,
                         FileName = fileName,
