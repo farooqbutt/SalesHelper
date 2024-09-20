@@ -1,4 +1,5 @@
 ﻿using SalesHelper.Models;
+using SalesHelper.Models.InterfaceModels;
 
 namespace SalesHelper.Services
 {
@@ -18,5 +19,7 @@ namespace SalesHelper.Services
             Invalid
         }
         public NameType DetermineNameType(string name);
+
+        public Task<List<CustomerEmailInterface>> ReadCustomerEmails(int? CustomerNumber, ApplicationUser user); // Read Customer Emails
     }
 }
