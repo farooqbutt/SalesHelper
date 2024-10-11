@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesHelper.Models;
 using SalesHelper.Services;
+using SalesHelper.Services.UserServices;
 
 namespace SalesHelper.Controllers
 {
@@ -8,10 +9,15 @@ namespace SalesHelper.Controllers
     {
         private readonly VendorService _vendorService;
         private readonly PurchaseOrderService _purchaseOrderService;
-        public PurchaseOrdersController(PurchaseOrderService purchaseOrderService, VendorService vendorService)
+        private readonly CustomerService _customerService;
+        public PurchaseOrdersController(
+            PurchaseOrderService purchaseOrderService, 
+            VendorService vendorService,
+            CustomerService customerService)
         {
             _vendorService = vendorService;
             _purchaseOrderService = purchaseOrderService;
+            _customerService = customerService;
         }
 
         [HttpGet]
@@ -56,7 +62,7 @@ namespace SalesHelper.Controllers
         {
             purchaseOrder.OrderTypeForSalesHelper = "Cabinetry";
             purchaseOrder.Status = "Ordered";
-            _purchaseOrderService.CreatePONumber(purchaseOrder.CustomerFK.AccountNumber);
+            purchaseOrder.PurchaseOrderNumber = _purchaseOrderService.CreatePONumber(_customerService.Read(purchaseOrder.CustomerId).AccountNumber);
             _purchaseOrderService.Create(purchaseOrder);
             return Json(new { data = purchaseOrder });
         }
@@ -156,6 +162,31 @@ namespace SalesHelper.Controllers
                 po.Status = status;
                 _purchaseOrderService.Update(po);
             }
+        }
+
+        [HttpGet]
+        public IActionResult CreateCountertopDraftOrderPage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateCountertopDraftOrderPage(PurchaseOrder purchaseOrder)
+        {
+            purchaseOrder.OrderTypeForSalesHelper = "Countertop";
+            purchaseOrder.Status = "Draft";
+            _purchaseOrderService.Create(purchaseOrder);
+            return Json(new { data = purchaseOrder });
+        }
+
+        [HttpPost]
+        public IActionResult CreateCountertopOrder(PurchaseOrder purchaseOrder)
+        {
+            purchaseOrder.OrderTypeForSalesHelper = "Countertop";
+            purchaseOrder.Status = "Ordered";
+            purchaseOrder.PurchaseOrderNumber = _purchaseOrderService.CreatePONumber(_customerService.Read(purchaseOrder.CustomerId).AccountNumber);
+            _purchaseOrderService.Create(purchaseOrder);
+            return Json(new { data = purchaseOrder });
         }
     }
 }

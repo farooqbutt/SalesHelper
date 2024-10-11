@@ -8,10 +8,10 @@
         public string Subject { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
         public DateTime Date { get; set; }
-        public List<CustomerAttachmentModel> Attachments { get; set; } = new List<CustomerAttachmentModel>();
+        public List<CustomerEmailAttachmentModel> Attachments { get; set; } = new List<CustomerEmailAttachmentModel>();
     }
 
-    public class CustomerAttachmentModel
+    public class CustomerEmailAttachmentModel
     {
         public string ContentType { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;

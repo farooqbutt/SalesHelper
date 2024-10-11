@@ -24,10 +24,6 @@ namespace SalesHelper.Services
             _context = context;
             _encdecService = encdecService;
         }
-        public CustomerService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
 
         public void Create(Customer customer)
         {
@@ -120,7 +116,7 @@ namespace SalesHelper.Services
             }
         }
 
-        public async Task<List<CustomerEmailInterface>> ReadCustomerEmails(int? CellPhone, ApplicationUser user)
+        public async Task<List<CustomerEmailInterface>> ReadCustomerEmails(string CellPhone, ApplicationUser user)
         {
             try
             {
@@ -145,7 +141,7 @@ namespace SalesHelper.Services
             }
         }
 
-        private async Task<List<CustomerEmailInterface>> ReadInboxEmails(ImapClient _imapClient, int? CellPhone)
+        private async Task<List<CustomerEmailInterface>> ReadInboxEmails(ImapClient _imapClient, string CellPhone)
         {
             var inboxFolder = await _imapClient.GetFolderAsync("INBOX");
             // open the inbox folder
@@ -171,7 +167,7 @@ namespace SalesHelper.Services
             return emailMessages;
         }
 
-        private async Task<List<CustomerEmailInterface>> ReadSentEmails(ImapClient _imapClient, int? CellPhone)
+        private async Task<List<CustomerEmailInterface>> ReadSentEmails(ImapClient _imapClient, string CellPhone)
         {
             var sentFolder = await _imapClient.GetFolderAsync("Sent");
             // open the sent folder
@@ -213,7 +209,7 @@ namespace SalesHelper.Services
                     rfc822.Message.WriteTo(stream);
                     var fileBytes = stream.ToArray();
                     var base64 = Convert.ToBase64String(fileBytes);
-                    CustomeremailMessage.Attachments.Add(new CustomerAttachmentModel
+                    CustomeremailMessage.Attachments.Add(new CustomerEmailAttachmentModel
                     {
                         ContentType = rfc822.ContentType.MimeType,
                         FileName = fileName,
@@ -229,7 +225,7 @@ namespace SalesHelper.Services
                     part.Content.DecodeTo(stream);
                     var fileBytes = stream.ToArray();
                     var base64 = Convert.ToBase64String(fileBytes);
-                    CustomeremailMessage.Attachments.Add(new CustomerAttachmentModel
+                    CustomeremailMessage.Attachments.Add(new CustomerEmailAttachmentModel
                     {
                         ContentType = part.ContentType.MimeType,
                         FileName = fileName,
@@ -238,9 +234,5 @@ namespace SalesHelper.Services
                 }
             }
         }
-
-
-
-
     }
 }

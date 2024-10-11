@@ -130,6 +130,7 @@
                             <select class="form-control form-control-sm" onchange="UpdatePOStatus('${row.id}',this)">
                                 <option value="Draft" ${row.status === 'Draft' ? 'selected' : ''}>Draft</option>
                                 <option value="Created" ${row.status === 'Created' ? 'selected' : ''}>Created</option>
+                                <option value="Ordered" ${row.status === 'Ordered' ? 'selected' : ''}>Ordered</option>
                                 <option value="Inprocessing" ${row.status === 'Inprocessing' ? 'selected' : ''}>Inprocessing</option>
                                 <option value="Shipped" ${row.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
                                 <option value="Completed" ${row.status === 'Completed' ? 'selected' : ''}>Completed</option>

@@ -108,6 +108,9 @@ namespace SalesHelper.Controllers
         public IActionResult CustomerDetailedView(int id)
         {
             ViewBag.CustomerId = id;
+            ViewBag.CustomerEmails = _customerService.ReadCustomerEmails(
+                _customerService.Read(id).CellPhone!, 
+                _signInManager.UserManager.GetUserAsync(User).Result).GetAwaiter().GetResult();
             return View();
         }
 

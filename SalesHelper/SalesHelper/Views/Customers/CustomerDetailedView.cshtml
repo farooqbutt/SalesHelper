@@ -1,11 +1,7 @@
-﻿@{
-    int customerId = ViewBag.CustomerId;
-}
-
+﻿@using SalesHelper.Models.InterfaceModels
 @{
-  //  var Emails = Model.PurchaseOrderNumber != null
-  //      ? _purchaseOrderService.ReadPOEmails(Model.PurchaseOrderNumber, _signInManager.UserManager.GetUserAsync(User).Result).GetAwaiter().GetResult()
- //       : null;
+    int customerId = ViewBag.CustomerId;
+    List<CustomerEmailInterface>? customerEmails = ViewBag.CustomerEmails;
 }
 
 <style>
@@ -30,7 +26,7 @@
         <div class="content-header-right col-md-6 col-12">
             <div class="btn-group float-md-right" role="group">
                 <div class="btn-group mr-1 mb-1">
-                    <button style="border-bottom-right-radius: 0px;border-top-right-radius: 0px;" 
+                    <button style="border-bottom-right-radius: 0px;border-top-right-radius: 0px;"
                             type="button" class="btn btn-outline-primary btn-min-width dropdown-toggle" data-toggle="dropdown">
                         <i class="ti-pencil-alt mr-1"></i>New Quote
                     </button>
@@ -67,57 +63,44 @@
                     <!-- Dashboard -->
                     <div class="card-body border-top-blue-grey border-top-lighten-5">
                         <ul class="nav nav-pills flex-column mt-md-0 mt-1 border-primary">
-                            <li class="nav-item list-group-item-primary">
-                                <a class="nav-link d-flex active" id="account-pill-dashboard" data-toggle="pill" href="#dashboard" aria-expanded="true">
-                                    <i class="icon-home"></i>
-                                    Dashboard
-                                </a>
-                            </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" id="account-pill-general" data-toggle="pill" href="#quote-customer-info" aria-expanded="true">
+                                <a class="nav-link d-flex" id="customer-info-link" data-toggle="pill" href="#customer-info-section" aria-expanded="true">
                                     <i class="ti-user"></i>
-                                    Customer Info.
+                                    Customer Information
                                 </a>
                             </li>
-
                             <li class="nav-item">
-                                <a class="nav-link d-flex" id="account-pill-billing" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                <a class="nav-link d-flex" id="quotes-info-link" data-toggle="pill" href="#quotes-info-section" aria-expanded="false">
                                     <i class="fa fa-pencil-square-o"></i>
                                     Quotes
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" id="account-pill-countertop" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                <a class="nav-link d-flex" id="sales-info-link" data-toggle="pill" href="#sales-info-section" aria-expanded="false">
                                     <i class="fa fa-bar-chart"></i>
                                     Sales
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" id="account-pill-hardware" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                <a class="nav-link d-flex" id="po-info-link" data-toggle="pill" href="#po-info-section" aria-expanded="false">
                                     <i class="fa fa-shopping-cart"></i>
-                                    Purchase order
+                                    Purchase Orders
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" id="account-pill-sink" data-toggle="pill" href="#quote-all-quotes" aria-expanded="false">
+                                <a class="nav-link d-flex" id="invoice-info-link" data-toggle="pill" href="#invoice-info-section" aria-expanded="false">
                                     <i class="fa fa-file-text-o"></i>
                                     Invoice
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" href="schedule-appointments.html">
+                                <a class="nav-link d-flex" id="events-info-link" data-toggle="pill" href="#events-info-section" aria-expanded="false">
                                     <i class="fa fa-calendar"></i>
                                     Events
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" href="app-todo.html">
-                                    <i class="fa fa-check-square-o"></i>
-                                    View Tasks
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link d-flex" href="app-todo.html">
+                                <a class="nav-link d-flex" id="mails-info-link" data-toggle="pill" href="#mails-info-section" aria-expanded="false">
                                     <i class="fa fa-envelope-o"></i>
                                     Mails
                                 </a>
@@ -130,7 +113,12 @@
                 <!--/ Predefined Views -->
             </div>
         </div>
-        <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+            <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+        </div>
+        <div class="ps__rail-y" style="top: 0px; right: 0px;">
+            <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+        </div>
     </div>
 
     <div class="content-detached content-right">
@@ -181,7 +169,7 @@
                                         <div class="media">
                                             <div class="media-body text-left w-100">
                                                 <h3 class="success">1</h3>
-                                                <span>Invoiced</span>
+                                                <span>Invoices</span>
                                             </div>
                                             <div class="media-right media-middle">
                                                 <i class="fa fa-file-text-o success font-large-2 float-right"></i>
@@ -199,7 +187,7 @@
                                         <div class="media">
                                             <div class="media-body text-left w-100">
                                                 <h3 class="warning">50</h3>
-                                                <span>Messages</span>
+                                                <span>Mails</span>
                                             </div>
                                             <div class="media-right media-middle">
                                                 <i class="fa fa-envelope-o warning font-large-2 float-right"></i>
@@ -211,8 +199,11 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="quote-customer-info" aria-labelledby="account-pill-general" aria-expanded="true">
+
+                        @* Customer Information Section *@
+                        <div role="tabpanel" class="tab-pane active" id="customer-info-section" aria-labelledby="customer-info-link" aria-expanded="true">
                             <div class="row match-height">
                                 <!-- /# column -->
                                 <div class="col-lg-6">
@@ -221,7 +212,7 @@
                                             <a href="/Customers/EditCustomer/@customerId" class="btn btn-sm btn-primary float-right">
                                                 <i class="fa fa-edit"></i> Edit Customer Info
                                             </a>
-                                            <h4 class="card-title info" id="basic-layout-colored-form-control">Customer info</h4>
+                                            <h4 class="card-title info" id="basic-layout-colored-form-control">Customer Information</h4>
                                         </div>
                                         <div class="card-content collapse show">
                                             <div class="card-body">
@@ -266,9 +257,8 @@
                                 <!-- /# end column -->
                             </div>
                         </div>
-
-
-                        <div class="tab-pane" id="quote-all-quotes" role="tabpanel" aria-labelledby="baseVerticalLeft2-tab1">
+                        @* Customer Quotes Section *@
+                        <div class="tab-pane" id="quotes-info-section" role="tabpanel" aria-labelledby="quotes-info-link">
                             <div class="row match-height">
                                 <div class="col-xl-6 col-md-6 col-sm-12">
                                     <div class="card text-left">
@@ -537,14 +527,111 @@
                             </div>
 
                         </div>
-                        <div class="tab-pane" id="tabVerticalLeft22" role="tabpanel" aria-labelledby="baseVerticalLeft2-tab2">
-                            <p>Sugar plum tootsie roll biscuit caramels. Liquorice brownie pastry cotton candy oat cake fruitcake jelly chupa chups. Pudding caramels pastry powder cake soufflé wafer caramels. Jelly-o pie cupcake.</p>
+                        @* Customer Sales Section *@
+                        <div class="tab-pane" id="sales-info-section" role="tabpanel" aria-labelledby="sales-info-link">
+                            <p>
+                                Sugar plum tootsie roll biscuit caramels.
+                                Liquorice brownie pastry cotton candy oat cake fruitcake jelly chupa chups. Pudding caramels pastry powder cake
+                                soufflé wafer caramels. Jelly-o pie cupcake.
+                            </p>
                         </div>
-                        <div class="tab-pane" id="tabVerticalLeft23" role="tabpanel" aria-labelledby="baseVerticalLeft2-tab3">
-                            <p>Biscuit ice cream halvah candy canes bear claw ice cream cake chocolate bar donut. Toffee cotton candy liquorice. Oat cake lemon drops gingerbread dessert caramels. Sweet dessert jujubes powder sweet sesame snaps.</p>
+                        @* Customer Purchase Orders Section *@
+                        <div class="tab-pane" id="po-info-section" role="tabpanel" aria-labelledby="po-info-link">
+                            <p>
+                                Biscuit ice cream halvah candy canes bear claw 
+                                ice cream cake chocolate bar donut. Toffee cotton candy liquo
+                                rice. Oat cake lemon drops gingerbread dessert caramels. Sweet 
+                                dessert jujubes powder sweet sesame snaps.
+                            </p>
                         </div>
-
-
+                        @* Customer Invoice Section *@
+                        <div class="tab-pane" id="invoice-info-section" role="tabpanel" aria-labelledby="invoice-info-link">
+                            <p>
+                                Biscuit ice cream halvah candy canes bear claw
+                                ice cream cake chocolate bar donut. Toffee cotton candy liquo
+                                rice. Oat cake lemon drops gingerbread dessert caramels. Sweet
+                                dessert jujubes powder sweet sesame snaps.
+                            </p>
+                        </div>
+                        @* Customer Events Section *@
+                        <div class="tab-pane" id="events-info-section" role="tabpanel" aria-labelledby="events-info-link">
+                            <p>
+                                Biscuit ice cream halvah candy canes bear claw
+                                ice cream cake chocolate bar donut. Toffee cotton candy liquo
+                                rice. Oat cake lemon drops gingerbread dessert caramels. Sweet
+                                dessert jujubes powder sweet sesame snaps.
+                            </p>
+                        </div>
+                        @* Customer Mails Section *@
+                        <div class="tab-pane" id="mails-info-section" role="tabpanel" aria-labelledby="mails-info-link">
+                            @if (customerEmails!.Any())
+                            {
+                                <h2 class="text-primary">Customer Emails</h2>
+                                <div class="collapsible email-detail-head">
+                                    @foreach (var (item, emailIndex) in customerEmails!.Select((email, emailIndex) => (email, emailIndex)))
+                                    {
+                                        <div class="card collapse-header" role="tablist">
+                                            <div id="headingCollapse_@emailIndex" class="card-header d-flex justify-content-between align-items-center" data-toggle="collapse" role="tab" data-target="#collapse_@emailIndex" aria-expanded="false" aria-controls="collapse_@emailIndex">
+                                                <div class="collapse-title media">
+                                                    <div class="pr-1">
+                                                        <div class="avatar mr-75 bg-primary">
+                                                            <i class="feather icon-user"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="media-body mt-25">
+                                                        <span class="text-primary">@item.From</span>
+                                                        <small class="text-muted d-block">to @item.To</small>
+                                                    </div>
+                                                </div>
+                                                <div class="information d-sm-flex d-none align-items-center">
+                                                    <small class="text-muted mr-50">@item.Date</small>
+                                                    @* <span class="favorite">
+                                            <i class="feather icon-star mr-25"></i>
+                                            </span> *@
+                                                    <div class="dropdown">
+                                                        <a href="#" class="dropdown-toggle" id="fisrt-open-submenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="feather icon-more-vertical mr-0"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fisrt-open-submenu">
+                                                            <a href="#" class="dropdown-item mail-reply">
+                                                                <i class="feather icon-corner-up-left"></i>
+                                                                Reply
+                                                            </a>
+                                                            <a href="#" class="dropdown-item">
+                                                                <i class="feather icon-corner-up-right"></i>
+                                                                Forward
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="collapse_@emailIndex" role="tabpanel" aria-labelledby="headingCollapse_@emailIndex" class="collapse">
+                                                <div class="card-content">
+                                                    <div class="card-body py-1">
+                                                        @Html.Raw(item.Body)
+                                                    </div>
+                                                    @if (item.Attachments.Any())
+                                                    {
+                                                        <div class="card-footer pt-2 border-top">
+                                                            <label class="font-weight-bold text-secondary">Attached Files</label>
+                                                            <ul class="list-unstyled mb-0">
+                                                                @foreach (var attachment in item.Attachments)
+                                                                {
+                                                                    <li class="cursor-pointer pb-25" onclick='OpenOrDownloadAttachment("@attachment.ContentType", "@attachment.FileName", "@attachment.Base64Data")'>
+                                                                        <i class="feather icon-paperclip"></i>
+                                                                        <small class="text-muted ml-1 attchement-text">@attachment.FileName</small>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </section>
@@ -602,5 +689,36 @@
         appendRow("State", data.state);
         appendRow("Country", data.country);
         appendRow("Zip/Post Code", data.postalCode);
+    }
+
+    function OpenOrDownloadAttachment(contentType, fileName, base64Data) {
+        event.preventDefault(); // preventing other events to be triggered
+        // Convert base64 data to a Blob object
+        const byteNumbers = atob(base64Data.replace(/^.*,/, ''));
+        const byteArray = new Array(byteNumbers.length);
+        for (let i = 0; i < byteNumbers.length; i++) {
+            byteArray[i] = byteNumbers.charCodeAt(i);
+        }
+        const blob = new Blob([new Uint8Array(byteArray)], { type: contentType });
+        // Check the content type and open in a new tab or download based on the type
+        if (contentType.startsWith('application/pdf') || contentType.startsWith('image/')) {
+            // Open in a new tab
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.target = '_blank';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            // Download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     }
 </script>

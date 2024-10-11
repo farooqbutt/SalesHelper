@@ -56,11 +56,26 @@ namespace SalesHelper.Models
         public string? FrameOption { get; set; }
         public string? HingeTypeInset { get; set; }
         public string? HingeTypeOverlay { get; set; }
-
         public string? Comments { get; set; }
-
         public string? AdditionalFieldsJson { get; set; }
 
+        // Countertop Information
+        public string? Material { get; set; }
+        public string? Brand { get; set; }
+        public string? Color { get; set; }
+        public string? RoomType { get; set; }
+        public string? EdgeProfile { get; set; }
+        public bool MiteredEdge { get; set; } = false;
+        public bool FarmhouseSink { get; set; } = false;
+        public bool Cooktop { get; set; } = false;
+        public bool FullBacksplash { get; set; } = false;
+        public bool MiteredEdgeOnIsland { get; set; } = false;
+        public bool IslandPrepSink { get; set; } = false;
+        public bool Rangetop { get; set; } = false;
+        public bool FourIncBacksplash { get; set; } = false;
+        public bool WaterfallOnIsland { get; set; } = false;
+
+        public string? EstimateSquareFeet { get; set; } = string.Empty;
         public DateTime ModifiedDate { get; set; }
     }
 }

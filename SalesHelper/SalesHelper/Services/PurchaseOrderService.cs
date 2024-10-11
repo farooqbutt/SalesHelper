@@ -101,7 +101,7 @@ namespace SalesHelper.Services
             try
             {
                 // get last PO number
-                var lastPO = _context.PurchaseOrders.OrderByDescending(a => a.Id).Where(a => a.PurchaseOrderNumber != null).LastOrDefault();
+                var lastPO = _context.PurchaseOrders.OrderBy(a => a.Id).Where(a => a.PurchaseOrderNumber != null).LastOrDefault();
                 if (lastPO == null)
                 {
                     return 10001;

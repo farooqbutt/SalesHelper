@@ -20,6 +20,6 @@ namespace SalesHelper.Services
         }
         public NameType DetermineNameType(string name);
 
-        public Task<List<CustomerEmailInterface>> ReadCustomerEmails(int? CustomerNumber, ApplicationUser user); // Read Customer Emails
+        public Task<List<CustomerEmailInterface>> ReadCustomerEmails(string CellPhone, ApplicationUser user); // Read Customer Emails
     }
 }
